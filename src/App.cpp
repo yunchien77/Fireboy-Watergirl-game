@@ -9,13 +9,16 @@
 App::App() {
   LOG_DEBUG("Game object initialize");
   // 初始化遊戲資源
+
+  // 遊戲封面
   m_TitleBackground = std::make_shared<BackgroundImage>(
       RESOURCE_DIR "/material/background/cover.png");
   m_TitleBackground->SetVisible(false);
   m_Root.AddChild(m_TitleBackground);
 
+  // 關卡選擇頁面
   m_LevelBackground = std::make_shared<BackgroundImage>(
-      RESOURCE_DIR "/material/background/level-page-show.png");
+      RESOURCE_DIR "/material/background/level-page.png");
   m_LevelBackground->SetVisible(false);
   m_Root.AddChild(m_LevelBackground);
 }

@@ -40,13 +40,17 @@ private:
 
 private:
   State m_CurrentState = State::START;
-  int m_CurrentLevel = 0;          // 遊戲關卡
-  bool m_IsLevelCompleted = false; // 關卡結束與否
+  int m_CurrentLevel = 0;
+  bool m_IsLevelCompleted = false;
 
   std::shared_ptr<BackgroundImage> m_TitleBackground;
   std::shared_ptr<BackgroundImage> m_LevelBackground;
-  std::shared_ptr<BackgroundImage> m_LevelButton;
-  std::shared_ptr<BackgroundImage> m_Level1Background; // 第一關背景
+  std::shared_ptr<BackgroundImage> m_Button1;
+  std::shared_ptr<BackgroundImage> m_Button2;
+  std::shared_ptr<BackgroundImage> m_Button3;
+  std::shared_ptr<BackgroundImage> m_Button4;
+  std::shared_ptr<BackgroundImage> m_Button5;
+  std::shared_ptr<BackgroundImage> m_Level1Background;
 
 
   Util::Renderer m_Root;

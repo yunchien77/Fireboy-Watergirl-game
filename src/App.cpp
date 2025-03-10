@@ -20,14 +20,45 @@ App::App() {
     m_LevelBackground->SetVisible(false);
     m_Root.AddChild(m_LevelBackground);
 
-    m_LevelButton = std::make_shared<BackgroundImage>(
-        RESOURCE_DIR "/material/background/button/current-level.png");
-    m_LevelButton->SetPosition({0, -220});
-    m_LevelButton->SetVisible(false);
-    m_Root.AddChild(m_LevelButton);
+    m_Button1 = std::make_shared<BackgroundImage>(
+    RESOURCE_DIR "/material/background/button/current-level.png");
+    m_Button1->SetPosition({0, -220});
+    m_Button1->SetVisible(false);
+    m_Root.AddChild(m_Button1);
+
+
+    m_Button2 = std::make_shared<BackgroundImage>(
+    RESOURCE_DIR "/material/background/button/unlevel.png");
+    m_Button2->SetPosition({0, -102});
+    m_Button2->SetVisible(false);
+    m_Root.AddChild(m_Button2);
+
+    m_Button3 = std::make_shared<BackgroundImage>(
+    RESOURCE_DIR "/material/background/button/unlevel.png");
+    m_Button3->SetPosition({0, 16});
+    m_Button3->SetVisible(false);
+    m_Root.AddChild(m_Button3);
+
+    m_Button4 = std::make_shared<BackgroundImage>(
+    RESOURCE_DIR "/material/background/button/unlevel.png");
+    m_Button4->SetPosition({0, 134});
+    m_Button4->SetVisible(false);
+    m_Root.AddChild(m_Button4);
+
+    m_Button5 = std::make_shared<BackgroundImage>(
+    RESOURCE_DIR "/material/background/button/unlevel.png");
+    m_Button5->SetPosition({0, 252});
+    m_Button5->SetVisible(false);
+    m_Root.AddChild(m_Button5);
+
+    m_Button1->SetZIndex(10);
+    m_Button2->SetZIndex(5);
+    m_Button3->SetZIndex(4);
+    m_Button4->SetZIndex(3);
+    m_Button5->SetZIndex(2);
 
     m_Level1Background = std::make_shared<BackgroundImage>(
-        RESOURCE_DIR "/material/background/level1.jpg");
+    RESOURCE_DIR "/material/background/level1.jpg");
     m_Level1Background->SetVisible(false);
     m_Root.AddChild(m_Level1Background);
 
@@ -50,8 +81,11 @@ void App::Start() {
 }
 
 void App::LevelSelect() {
-    LOG_TRACE("LevelSelect");
-    m_LevelButton->SetVisible(true);
+    m_Button1->SetVisible(true);
+    m_Button2->SetVisible(true);
+    m_Button3->SetVisible(true);
+    m_Button4->SetVisible(true);
+    m_Button5->SetVisible(true);
 
     int buttonCenterX = 0;
     int buttonCenterY = -220;
@@ -60,8 +94,7 @@ void App::LevelSelect() {
     if (m_CurrentState == State::LEVEL_SELECT) {
         m_TitleBackground->SetVisible(false);
         m_LevelBackground->SetVisible(true);
-        m_LevelButton->SetVisible(true);
-
+        m_Button1->SetVisible(true);
 
         int mouseX, mouseY;
         Uint32 mouseState = SDL_GetMouseState(&mouseX, &mouseY);
@@ -83,7 +116,7 @@ void App::LevelSelect() {
             if (relativeMouseX >= buttonCenterX - buttonHalfSize && relativeMouseX <= buttonCenterX + buttonHalfSize &&
                 relativeMouseY >= buttonCenterY - buttonHalfSize && relativeMouseY <= buttonCenterY + buttonHalfSize) {
                 m_CurrentState = State::GAME_PLAY;
-                m_LevelButton->SetVisible(false);
+                m_Button1->SetVisible(false);
                 m_LevelBackground->SetVisible(false);
                 return;
             }
@@ -103,7 +136,11 @@ void App::GamePlay() {
     if (m_CurrentState == State::GAME_PLAY) {
         m_TitleBackground->SetVisible(false);
         m_LevelBackground->SetVisible(false);
-        m_LevelButton->SetVisible(false);
+        m_Button1->SetVisible(false);
+        m_Button2->SetVisible(false);
+        m_Button3->SetVisible(false);
+        m_Button4->SetVisible(false);
+        m_Button5->SetVisible(false);
         m_Level1Background->SetVisible(true);
 
         if (Util::Input::IsKeyUp(Util::Keycode::ESCAPE) || Util::Input::IfExit()) {

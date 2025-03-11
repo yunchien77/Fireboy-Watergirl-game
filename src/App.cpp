@@ -3,134 +3,160 @@
 #include "Util/Input.hpp"
 #include "Util/Keycode.hpp"
 #include "Util/Logger.hpp"
-#include <memory>
-#include <SDL.h>
 #include "config.hpp"
+#include <SDL.h>
+#include <memory>
 
 App::App() {
-    LOG_DEBUG("Game Initialize");
+  LOG_TRACE("Game Initialize");
 
-    m_TitleBackground = std::make_shared<BackgroundImage>(
-        RESOURCE_DIR "/material/background/cover.png");
-    m_TitleBackground->SetVisible(false);
-    m_Root.AddChild(m_TitleBackground);
+  // 初始化背景
+  m_TitleBackground = std::make_shared<BackgroundImage>(
+      RESOURCE_DIR "/material/background/cover.png");
+  m_TitleBackground->SetVisible(false);
+  m_Root.AddChild(m_TitleBackground);
 
-    m_LevelBackground = std::make_shared<BackgroundImage>(
-        RESOURCE_DIR "/material/background/level-page.png");
-    m_LevelBackground->SetVisible(false);
-    m_Root.AddChild(m_LevelBackground);
+  m_LevelSelectBackground = std::make_shared<BackgroundImage>(
+      RESOURCE_DIR "/material/background/level-page.png");
+  m_LevelSelectBackground->SetVisible(false);
+  m_Root.AddChild(m_LevelSelectBackground);
 
-    m_LevelButton = std::make_shared<BackgroundImage>(
-        RESOURCE_DIR "/material/background/button/current-level.png");
-    m_LevelButton->SetPosition({0, -220});
-    m_LevelButton->SetVisible(false);
-    m_Root.AddChild(m_LevelButton);
+  // 創建關卡按鈕
+  // 第一關按鈕
+  m_Level1Button = std::make_shared<Button>(
+      RESOURCE_DIR "/material/background/button/current-level.png",
+      glm::vec2(0, -220));
+  m_Level1Button->SetVisible(false);
 
-    m_Level1Background = std::make_shared<BackgroundImage>(
-        RESOURCE_DIR "/material/background/level1.jpg");
-    m_Level1Background->SetVisible(false);
-    m_Root.AddChild(m_Level1Background);
+  // 設置按鈕點擊事件回調
+  m_Level1Button->SetOnClickCallback([this]() {
+    m_CurrentState = State::GAME_PLAY;
+    m_Level1Button->SetVisible(false);
+    m_Level2Button->SetVisible(false);
+    m_Level3Button->SetVisible(false);
+    m_Level4Button->SetVisible(false);
+    m_Level5Button->SetVisible(false);
+    m_BackButton->SetVisible(false);
+    m_LevelSelectBackground->SetVisible(false);
+    m_Level1Background->SetVisible(true);
+  });
 
-    m_Root.Update();
+  m_Root.AddChild(m_Level1Button);
+
+  // 第二關按鈕
+  m_Level2Button = std::make_shared<Button>(
+      RESOURCE_DIR "/material/background/button/unlevel.png",
+      glm::vec2(0, -102));
+  m_Level2Button->SetVisible(false);
+  m_Level2Button->SetInteractable(false); // 第二關不可互動
+
+  // 設置按鈕點擊事件回調
+  m_Level2Button->SetOnClickCallback([this]() {
+    m_CurrentState = State::GAME_PLAY;
+    m_Level1Button->SetVisible(false);
+    m_Level2Button->SetVisible(false);
+    m_Level3Button->SetVisible(false);
+    m_Level4Button->SetVisible(false);
+    m_Level5Button->SetVisible(false);
+    m_BackButton->SetVisible(false);
+    m_LevelSelectBackground->SetVisible(false);
+    m_Level2Background->SetVisible(true);
+  });
+
+  m_Root.AddChild(m_Level2Button);
+
+  // 第三關按鈕
+  m_Level3Button = std::make_shared<Button>(
+      RESOURCE_DIR "/material/background/button/unlevel.png", glm::vec2(0, 16));
+  m_Level3Button->SetVisible(false);
+  m_Level3Button->SetInteractable(false); // 第三關不可互動
+
+  // 設置按鈕點擊事件回調
+  m_Level3Button->SetOnClickCallback([this]() {
+    m_CurrentState = State::GAME_PLAY;
+    m_Level1Button->SetVisible(false);
+    m_Level2Button->SetVisible(false);
+    m_Level3Button->SetVisible(false);
+    m_Level4Button->SetVisible(false);
+    m_Level5Button->SetVisible(false);
+    m_BackButton->SetVisible(false);
+    m_LevelSelectBackground->SetVisible(false);
+    m_Level3Background->SetVisible(true);
+  });
+
+  m_Root.AddChild(m_Level3Button);
+
+  // 第四關按鈕
+  m_Level4Button = std::make_shared<Button>(
+      RESOURCE_DIR "/material/background/button/unlevel.png",
+      glm::vec2(0, 134));
+  m_Level4Button->SetVisible(false);
+  m_Level4Button->SetInteractable(false); // 第四關不可互動
+
+  // 設置按鈕點擊事件回調
+  m_Level4Button->SetOnClickCallback([this]() {
+    m_CurrentState = State::GAME_PLAY;
+    m_Level1Button->SetVisible(false);
+    m_Level2Button->SetVisible(false);
+    m_Level3Button->SetVisible(false);
+    m_Level4Button->SetVisible(false);
+    m_Level5Button->SetVisible(false);
+    m_BackButton->SetVisible(false);
+    m_LevelSelectBackground->SetVisible(false);
+    m_Level4Background->SetVisible(true);
+  });
+
+  m_Root.AddChild(m_Level4Button);
+
+  // 第五關按鈕
+  m_Level5Button = std::make_shared<Button>(
+      RESOURCE_DIR "/material/background/button/unlevel.png",
+      glm::vec2(0, 252));
+  m_Level5Button->SetVisible(false);
+  m_Level5Button->SetInteractable(false); // 第五關不可互動
+
+  // 設置按鈕點擊事件回調
+  m_Level5Button->SetOnClickCallback([this]() {
+    m_CurrentState = State::GAME_PLAY;
+    m_Level1Button->SetVisible(false);
+    m_Level2Button->SetVisible(false);
+    m_Level3Button->SetVisible(false);
+    m_Level4Button->SetVisible(false);
+    m_Level5Button->SetVisible(false);
+    m_LevelSelectBackground->SetVisible(false);
+    m_Level5Background->SetVisible(true);
+  });
+
+  m_Root.AddChild(m_Level5Button);
+
+  // 返回按鈕
+  m_BackButton = std::make_shared<Button>(
+      RESOURCE_DIR "/material/background/button/back-button.png",
+      glm::vec2(-450, -250));
+  m_BackButton->SetVisible(false);
+
+  // 設置按鈕點擊事件回調
+  m_BackButton->SetOnClickCallback([this]() {
+    m_CurrentState = State::START;
+    m_Level1Button->SetVisible(false);
+    m_Level2Button->SetVisible(false);
+    m_Level3Button->SetVisible(false);
+    m_Level4Button->SetVisible(false);
+    m_Level5Button->SetVisible(false);
+    m_BackButton->SetVisible(false);
+    m_LevelSelectBackground->SetVisible(false);
+  });
+
+  m_Root.AddChild(m_BackButton);
+
+  // 創建關卡背景
+  // 第一關背景
+  m_Level1Background = std::make_shared<BackgroundImage>(
+      RESOURCE_DIR "/material/background/level1.jpg");
+  m_Level1Background->SetVisible(false);
+  m_Root.AddChild(m_Level1Background);
+
+  m_Root.Update();
 }
 
-void App::Start() {
-    LOG_TRACE("Start");
-    m_TitleBackground->SetVisible(true);
-
-    if (Util::Input::IsKeyPressed(Util::Keycode::RETURN)) {
-        m_CurrentState = State::LEVEL_SELECT;
-    }
-
-    if (Util::Input::IsKeyUp(Util::Keycode::ESCAPE) || Util::Input::IfExit()) {
-        m_CurrentState = State::END;
-    }
-
-    m_Root.Update();
-}
-
-void App::LevelSelect() {
-    LOG_TRACE("LevelSelect");
-    m_LevelButton->SetVisible(true);
-
-    int buttonCenterX = 0;
-    int buttonCenterY = -220;
-    int buttonHalfSize = 85;
-
-    if (m_CurrentState == State::LEVEL_SELECT) {
-        m_TitleBackground->SetVisible(false);
-        m_LevelBackground->SetVisible(true);
-        m_LevelButton->SetVisible(true);
-
-
-        int mouseX, mouseY;
-        Uint32 mouseState = SDL_GetMouseState(&mouseX, &mouseY);
-
-
-        int windowWidth = WINDOW_WIDTH;
-        int windowHeight = WINDOW_HEIGHT;
-        SDL_Window* window = SDL_GL_GetCurrentWindow();
-        SDL_Renderer* renderer = SDL_GetRenderer(window);
-        SDL_Rect viewport;
-        SDL_RenderGetViewport(renderer, &viewport);
-        SDL_GetWindowSize(window, &windowWidth, &windowHeight);
-        int relativeMouseX = mouseX - (windowWidth / 2);
-        int relativeMouseY = (windowHeight / 2) - mouseY;
-
-
-        if (mouseState & SDL_BUTTON(SDL_BUTTON_LEFT)) {
-
-            if (relativeMouseX >= buttonCenterX - buttonHalfSize && relativeMouseX <= buttonCenterX + buttonHalfSize &&
-                relativeMouseY >= buttonCenterY - buttonHalfSize && relativeMouseY <= buttonCenterY + buttonHalfSize) {
-                m_CurrentState = State::GAME_PLAY;
-                m_LevelButton->SetVisible(false);
-                m_LevelBackground->SetVisible(false);
-                return;
-            }
-        }
-
-        if (Util::Input::IsKeyUp(Util::Keycode::ESCAPE) || Util::Input::IfExit()) {
-            m_CurrentState = State::END;
-        }
-    }
-    m_Root.Update();
-}
-
-
-void App::GamePlay() {
-    LOG_TRACE("GamePlay");
-
-    if (m_CurrentState == State::GAME_PLAY) {
-        m_TitleBackground->SetVisible(false);
-        m_LevelBackground->SetVisible(false);
-        m_LevelButton->SetVisible(false);
-        m_Level1Background->SetVisible(true);
-
-        if (Util::Input::IsKeyUp(Util::Keycode::ESCAPE) || Util::Input::IfExit()) {
-            m_CurrentState = State::END;
-        }
-    }
-
-    m_Root.Update();
-}
-
-void App::GameOver() {
-    LOG_TRACE("GameOver");
-    if (Util::Input::IsKeyUp(Util::Keycode::ESCAPE) || Util::Input::IfExit()) {
-        m_CurrentState = State::END;
-    }
-    m_Root.Update();
-}
-
-void App::GameWin() {
-    LOG_TRACE("GameWin");
-    if (Util::Input::IsKeyUp(Util::Keycode::ESCAPE) || Util::Input::IfExit()) {
-        m_CurrentState = State::END;
-    }
-    m_Root.Update();
-}
-
-void App::End() {
-    LOG_TRACE("開始 - End");
-    LOG_TRACE("結束 - End");
-}
+void App::End() { LOG_TRACE("Game End"); }

@@ -2,6 +2,7 @@
 #define APP_HPP
 
 #include "BackgroundImage.hpp"
+#include "Button.hpp"
 #include "Util/GameObject.hpp"
 #include "Util/Image.hpp"
 #include "Util/Renderer.hpp"
@@ -43,10 +44,34 @@ private:
   int m_CurrentLevel = 0;          // 遊戲關卡
   bool m_IsLevelCompleted = false; // 關卡結束與否
 
-  std::shared_ptr<BackgroundImage> m_TitleBackground;
-  std::shared_ptr<BackgroundImage> m_LevelBackground;
+  std::shared_ptr<BackgroundImage> m_TitleBackground; // 遊戲封面背景
+  std::shared_ptr<BackgroundImage> m_LevelSelectBackground; // 關卡選擇背景
+
+  std::shared_ptr<Button> m_Level1Button; // 第一關按鈕
+  std::shared_ptr<Button> m_Level2Button; // 第二關按鈕
+  std::shared_ptr<Button> m_Level3Button; // 第三關按鈕
+  std::shared_ptr<Button> m_Level4Button; // 第四關按鈕
+  std::shared_ptr<Button> m_Level5Button; // 第五關按鈕
+  std::shared_ptr<Button> m_BackButton;   // 返回按鈕
+
+  std::shared_ptr<BackgroundImage> m_Level1Background; // 第一關背景
+  std::shared_ptr<BackgroundImage> m_Level2Background; // 第二關背景
+  std::shared_ptr<BackgroundImage> m_Level3Background; // 第三關背景
+  std::shared_ptr<BackgroundImage> m_Level4Background; // 第四關背景
+  std::shared_ptr<BackgroundImage> m_Level5Background; // 第五關背景
 
   Util::Renderer m_Root;
+
+  // 轉換滑鼠座標從窗口座標到游戲座標
+  glm::vec2 ConvertToGameCoordinates(int screenX, int screenY) {
+    int windowWidth, windowHeight;
+    SDL_Window *window = SDL_GL_GetCurrentWindow();
+    SDL_GetWindowSize(window, &windowWidth, &windowHeight);
+
+    return glm::vec2(screenX - (windowWidth / 2), // 中心化X座標
+                     (windowHeight / 2) - screenY // 中心化並翻轉Y座標
+    );
+  }
 };
 
 #endif

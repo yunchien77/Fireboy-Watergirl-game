@@ -8,9 +8,9 @@
 #include <memory>
 
 void App::GameWin() {
-    LOG_TRACE("Game Win");
-    if (Util::Input::IsKeyUp(Util::Keycode::ESCAPE) || Util::Input::IfExit()) {
-        m_CurrentState = State::END;
-    }
-    m_Root.Update();
+  LOG_TRACE("Game Win");
+  if (Util::Input::IsKeyUp(Util::Keycode::ESCAPE) || Util::Input::IfExit()) {
+    m_CurrentState = State::END;
+  }
+  m_Root.Update();
 }

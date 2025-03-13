@@ -8,16 +8,16 @@
 #include <memory>
 
 void App::Start() {
-    LOG_TRACE("Start");
-    m_TitleBackground->SetVisible(true);
+  LOG_TRACE("Start");
+  m_TitleBackground->SetVisible(true);
 
-    if (Util::Input::IsKeyPressed(Util::Keycode::RETURN)) {
-        m_CurrentState = State::LEVEL_SELECT;
-    }
+  if (Util::Input::IsKeyPressed(Util::Keycode::RETURN)) {
+    m_CurrentState = State::LEVEL_SELECT;
+  }
 
-    if (Util::Input::IsKeyUp(Util::Keycode::ESCAPE) || Util::Input::IfExit()) {
-        m_CurrentState = State::END;
-    }
+  if (Util::Input::IsKeyUp(Util::Keycode::ESCAPE) || Util::Input::IfExit()) {
+    m_CurrentState = State::END;
+  }
 
-    m_Root.Update();
+  m_Root.Update();
 }

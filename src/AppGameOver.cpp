@@ -8,9 +8,9 @@
 #include <memory>
 
 void App::GameOver() {
-    LOG_TRACE("Game Over");
-    if (Util::Input::IsKeyUp(Util::Keycode::ESCAPE) || Util::Input::IfExit()) {
-        m_CurrentState = State::END;
-    }
-    m_Root.Update();
+  LOG_TRACE("Game Over");
+  if (Util::Input::IsKeyUp(Util::Keycode::ESCAPE) || Util::Input::IfExit()) {
+    m_CurrentState = State::END;
+  }
+  m_Root.Update();
 }

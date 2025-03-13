@@ -2,13 +2,14 @@
 #define APP_HPP
 
 #include "BackgroundImage.hpp"
-#include "Character.hpp"
 #include "Button.hpp"
+#include "Character.hpp"
 #include "Util/GameObject.hpp"
 #include "Util/Image.hpp"
 #include "Util/Renderer.hpp"
 #include "pch.hpp" // IWYU pragma: export
 #include <memory>
+
 
 class App {
 public:

@@ -1,11 +1,12 @@
 #include "App.hpp"
-#include "Fireboy.hpp"
+#include "Character/Fireboy.hpp"
+#include "Character/Watergirl.hpp"
 #include "Util/Input.hpp"
 #include "Util/Keycode.hpp"
 #include "Util/Logger.hpp"
-#include "Watergirl.hpp"
 #include "config.hpp"
 #include <memory>
+
 
 const int LEVEL_MIN_X = -430;
 const int LEVEL_MAX_X = 425;

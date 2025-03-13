@@ -5,11 +5,11 @@
 
 class Watergirl : public Character {
 public:
-    explicit Watergirl();
-    void UpdateAnimation() override;
+  explicit Watergirl();
+  void UpdateAnimation() override;
 
 private:
-    int animationFrame;
+  int animationFrame;
 };
 
 #endif // WATERGIRL_HPP

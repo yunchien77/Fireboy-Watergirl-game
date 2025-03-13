@@ -5,11 +5,11 @@
 
 class Fireboy : public Character {
 public:
-    explicit Fireboy();
-    void UpdateAnimation() override;
+  explicit Fireboy();
+  void UpdateAnimation() override;
 
 private:
-    int animationFrame;
+  int animationFrame;
 };
 
 #endif // FIREBOY_HPP

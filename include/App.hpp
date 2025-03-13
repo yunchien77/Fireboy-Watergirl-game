@@ -3,11 +3,13 @@
 
 #include "BackgroundImage.hpp"
 #include "Button.hpp"
+#include "Character.hpp"
 #include "Util/GameObject.hpp"
 #include "Util/Image.hpp"
 #include "Util/Renderer.hpp"
 #include "pch.hpp" // IWYU pragma: export
 #include <memory>
+
 
 class App {
 public:
@@ -41,8 +43,8 @@ private:
 
 private:
   State m_CurrentState = State::START;
-  int m_CurrentLevel = 0;          // 遊戲關卡
-  bool m_IsLevelCompleted = false; // 關卡結束與否
+  int m_CurrentLevel = 0;
+  bool m_IsLevelCompleted = false;
 
   std::shared_ptr<BackgroundImage> m_TitleBackground; // 遊戲封面背景
   std::shared_ptr<BackgroundImage> m_LevelSelectBackground; // 關卡選擇背景
@@ -59,6 +61,9 @@ private:
   std::shared_ptr<BackgroundImage> m_Level3Background; // 第三關背景
   std::shared_ptr<BackgroundImage> m_Level4Background; // 第四關背景
   std::shared_ptr<BackgroundImage> m_Level5Background; // 第五關背景
+
+  std::shared_ptr<Character> m_Fireboy;
+  std::shared_ptr<Character> m_Watergirl;
 
   Util::Renderer m_Root;
 

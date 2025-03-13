@@ -35,6 +35,15 @@ add_executable(${PROJECT_NAME}
     ${SRC_DIR}/main.cpp
     ${SRC_FILES}
     ${HEADER_FILES}
+        include/Watergirl.hpp
+        include/Fireboy.hpp
+        src/AppGameOver.cpp
+        src/AppGamePlay.cpp
+        src/AppGameWin.cpp
+        src/AppLevelSelect.cpp
+        src/AppStart.cpp
+        src/Fireboy.cpp
+        src/Watergirl.cpp
 )
 
 if(MSVC)

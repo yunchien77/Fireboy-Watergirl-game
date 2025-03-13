@@ -15,7 +15,11 @@ public:
         m_Height = GetHeight();
     }
 
-    void SetPosition(const glm::vec2& Position) { m_Transform.translation = Position; }
+    void SetPosition(const glm::vec2& Position) {
+        m_Transform.translation = Position;
+        m_X = Position.x;
+        m_Y = Position.y;
+    }
     int GetX() const { return m_X; }
     int GetY() const { return m_Y; }
     int GetWidth() const { return m_Width; }

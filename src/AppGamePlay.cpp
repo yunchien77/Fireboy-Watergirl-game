@@ -7,9 +7,8 @@
 #include "config.hpp"
 #include <memory>
 
-
-const int LEVEL_MIN_X = -445;
-const int LEVEL_MAX_X = 435;
+const int LEVEL_MIN_X = -430;
+const int LEVEL_MAX_X = 425;
 const int LEVEL_MIN_Y = -288;
 const int LEVEL_MAX_Y = 315;
 
@@ -43,27 +42,31 @@ void App::GamePlay() {
     m_Root.AddChild(m_Watergirl);
   }
 
-  int fireboyMoveX = 0, fireboyMoveY = 0;
+  int fireboyMoveX = 0;
+  bool fireboyUpKeyPressed = false;
   if (Util::Input::IsKeyPressed(Util::Keycode::LEFT))
     fireboyMoveX = -5;
   if (Util::Input::IsKeyPressed(Util::Keycode::RIGHT))
     fireboyMoveX = 5;
-  if (Util::Input::IsKeyPressed(Util::Keycode::UP))
-    fireboyMoveY = 5;
+  if (Util::Input::IsKeyPressed(Util::Keycode::UP)) {
+    fireboyUpKeyPressed = true;
+  }
 
-  m_Fireboy->Move(fireboyMoveX, fireboyMoveY);
+  m_Fireboy->Move(fireboyMoveX, fireboyUpKeyPressed);
   m_Fireboy->UpdateJump();
   RestrictPlayerPosition(*m_Fireboy);
 
-  int watergirlMoveX = 0, watergirlMoveY = 0;
+  int watergirlMoveX = 0;
+  bool watergirlUpKeyPressed = false;
   if (Util::Input::IsKeyPressed(Util::Keycode::A))
     watergirlMoveX = -5;
   if (Util::Input::IsKeyPressed(Util::Keycode::D))
     watergirlMoveX = 5;
-  if (Util::Input::IsKeyPressed(Util::Keycode::W))
-    watergirlMoveY = 5;
+  if (Util::Input::IsKeyPressed(Util::Keycode::W)) {
+    watergirlUpKeyPressed = true;
+  }
 
-  m_Watergirl->Move(watergirlMoveX, watergirlMoveY);
+  m_Watergirl->Move(watergirlMoveX, watergirlUpKeyPressed);
   m_Watergirl->UpdateJump();
   RestrictPlayerPosition(*m_Watergirl);
 

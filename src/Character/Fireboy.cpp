@@ -1,4 +1,4 @@
-#include "Fireboy.hpp"
+#include "Character/Fireboy.hpp"
 #include "config.hpp"
 
 Fireboy::Fireboy()

@@ -1,4 +1,4 @@
-#include "Watergirl.hpp"
+#include "Character/Watergirl.hpp"
 #include "config.hpp"
 
 Watergirl::Watergirl()

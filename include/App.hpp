@@ -4,11 +4,13 @@
 #include "BackgroundImage.hpp"
 #include "Button.hpp"
 #include "Character/Character.hpp"
+#include "GridSystem.hpp"
 #include "Util/GameObject.hpp"
 #include "Util/Image.hpp"
 #include "Util/Renderer.hpp"
 #include "pch.hpp" // IWYU pragma: export
 #include <memory>
+#include <string>
 
 class App {
 public:
@@ -37,12 +39,21 @@ public:
 
   void End(); // NOLINT(readability-convert-member-functions-to-static)
 
+  // 載入關卡的網格檔案
+  bool LoadLevelGrid(int levelNumber);
+
+  // 取得格子系統
+  GridSystem &GetGridSystem() { return m_GridSystem; }
+
+  // 檢查角色碰撞
+  bool CheckCharacterCollision(const glm::vec2 &position, bool isFireboy);
+
 private:
   void ValidTask();
 
 private:
   State m_CurrentState = State::START;
-  int m_CurrentLevel = 0;
+  int m_CurrentLevel = 1;
   bool m_IsLevelCompleted = false;
 
   std::shared_ptr<BackgroundImage> m_TitleBackground; // 遊戲封面背景
@@ -63,6 +74,10 @@ private:
 
   std::shared_ptr<Character> m_Fireboy;
   std::shared_ptr<Character> m_Watergirl;
+
+  // 網格系統
+  GridSystem m_GridSystem;
+  bool m_IsGridLoaded = false;
 
   Util::Renderer m_Root;
 

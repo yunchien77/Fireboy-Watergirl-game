@@ -5,41 +5,122 @@
 #include "Util/Keycode.hpp"
 #include "Util/Logger.hpp"
 #include "config.hpp"
+#include <iostream>
 #include <memory>
 
+// 載入地圖網格
+bool App::LoadLevelGrid(int levelNumber) {
+  std::string gridFilePath =
+      RESOURCE_DIR "/map/level" + std::to_string(levelNumber) + "_grid.txt";
+  bool success = m_GridSystem.LoadFromFile(gridFilePath);
 
-const int LEVEL_MIN_X = -430;
-const int LEVEL_MAX_X = 425;
-const int LEVEL_MIN_Y = -288;
-const int LEVEL_MAX_Y = 315;
+  if (success) {
+    m_IsGridLoaded = true;
+    LOG_INFO("Successfully loaded grid for level {}", levelNumber);
+  } else {
+    LOG_ERROR("Failed to load grid for level {}", levelNumber);
+    // 如果沒有格子檔案，創建一個預設的空格子
+    m_GridSystem = GridSystem();
+    m_IsGridLoaded = false;
+  }
 
-void RestrictPlayerPosition(Character &player) {
+  return success;
+}
+
+// 檢查角色碰撞
+bool App::CheckCharacterCollision(const glm::vec2 &position, bool isFireboy) {
+  if (!m_IsGridLoaded) {
+    return false; // 如果網格未載入，默認無碰撞
+  }
+
+  return m_GridSystem.CheckCollision(position, isFireboy);
+}
+
+// 限制玩家在地圖邊界內
+void RestrictPlayerPosition(Character &player, App &app, bool isFireboy) {
   glm::vec2 pos = player.GetPosition();
+  glm::vec2 newPos = pos;
 
-  if (pos.x < LEVEL_MIN_X)
-    pos.x = LEVEL_MIN_X;
-  if (pos.x > LEVEL_MAX_X)
-    pos.x = LEVEL_MAX_X;
-  if (pos.y < LEVEL_MIN_Y)
-    pos.y = LEVEL_MIN_Y;
-  if (pos.y > LEVEL_MAX_Y)
-    pos.y = LEVEL_MAX_Y;
+  // 取得網格系統的邊界
+  GridSystem &grid = app.GetGridSystem();
+  float minX = grid.GetMinX();
+  float maxX = grid.GetMaxX();
+  float minY = grid.GetMinY();
+  float maxY = grid.GetMaxY();
 
-  player.SetPosition(pos);
+  // 限制玩家在地圖邊界內
+  bool positionChanged = false;
+  if (pos.x < minX) {
+    newPos.x = minX;
+    positionChanged = true;
+  }
+  if (pos.x > maxX) {
+    newPos.x = maxX;
+    positionChanged = true;
+  }
+  if (pos.y < minY) {
+    newPos.y = minY;
+    positionChanged = true;
+  }
+  if (pos.y > maxY) {
+    newPos.y = maxY;
+    positionChanged = true;
+  }
+
+  // 只有當位置被邊界限制調整了，才需要再次檢查碰撞
+  if (positionChanged && app.CheckCharacterCollision(newPos, isFireboy)) {
+    // 當邊界調整後位置產生碰撞，找尋安全位置
+    // 簡單解決方案：稍微向內移動到無碰撞位置
+    glm::vec2 safePos = newPos;
+    float adjustment = grid.GetCellSize() / 2.0f;
+
+    // 嘗試向中心點方向移動
+    if (newPos.x == minX)
+      safePos.x += adjustment;
+    else if (newPos.x == maxX)
+      safePos.x -= adjustment;
+
+    if (newPos.y == minY)
+      safePos.y += adjustment;
+    else if (newPos.y == maxY)
+      safePos.y -= adjustment;
+
+    // 如果調整後仍有碰撞，則至少確保在邊界內
+    if (app.CheckCharacterCollision(safePos, isFireboy)) {
+      player.SetPosition(newPos); // 至少保持在邊界內
+    } else {
+      player.SetPosition(safePos);
+    }
+  } else {
+    // 處理一般的移動碰撞
+    if (app.CheckCharacterCollision(newPos, isFireboy)) {
+      // 保持原位置，但確保仍在邊界內
+      player.SetPosition(newPos);
+    } else {
+      player.SetPosition(newPos);
+    }
+  }
 }
 
 void App::GamePlay() {
   LOG_TRACE("Game Play");
 
+  // 確保地圖網格系統已經載入
+  if (!m_IsGridLoaded) {
+    LoadLevelGrid(m_CurrentLevel);
+  }
+
   if (!m_Fireboy) {
     m_Fireboy = std::make_shared<Fireboy>();
-    m_Fireboy->SetPosition({-420, -288});
+    glm::vec2 fireboyInitPos = m_GridSystem.CellToGamePosition(1, 27);
+    m_Fireboy->SetPosition(fireboyInitPos);
     m_Root.AddChild(m_Fireboy);
   }
 
   if (!m_Watergirl) {
     m_Watergirl = std::make_shared<Watergirl>();
-    m_Watergirl->SetPosition({-420, -193});
+    glm::vec2 watergirlInitPos = m_GridSystem.CellToGamePosition(1, 23);
+    m_Watergirl->SetPosition(watergirlInitPos);
     m_Root.AddChild(m_Watergirl);
   }
 
@@ -55,7 +136,7 @@ void App::GamePlay() {
 
   m_Fireboy->Move(fireboyMoveX, fireboyUpKeyPressed);
   m_Fireboy->UpdateJump();
-  RestrictPlayerPosition(*m_Fireboy);
+  RestrictPlayerPosition(*m_Fireboy, *this, true);
 
   int watergirlMoveX = 0;
   bool watergirlUpKeyPressed = false;
@@ -69,7 +150,7 @@ void App::GamePlay() {
 
   m_Watergirl->Move(watergirlMoveX, watergirlUpKeyPressed);
   m_Watergirl->UpdateJump();
-  RestrictPlayerPosition(*m_Watergirl);
+  RestrictPlayerPosition(*m_Watergirl, *this, false);
 
   if (Util::Input::IsKeyUp(Util::Keycode::ESCAPE) || Util::Input::IfExit()) {
     m_CurrentState = State::END;

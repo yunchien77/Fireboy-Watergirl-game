@@ -83,16 +83,16 @@ public:
 
       // 上升階段
       if (m_JumpHeight < m_JumpMaxHeight) {
-        pos.y += 5; // 向上移動的速度
-        m_JumpHeight += 5;
+        pos.y += 7; // 向上移動的速度
+        m_JumpHeight += 7;
       }
       // 下降階段
       else {
         pos.y -= 5; // 向下移動的速度
 
         // 檢查是否到達地面
-        if (pos.y <= -288) { // LEVEL_MIN_Y 值
-          pos.y = -288;
+        if (pos.y <= -312) {
+          pos.y = -312;
           m_IsJumping = false;
           m_JumpHeight = 0;
           m_IsOnGround = true;

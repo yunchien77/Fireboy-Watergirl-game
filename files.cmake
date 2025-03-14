@@ -8,6 +8,7 @@ set(SRC_FILES
     Game/AppGameOver.cpp
     Character/Fireboy.cpp
     Character/Watergirl.cpp
+    GridSystem.cpp
 )
 
 set(INCLUDE_FILES
@@ -17,6 +18,7 @@ set(INCLUDE_FILES
     Character/Character.hpp
     Character/Fireboy.hpp
     Character/Watergirl.hpp
+    GridSystem.hpp
 )
 
 set(TEST_FILES

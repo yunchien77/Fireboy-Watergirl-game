@@ -152,7 +152,7 @@ App::App() {
   // 創建關卡背景
   // 第一關背景
   m_Level1Background = std::make_shared<BackgroundImage>(
-      RESOURCE_DIR "/material/background/level1.jpg");
+      RESOURCE_DIR "/material/background/rlevel3.png");
   m_Level1Background->SetVisible(false);
   m_Root.AddChild(m_Level1Background);
 

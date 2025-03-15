@@ -102,6 +102,48 @@ void RestrictPlayerPosition(Character &player, App &app, bool isFireboy) {
   }
 }
 
+// (Debug)
+std::string CellTypeToString(CellType type) {
+  switch (type) {
+  case CellType::EMPTY:
+    return "EMPTY";
+  case CellType::FLOOR:
+    return "FLOOR";
+  case CellType::WALL:
+    return "WALL";
+  case CellType::DOOR_FIRE:
+    return "DOOR_FIRE";
+  case CellType::DOOR_WATER:
+    return "DOOR_WATER";
+  case CellType::GEM_FIRE:
+    return "GEM_FIRE";
+  case CellType::GEM_WATER:
+    return "GEM_WATER";
+  case CellType::GEM_GREEN:
+    return "GEM_GREEN";
+  case CellType::LAVA:
+    return "LAVA";
+  case CellType::WATER:
+    return "WATER";
+  case CellType::POISON:
+    return "POISON";
+  case CellType::BUTTON:
+    return "BUTTON";
+  case CellType::LEVER:
+    return "LEVER";
+  case CellType::PLATFORM:
+    return "PLATFORM";
+  case CellType::FAN:
+    return "FAN";
+  case CellType::BOX:
+    return "BOX";
+  case CellType::STONE:
+    return "STONE";
+  default:
+    return "UNKNOWN";
+  }
+}
+
 void App::GamePlay() {
   LOG_TRACE("Game Play");
 
@@ -112,17 +154,23 @@ void App::GamePlay() {
 
   if (!m_Fireboy) {
     m_Fireboy = std::make_shared<Fireboy>();
-    glm::vec2 fireboyInitPos = m_GridSystem.CellToGamePosition(1, 27);
-    m_Fireboy->SetPosition(fireboyInitPos);
+    // glm::vec2 fireboyInitPos = m_GridSystem.CellToGamePosition(1, 27);
+    // m_Fireboy->SetPosition(fireboyInitPos);
+    m_Fireboy->SetPosition(glm::vec2(-420, -308));
     m_Root.AddChild(m_Fireboy);
   }
 
   if (!m_Watergirl) {
     m_Watergirl = std::make_shared<Watergirl>();
-    glm::vec2 watergirlInitPos = m_GridSystem.CellToGamePosition(1, 23);
-    m_Watergirl->SetPosition(watergirlInitPos);
+    // glm::vec2 watergirlInitPos = m_GridSystem.CellToGamePosition(1, 23);
+    // m_Watergirl->SetPosition(watergirlInitPos);
+    m_Watergirl->SetPosition(glm::vec2(-420, -208));
     m_Root.AddChild(m_Watergirl);
   }
+
+  // 記錄先前的位置，用於檢測移動
+  static glm::vec2 prevFireboyPos = m_Fireboy->GetPosition();
+  static glm::vec2 prevWatergirlPos = m_Watergirl->GetPosition();
 
   int fireboyMoveX = 0;
   bool fireboyUpKeyPressed = false;
@@ -151,6 +199,33 @@ void App::GamePlay() {
   m_Watergirl->Move(watergirlMoveX, watergirlUpKeyPressed);
   m_Watergirl->UpdateJump();
   RestrictPlayerPosition(*m_Watergirl, *this, false);
+
+  glm::vec2 fireboyPos = m_Fireboy->GetPosition();
+  if (fireboyPos != prevFireboyPos) {
+    glm::ivec2 fireboyCell = m_GridSystem.GameToCellPosition(fireboyPos);
+    CellType fireboyCurrentCell =
+        m_GridSystem.GetCell(fireboyCell.x, fireboyCell.y);
+    std::cout << "Fireboy Position: (" << fireboyPos.x << ", " << fireboyPos.y
+              << ") | "
+              << "Cell: (" << fireboyCell.x << ", " << fireboyCell.y << ") | "
+              << "Type: " << CellTypeToString(fireboyCurrentCell) << std::endl;
+    prevFireboyPos = fireboyPos;
+  }
+
+  // 如果水女移動了且按下了按鍵，顯示其位置和格子信息
+  glm::vec2 watergirlPos = m_Watergirl->GetPosition();
+  if (watergirlPos != prevWatergirlPos) {
+    glm::ivec2 watergirlCell = m_GridSystem.GameToCellPosition(watergirlPos);
+    CellType watergirlCurrentCell =
+        m_GridSystem.GetCell(watergirlCell.x, watergirlCell.y);
+    std::cout << "Watergirl Position: (" << watergirlPos.x << ", "
+              << watergirlPos.y << ") | "
+              << "Cell: (" << watergirlCell.x << ", " << watergirlCell.y
+              << ") | "
+              << "Type: " << CellTypeToString(watergirlCurrentCell)
+              << std::endl;
+    prevWatergirlPos = watergirlPos;
+  }
 
   if (Util::Input::IsKeyUp(Util::Keycode::ESCAPE) || Util::Input::IfExit()) {
     m_CurrentState = State::END;

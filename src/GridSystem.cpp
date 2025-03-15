@@ -65,9 +65,9 @@ glm::vec2 GridSystem::CellToGamePosition(int gridX, int gridY) const {
   float worldX = -halfWidth + (gridX * m_CellSize) + (m_CellSize / 2.0f);
 
   // y值從上往下遞增，所以需要反轉y軸
-  float worldY = halfHeight - (gridY * m_CellSize) - (m_CellSize / 2.0f);
-  // float worldY =halfHeight - (gridY * m_CellSize) - m_CellSize; //
-  // 改為回傳底部中心點
+  // float worldY = halfHeight - (gridY * m_CellSize) - (m_CellSize / 2.0f);
+  float worldY =
+      halfHeight - (gridY * m_CellSize) - m_CellSize; // 改為回傳底部中心點
 
   return glm::vec2(worldX, worldY);
 }

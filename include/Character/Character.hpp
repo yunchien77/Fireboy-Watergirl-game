@@ -11,7 +11,10 @@ public:
       : GameObject(std::make_shared<Util::Image>(imagePath), 10),
         m_ImagePath(imagePath), isMoving(false), currentSprite(false),
         m_IsJumping(false), m_JumpHeight(0), m_JumpMaxHeight(50),
-        m_IsOnGround(true), m_UpKeyWasPressed(false), m_FacingRight(true) {}
+        m_IsOnGround(true), m_UpKeyWasPressed(false), m_FacingRight(true) {
+    // // 設置錨點為底部中心
+    // SetPivot(glm::vec2(1.0f, -5.0f));
+  }
 
   Character(const Character &) = delete;
   Character(Character &&) = delete;

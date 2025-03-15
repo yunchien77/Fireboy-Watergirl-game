@@ -9,15 +9,21 @@ enum class CellType {
   EMPTY,      // 空的區域，可以通過
   FLOOR,      // 地板
   WALL,       // 牆壁
-  LAVA,       // 岩漿
-  WATER,      // 水池
-  BUTTON,     // 按鈕
   DOOR_FIRE,  // 火門
   DOOR_WATER, // 水門
-  LEVER,      // 拉桿
-  PLATFORM,   // 平台
   GEM_FIRE,   // 火寶石
   GEM_WATER,  // 水寶石
+  GEM_GREEN,  // 綠寶石
+  LAVA,       // 岩漿
+  WATER,      // 水池
+  POISON,     // 毒池
+  BUTTON,     // 按鈕
+  LEVER,      // 拉桿
+  PLATFORM,   // 平台
+  FAN,        // 風扇
+  BOX,        // 箱子
+  STONE,      // 小石子
+
 };
 
 class GridSystem {

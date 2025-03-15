@@ -10,7 +10,7 @@ void Watergirl::UpdateAnimation() {
     SetImage(RESOURCE_DIR "/material/character/watergirl-front.png");
     animationFrame = 0;
   } else if (isMoving) {
-    if (animationFrame % 5 == 0) {
+    if (animationFrame % 12 == 0) {
       if (currentSprite) {
         SetImage(RESOURCE_DIR "/material/character/watergirl-side-run.png");
       } else {

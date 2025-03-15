@@ -86,8 +86,8 @@ public:
 
       // 上升階段
       if (m_JumpHeight < m_JumpMaxHeight) {
-        pos.y += 7; // 向上移動的速度
-        m_JumpHeight += 7;
+        pos.y += 25; // 向上移動的速度
+        m_JumpHeight += 15;
       }
       // 下降階段
       else {

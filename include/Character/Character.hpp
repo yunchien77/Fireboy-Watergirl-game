@@ -12,8 +12,12 @@ public:
         m_ImagePath(imagePath), isMoving(false), currentSprite(false),
         m_IsJumping(false), m_JumpHeight(0), m_JumpMaxHeight(50),
         m_IsOnGround(true), m_UpKeyWasPressed(false), m_FacingRight(true) {
-    // // 設置錨點為底部中心
-    // SetPivot(glm::vec2(1.0f, -5.0f));
+
+    glm::vec2 size = GetScaledSize();
+    SetPivot(glm::vec2(
+        0.0f,
+        -size.y / 2 +
+            12.5)); // 12.5是格子的一半(原本預設圖片錨點在圖片中心)，讓角色可以顯示在陸地上
   }
 
   Character(const Character &) = delete;
@@ -43,7 +47,7 @@ public:
     m_Transform.translation = position;
   }
 
-  // 處理角色移動，接收 X 和 Y 方向的變化值
+  // 處理角色移動
   void Move(int deltaX, bool upKeyPressed) {
     isMoving = (deltaX != 0);
 

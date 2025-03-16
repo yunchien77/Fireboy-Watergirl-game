@@ -154,17 +154,15 @@ void App::GamePlay() {
 
   if (!m_Fireboy) {
     m_Fireboy = std::make_shared<Fireboy>();
-    // glm::vec2 fireboyInitPos = m_GridSystem.CellToGamePosition(1, 27);
-    // m_Fireboy->SetPosition(fireboyInitPos);
-    m_Fireboy->SetPosition(glm::vec2(-420, -308));
+    glm::vec2 fireboyInitPos = m_GridSystem.CellToGamePosition(1, 27);
+    m_Fireboy->SetPosition(fireboyInitPos);
     m_Root.AddChild(m_Fireboy);
   }
 
   if (!m_Watergirl) {
     m_Watergirl = std::make_shared<Watergirl>();
-    // glm::vec2 watergirlInitPos = m_GridSystem.CellToGamePosition(1, 23);
-    // m_Watergirl->SetPosition(watergirlInitPos);
-    m_Watergirl->SetPosition(glm::vec2(-420, -208));
+    glm::vec2 watergirlInitPos = m_GridSystem.CellToGamePosition(1, 23);
+    m_Watergirl->SetPosition(watergirlInitPos);
     m_Root.AddChild(m_Watergirl);
   }
 

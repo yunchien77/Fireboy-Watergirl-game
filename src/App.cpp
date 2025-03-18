@@ -3,9 +3,11 @@
 #include "Util/Input.hpp"
 #include "Util/Keycode.hpp"
 #include "Util/Logger.hpp"
+#include "LevelData.hpp"
 #include "config.hpp"
 #include <SDL.h>
 #include <memory>
+
 
 App::App() {
   LOG_TRACE("Game Initialize");
@@ -152,7 +154,7 @@ App::App() {
   // 創建關卡背景
   // 第一關背景
   m_Level1Background = std::make_shared<BackgroundImage>(
-      RESOURCE_DIR "/material/background/level1.jpg");
+      RESOURCE_DIR "/material/background/rlevel1.png");
   m_Level1Background->SetVisible(false);
   m_Root.AddChild(m_Level1Background);
 

@@ -11,7 +11,14 @@ public:
       : GameObject(std::make_shared<Util::Image>(imagePath), 10),
         m_ImagePath(imagePath), isMoving(false), currentSprite(false),
         m_IsJumping(false), m_JumpHeight(0), m_JumpMaxHeight(50),
-        m_IsOnGround(true), m_UpKeyWasPressed(false), m_FacingRight(true) {}
+        m_IsOnGround(true), m_UpKeyWasPressed(false), m_FacingRight(true) {
+
+    glm::vec2 size = GetScaledSize();
+    SetPivot(glm::vec2(
+        0.0f,
+        -size.y / 2 +
+            12.5)); // 12.5是格子的一半(原本預設圖片錨點在圖片中心)，讓角色可以顯示在陸地上
+  }
 
   Character(const Character &) = delete;
   Character(Character &&) = delete;
@@ -40,7 +47,7 @@ public:
     m_Transform.translation = position;
   }
 
-  // 處理角色移動，接收 X 和 Y 方向的變化值
+  // 處理角色移動
   void Move(int deltaX, bool upKeyPressed) {
     isMoving = (deltaX != 0);
 
@@ -83,16 +90,16 @@ public:
 
       // 上升階段
       if (m_JumpHeight < m_JumpMaxHeight) {
-        pos.y += 5; // 向上移動的速度
-        m_JumpHeight += 5;
+        pos.y += 25; // 向上移動的速度
+        m_JumpHeight += 15;
       }
       // 下降階段
       else {
         pos.y -= 5; // 向下移動的速度
 
         // 檢查是否到達地面
-        if (pos.y <= -288) { // LEVEL_MIN_Y 值
-          pos.y = -288;
+        if (pos.y <= -312) {
+          pos.y = -312;
           m_IsJumping = false;
           m_JumpHeight = 0;
           m_IsOnGround = true;

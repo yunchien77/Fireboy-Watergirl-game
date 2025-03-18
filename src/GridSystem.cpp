@@ -1,30 +1,75 @@
 #include "GridSystem.hpp"
 #include "Util/Logger.hpp"
+#include <algorithm>
 #include <fstream>
 #include <iostream>
 #include <sstream>
-#include <algorithm>
+
+// (Debug)
+std::string CellTypeToString(CellType type) {
+  switch (type) {
+  case CellType::EMPTY:
+    return "EMPTY";
+  case CellType::FLOOR:
+    return "FLOOR";
+  case CellType::WALL:
+    return "WALL";
+  case CellType::DOOR_FIRE:
+    return "DOOR_FIRE";
+  case CellType::DOOR_WATER:
+    return "DOOR_WATER";
+  case CellType::GEM_FIRE:
+    return "GEM_FIRE";
+  case CellType::GEM_WATER:
+    return "GEM_WATER";
+  case CellType::GEM_GREEN:
+    return "GEM_GREEN";
+  case CellType::LAVA:
+    return "LAVA";
+  case CellType::WATER:
+    return "WATER";
+  case CellType::POISON:
+    return "POISON";
+  case CellType::BUTTON:
+    return "BUTTON";
+  case CellType::LEVER:
+    return "LEVER";
+  case CellType::PLATFORM:
+    return "PLATFORM";
+  case CellType::FAN:
+    return "FAN";
+  case CellType::BOX:
+    return "BOX";
+  case CellType::STONE:
+    return "STONE";
+  default:
+    return "UNKNOWN";
+  }
+}
 
 GridSystem::GridSystem()
-    : m_BackgroundWidth(975), m_BackgroundHeight(725), m_CellSize(25) {
+    : m_CellSize(25), m_BackgroundWidth(975), m_BackgroundHeight(725) {
 
   m_GridWidth = m_BackgroundWidth / m_CellSize;
   m_GridHeight = m_BackgroundHeight / m_CellSize;
 
-  m_Grid.resize(m_GridHeight, std::vector<CellType>(m_GridWidth, CellType::EMPTY));
+  m_Grid.resize(m_GridHeight,
+                std::vector<CellType>(m_GridWidth, CellType::EMPTY));
 
-  LOG_INFO("GridSystem initialized with empty grid: {}x{}", m_GridWidth, m_GridHeight);
+  LOG_INFO("GridSystem initialized with empty grid: {}x{}", m_GridWidth,
+           m_GridHeight);
 }
 
-GridSystem::GridSystem(const std::vector<std::vector<CellType>>& levelData,
+GridSystem::GridSystem(const std::vector<std::vector<CellType>> &levelData,
                        int backgroundWidth, int backgroundHeight, int cellSize)
-    : m_Grid(levelData), m_BackgroundWidth(backgroundWidth),
-      m_BackgroundHeight(backgroundHeight), m_CellSize(cellSize) {
+    : m_Grid(levelData), m_CellSize(cellSize),
+      m_BackgroundWidth(backgroundWidth), m_BackgroundHeight(backgroundHeight) {
 
   m_GridWidth = m_Grid[0].size();
   m_GridHeight = m_Grid.size();
 
-  LOG_INFO("GridSystem initialized with level data: {}x{}", m_GridWidth, m_GridHeight);
+  LOG_INFO("GridSystem initialized with level data: {}x{}", m_GridWidth,
+           m_GridHeight);
 }
 
 CellType GridSystem::GetCell(int x, int y) const {
@@ -44,8 +89,6 @@ glm::vec2 GridSystem::CellToGamePosition(int gridX, int gridY) const {
 
   // y值從上往下遞增，所以需要反轉y軸
   float worldY = halfHeight - (gridY * m_CellSize) - (m_CellSize / 2.0f);
-  // float worldY =
-  //     halfHeight - (gridY * m_CellSize) - m_CellSize; // 改為回傳底部中心點
 
   return glm::vec2(worldX, worldY);
 }
@@ -96,17 +139,38 @@ bool GridSystem::CanMoveOn(CellType type, bool isFireboy) const {
   }
 }
 
-bool GridSystem::CheckCollision(const glm::vec2 &worldPos, bool isFireboy) const {
+bool GridSystem::CheckCollision(const glm::vec2 &worldPos,
+                                bool isFireboy) const {
+  // 存儲上一次的位置來判斷角色是否有移動
+  static glm::ivec2 lastFireboyPos(-1, -1);
+  static glm::ivec2 lastWatergirlPos(-1, -1);
+
   // 轉換遊戲座標為格子座標
   glm::ivec2 gridPos = GameToCellPosition(worldPos);
 
   // 取得該位置的格子類型
   CellType cellType = GetCell(gridPos.x, gridPos.y);
-  // std::cout << "CellType: " << static_cast<int>(cellType) << std::endl;
 
-  std::cout << "Collision check at (" << gridPos.x << ", " << gridPos.y << ") ";
-  std::cout << "Cell Type: " << static_cast<int>(cellType) << std::endl;
+  // 判斷角色是否移動了
+  glm::ivec2 &lastPos = isFireboy ? lastFireboyPos : lastWatergirlPos;
+  bool hasMoved = (gridPos != lastPos);
 
+  // 僅在角色移動時輸出碰撞檢測信息
+  if (hasMoved) {
+    lastPos = gridPos; // 更新上一次位置
+
+    if (isFireboy) {
+      std::cout << "Fireboy ";
+      std::cout << "Collision check at (" << gridPos.x << ", " << gridPos.y
+                << ") ";
+      std::cout << "Cell Type: " << CellTypeToString(cellType) << std::endl;
+    } else {
+      std::cout << "Watergirl ";
+      std::cout << "Collision check at (" << gridPos.x << ", " << gridPos.y
+                << ") ";
+      std::cout << "Cell Type: " << CellTypeToString(cellType) << std::endl;
+    }
+  }
 
   // 檢查是否可以在該格子類型上移動
   return !CanMoveOn(cellType, isFireboy);

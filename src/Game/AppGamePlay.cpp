@@ -16,40 +16,22 @@ bool App::CheckCharacterCollision(const glm::vec2 &position, bool isFireboy) {
   return m_GridSystem.CheckCollision(position, isFireboy);
 }
 
-
 // 載入地圖網格，並初始化 GridSystem
 bool App::LoadLevelGrid(int levelNumber) {
-  /*std::string gridFilePath =
-      RESOURCE_DIR "/map/level" + std::to_string(levelNumber) + "_grid.txt";
-
-  // 嘗試載入格子數據
-  bool success = m_GridSystem.LoadFromFile(gridFilePath);
-
-  if (success) {
-    m_IsGridLoaded = true;
-    LOG_INFO("Successfully loaded grid for level {}", levelNumber);
-  } else {
-    LOG_ERROR("Failed to load grid for level {}", levelNumber);
-    // 如果沒有格子檔案，創建一個預設的空網格系統
-    m_GridSystem = GridSystem();
-    m_IsGridLoaded = false;
-  }
-
-  return success;
-  */
   switch (levelNumber) {
-    case 1:
-      m_GridSystem = GridSystem(level1);
+  case 1:
+    m_GridSystem = GridSystem(level1);
     break;
-    case 2: // 先讓 level2 ~ level5 預設為 level1，等你完成後再改回來
-    case 3:
-    case 4:
-    case 5:
-      m_GridSystem = GridSystem(level1);
+  case 2: // 先讓 level2 ~ level5 預設為 level1，等你完成後再改回來
+  case 3:
+  case 4:
+  case 5:
+    m_GridSystem = GridSystem(level1);
     break;
-    default:
-      LOG_ERROR("Invalid level number: {}", levelNumber);
-    return false; }
+  default:
+    LOG_ERROR("Invalid level number: {}", levelNumber);
+    return false;
+  }
 
   CellType type = m_GridSystem.GetCell(10, 10);
   std::cout << "Cell at (10,10) is: " << static_cast<int>(type) << std::endl;
@@ -68,7 +50,7 @@ bool App::LoadLevelGrid(int levelNumber) {
 }
 
 // 限制玩家在地圖邊界內
-void RestrictPlayerPosition(Character &player, App &app, bool isFireboy) {
+void RestrictPlayerPosition(Character &player, App &app) {
   glm::vec2 pos = player.GetPosition();
   glm::vec2 newPos = pos;
 
@@ -80,92 +62,50 @@ void RestrictPlayerPosition(Character &player, App &app, bool isFireboy) {
   float maxY = grid.GetMaxY();
 
   // 限制玩家在地圖邊界內
-  bool positionChanged = false;
   if (pos.x < minX) {
     newPos.x = minX;
-    positionChanged = true;
   }
   if (pos.x > maxX) {
     newPos.x = maxX;
-    positionChanged = true;
   }
   if (pos.y < minY) {
     newPos.y = minY;
-    positionChanged = true;
   }
   if (pos.y > maxY) {
     newPos.y = maxY;
-    positionChanged = true;
   }
 
-  // 只有當位置被邊界限制調整了，才需要再次檢查碰撞
-  if (positionChanged && app.CheckCharacterCollision(newPos, isFireboy)) {
-    glm::vec2 safePos = newPos;
-    float adjustment = grid.GetCellSize() / 2.0f;
-
-    if (newPos.x == minX)
-      safePos.x += adjustment;
-    else if (newPos.x == maxX)
-      safePos.x -= adjustment;
-
-    if (newPos.y == minY)
-      safePos.y += adjustment;
-    else if (newPos.y == maxY)
-      safePos.y -= adjustment;
-
-    if (app.CheckCharacterCollision(safePos, isFireboy)) {
-      player.SetPosition(newPos);
-    } else {
-      player.SetPosition(safePos);
-    }
-  } else {
-    if (app.CheckCharacterCollision(newPos, isFireboy)) {
-      player.SetPosition(newPos);
-    } else {
-      player.SetPosition(newPos);
-    }
-  }
+  // 設置新位置
+  player.SetPosition(newPos);
 }
 
-// 轉換 CellType 為字串
-std::string CellTypeToString(CellType type) {
-  switch (type) {
-  case CellType::EMPTY:
-    return "EMPTY";
-  case CellType::FLOOR:
-    return "FLOOR";
-  case CellType::WALL:
-    return "WALL";
-  case CellType::DOOR_FIRE:
-    return "DOOR_FIRE";
-  case CellType::DOOR_WATER:
-    return "DOOR_WATER";
-  case CellType::GEM_FIRE:
-    return "GEM_FIRE";
-  case CellType::GEM_WATER:
-    return "GEM_WATER";
-  case CellType::GEM_GREEN:
-    return "GEM_GREEN";
-  case CellType::LAVA:
-    return "LAVA";
-  case CellType::WATER:
-    return "WATER";
-  case CellType::POISON:
-    return "POISON";
-  case CellType::BUTTON:
-    return "BUTTON";
-  case CellType::LEVER:
-    return "LEVER";
-  case CellType::PLATFORM:
-    return "PLATFORM";
-  case CellType::FAN:
-    return "FAN";
-  case CellType::BOX:
-    return "BOX";
-  case CellType::STONE:
-    return "STONE";
-  default:
-    return "UNKNOWN";
+// 處理角色碰撞
+void HandleCollision(Character &player, App &app, bool isFireboy) {
+  glm::vec2 pos = player.GetPosition();
+
+  // 檢查碰撞
+  if (app.CheckCharacterCollision(pos, isFireboy)) {
+    // 如果發生碰撞，嘗試找一個安全的位置
+    GridSystem &grid = app.GetGridSystem();
+    float adjustment = grid.GetCellSize() / 4.0f;
+
+    // 嘗試幾個方向的調整
+    glm::vec2 testPositions[] = {
+        {pos.x, pos.y - adjustment}, // 上
+        {pos.x, pos.y + adjustment}, // 下
+        {pos.x - adjustment, pos.y}, // 左
+        {pos.x + adjustment, pos.y}, // 右
+    };
+
+    for (const auto &testPos : testPositions) {
+      if (!app.CheckCharacterCollision(testPos, isFireboy)) {
+        player.SetPosition(testPos);
+        return;
+      }
+    }
+
+    // 如果所有調整都失敗，可以選擇使用其他策略
+    // 這裡可以根據需要實現更複雜的碰撞響應
   }
 }
 
@@ -213,7 +153,10 @@ void App::GamePlay() {
 
   m_Fireboy->Move(fireboyMoveX, fireboyUpKeyPressed);
   m_Fireboy->UpdateJump();
-  RestrictPlayerPosition(*m_Fireboy, *this, true);
+
+  // 分別處理邊界限制和碰撞檢測
+  RestrictPlayerPosition(*m_Fireboy, *this);
+  HandleCollision(*m_Fireboy, *this, true);
 
   // Watergirl 控制
   int watergirlMoveX = 0;
@@ -227,7 +170,10 @@ void App::GamePlay() {
 
   m_Watergirl->Move(watergirlMoveX, watergirlUpKeyPressed);
   m_Watergirl->UpdateJump();
-  RestrictPlayerPosition(*m_Watergirl, *this, false);
+
+  // 分別處理邊界限制和碰撞檢測
+  RestrictPlayerPosition(*m_Watergirl, *this);
+  HandleCollision(*m_Watergirl, *this, false);
 
   // Debug 顯示角色位置
   if (m_Fireboy->GetPosition() != prevFireboyPos) {

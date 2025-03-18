@@ -10,7 +10,7 @@ void Fireboy::UpdateAnimation() {
     SetImage(RESOURCE_DIR "/material/character/fireboy-front.png");
     animationFrame = 0;
   } else if (isMoving) {
-    if (animationFrame % 12 == 0) {
+    if (animationFrame % 7 == 0) {
       if (currentSprite) {
         SetImage(RESOURCE_DIR "/material/character/fireboy-side-run.png");
       } else {

@@ -28,12 +28,14 @@ enum class CellType {
 
 class GridSystem {
 public:
-  // 構造函數接受背景圖片的尺寸，預設為975x725
-  GridSystem(int backgroundWidth = 975, int backgroundHeight = 725,
+  GridSystem();
+
+  GridSystem(const std::vector<std::vector<CellType>>& levelData,
+             int backgroundWidth = 975, int backgroundHeight = 725,
              int cellSize = 25);
 
   // 從檔案載入網格
-  bool LoadFromFile(const std::string &filePath);
+  //bool LoadFromFile(const std::string &filePath);
 
   // 取得指定位置的格子類型
   CellType GetCell(int x, int y) const;

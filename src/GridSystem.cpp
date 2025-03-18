@@ -3,50 +3,28 @@
 #include <fstream>
 #include <iostream>
 #include <sstream>
+#include <algorithm>
 
-GridSystem::GridSystem(int backgroundWidth, int backgroundHeight, int cellSize)
-    : m_CellSize(cellSize), m_BackgroundWidth(backgroundWidth),
-      m_BackgroundHeight(backgroundHeight) {
+GridSystem::GridSystem()
+    : m_BackgroundWidth(975), m_BackgroundHeight(725), m_CellSize(25) {
 
-  // Calculate grid dimensions
-  m_GridWidth = backgroundWidth / cellSize;
-  m_GridHeight = backgroundHeight / cellSize;
+  m_GridWidth = m_BackgroundWidth / m_CellSize;
+  m_GridHeight = m_BackgroundHeight / m_CellSize;
 
-  // Initialize grid
-  m_Grid.resize(m_GridHeight,
-                std::vector<CellType>(m_GridWidth, CellType::EMPTY));
+  m_Grid.resize(m_GridHeight, std::vector<CellType>(m_GridWidth, CellType::EMPTY));
+
+  LOG_INFO("GridSystem initialized with empty grid: {}x{}", m_GridWidth, m_GridHeight);
 }
 
-bool GridSystem::LoadFromFile(const std::string &filePath) {
-  std::ifstream file(filePath);
-  if (!file.is_open()) {
-    LOG_ERROR("Failed to open grid file: {}", filePath);
-    return false;
-  }
+GridSystem::GridSystem(const std::vector<std::vector<CellType>>& levelData,
+                       int backgroundWidth, int backgroundHeight, int cellSize)
+    : m_Grid(levelData), m_BackgroundWidth(backgroundWidth),
+      m_BackgroundHeight(backgroundHeight), m_CellSize(cellSize) {
 
-  // 清除現有網格資料
-  m_Grid.clear();
-  m_Grid.resize(m_GridHeight,
-                std::vector<CellType>(m_GridWidth, CellType::EMPTY));
+  m_GridWidth = m_Grid[0].size();
+  m_GridHeight = m_Grid.size();
 
-  std::string line;
-  int y = 0;
-
-  while (std::getline(file, line) && y < m_GridHeight) {
-    std::istringstream iss(line);
-    int x = 0;
-    int cellValue;
-
-    while (iss >> cellValue && x < m_GridWidth) {
-      m_Grid[y][x] = static_cast<CellType>(cellValue);
-      x++;
-    }
-
-    y++;
-  }
-
-  LOG_INFO("Grid loaded from file: {}", filePath);
-  return true;
+  LOG_INFO("GridSystem initialized with level data: {}x{}", m_GridWidth, m_GridHeight);
 }
 
 CellType GridSystem::GetCell(int x, int y) const {
@@ -86,8 +64,8 @@ glm::ivec2 GridSystem::GameToCellPosition(const glm::vec2 &worldPos) const {
   int gridY = static_cast<int>(relativeY / m_CellSize);
 
   // 確保在有效範圍內
-  gridX = std::max(0, std::min(gridX, m_GridWidth - 1));
-  gridY = std::max(0, std::min(gridY, m_GridHeight - 1));
+  gridX = std::clamp(gridX, 0, m_GridWidth - 1);
+  gridY = std::clamp(gridY, 0, m_GridHeight - 1);
 
   return glm::ivec2(gridX, gridY);
 }
@@ -102,6 +80,7 @@ bool GridSystem::CanMoveOn(CellType type, bool isFireboy) const {
   case CellType::GEM_WATER:
     return true;
   case CellType::FLOOR:
+    return true;
   case CellType::WALL:
     return false;
   case CellType::LAVA:
@@ -117,14 +96,17 @@ bool GridSystem::CanMoveOn(CellType type, bool isFireboy) const {
   }
 }
 
-bool GridSystem::CheckCollision(const glm::vec2 &worldPos,
-                                bool isFireboy) const {
+bool GridSystem::CheckCollision(const glm::vec2 &worldPos, bool isFireboy) const {
   // 轉換遊戲座標為格子座標
   glm::ivec2 gridPos = GameToCellPosition(worldPos);
 
   // 取得該位置的格子類型
   CellType cellType = GetCell(gridPos.x, gridPos.y);
   // std::cout << "CellType: " << static_cast<int>(cellType) << std::endl;
+
+  std::cout << "Collision check at (" << gridPos.x << ", " << gridPos.y << ") ";
+  std::cout << "Cell Type: " << static_cast<int>(cellType) << std::endl;
+
 
   // 檢查是否可以在該格子類型上移動
   return !CanMoveOn(cellType, isFireboy);

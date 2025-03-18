@@ -5,6 +5,7 @@
 #include "Button.hpp"
 #include "Character/Character.hpp"
 #include "GridSystem.hpp"
+#include "LevelData.hpp"
 #include "Util/GameObject.hpp"
 #include "Util/Image.hpp"
 #include "Util/Renderer.hpp"
@@ -47,6 +48,8 @@ public:
 
   // 檢查角色碰撞
   bool CheckCharacterCollision(const glm::vec2 &position, bool isFireboy);
+
+  bool LoadLevel(int levelNumber);
 
 private:
   void ValidTask();

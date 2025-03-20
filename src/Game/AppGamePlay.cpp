@@ -124,7 +124,7 @@ void App::GamePlay() {
   // 初始化角色 Fireboy
   if (!m_Fireboy) {
     m_Fireboy = std::make_shared<Fireboy>();
-    glm::vec2 fireboyInitPos = m_GridSystem.CellToGamePosition(35, 4);
+    glm::vec2 fireboyInitPos = m_GridSystem.CellToGamePosition(35, 5);
     m_Fireboy->SetPosition(fireboyInitPos);
     m_Root.AddChild(m_Fireboy);
   }
@@ -132,7 +132,7 @@ void App::GamePlay() {
   // 初始化角色 Watergirl
   if (!m_Watergirl) {
     m_Watergirl = std::make_shared<Watergirl>();
-    glm::vec2 watergirlInitPos = m_GridSystem.CellToGamePosition(3, 16);
+    glm::vec2 watergirlInitPos = m_GridSystem.CellToGamePosition(3, 17);
     m_Watergirl->SetPosition(watergirlInitPos);
     m_Root.AddChild(m_Watergirl);
   }
@@ -151,8 +151,12 @@ void App::GamePlay() {
   if (Util::Input::IsKeyPressed(Util::Keycode::UP))
     fireboyUpKeyPressed = true;
 
-  m_Fireboy->Move(fireboyMoveX, fireboyUpKeyPressed);
-  m_Fireboy->UpdateJump();
+
+  m_Fireboy->Move(fireboyMoveX, fireboyUpKeyPressed, m_GridSystem, true);
+  m_Fireboy->UpdateJump(m_GridSystem, true);
+  m_Fireboy->ApplyGravity(m_GridSystem, true);
+
+
 
   // 分別處理邊界限制和碰撞檢測
   RestrictPlayerPosition(*m_Fireboy, *this);
@@ -168,8 +172,9 @@ void App::GamePlay() {
   if (Util::Input::IsKeyPressed(Util::Keycode::W))
     watergirlUpKeyPressed = true;
 
-  m_Watergirl->Move(watergirlMoveX, watergirlUpKeyPressed);
-  m_Watergirl->UpdateJump();
+  m_Watergirl->Move(watergirlMoveX, watergirlUpKeyPressed, m_GridSystem, true);
+  m_Watergirl->UpdateJump(m_GridSystem, true);
+  m_Watergirl->ApplyGravity(m_GridSystem, false);
 
   // 分別處理邊界限制和碰撞檢測
   RestrictPlayerPosition(*m_Watergirl, *this);

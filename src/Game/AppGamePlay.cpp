@@ -151,12 +151,9 @@ void App::GamePlay() {
   if (Util::Input::IsKeyPressed(Util::Keycode::UP))
     fireboyUpKeyPressed = true;
 
-
   m_Fireboy->Move(fireboyMoveX, fireboyUpKeyPressed, m_GridSystem, true);
-  m_Fireboy->UpdateJump(m_GridSystem, true);
-  m_Fireboy->ApplyGravity(m_GridSystem, true);
-
-
+  m_Fireboy->UpdateJump(m_GridSystem);
+  m_Fireboy->ApplyGravity(m_GridSystem);
 
   // 分別處理邊界限制和碰撞檢測
   RestrictPlayerPosition(*m_Fireboy, *this);
@@ -173,8 +170,8 @@ void App::GamePlay() {
     watergirlUpKeyPressed = true;
 
   m_Watergirl->Move(watergirlMoveX, watergirlUpKeyPressed, m_GridSystem, true);
-  m_Watergirl->UpdateJump(m_GridSystem, true);
-  m_Watergirl->ApplyGravity(m_GridSystem, false);
+  m_Watergirl->UpdateJump(m_GridSystem);
+  m_Watergirl->ApplyGravity(m_GridSystem);
 
   // 分別處理邊界限制和碰撞檢測
   RestrictPlayerPosition(*m_Watergirl, *this);

@@ -11,6 +11,7 @@ const std::vector<std::vector<CellType>> level1 = {
      CellType::WALL, CellType::WALL, CellType::WALL, CellType::WALL,
      CellType::WALL, CellType::WALL, CellType::WALL, CellType::WALL,
      CellType::WALL, CellType::WALL, CellType::WALL},
+
     {CellType::WALL,  CellType::WALL,  CellType::WALL,  CellType::WALL,
      CellType::WALL,  CellType::WALL,  CellType::WALL,  CellType::WALL,
      CellType::WALL,  CellType::WALL,  CellType::EMPTY, CellType::EMPTY,
@@ -21,6 +22,7 @@ const std::vector<std::vector<CellType>> level1 = {
      CellType::EMPTY, CellType::EMPTY, CellType::EMPTY, CellType::EMPTY,
      CellType::EMPTY, CellType::EMPTY, CellType::EMPTY, CellType::EMPTY,
      CellType::EMPTY, CellType::EMPTY, CellType::WALL},
+
     {CellType::WALL,  CellType::WALL,  CellType::WALL,  CellType::WALL,
      CellType::WALL,  CellType::WALL,  CellType::WALL,  CellType::WALL,
      CellType::WALL,  CellType::WALL,  CellType::EMPTY, CellType::EMPTY,
@@ -31,6 +33,7 @@ const std::vector<std::vector<CellType>> level1 = {
      CellType::EMPTY, CellType::EMPTY, CellType::EMPTY, CellType::EMPTY,
      CellType::EMPTY, CellType::EMPTY, CellType::EMPTY, CellType::EMPTY,
      CellType::EMPTY, CellType::EMPTY, CellType::WALL},
+
     {CellType::WALL,  CellType::WALL,  CellType::WALL,  CellType::WALL,
      CellType::WALL,  CellType::WALL,  CellType::WALL,  CellType::WALL,
      CellType::WALL,  CellType::WALL,  CellType::EMPTY, CellType::EMPTY,
@@ -41,6 +44,7 @@ const std::vector<std::vector<CellType>> level1 = {
      CellType::EMPTY, CellType::EMPTY, CellType::EMPTY, CellType::EMPTY,
      CellType::EMPTY, CellType::EMPTY, CellType::EMPTY, CellType::EMPTY,
      CellType::EMPTY, CellType::EMPTY, CellType::WALL},
+
     {CellType::WALL,  CellType::WALL,  CellType::WALL,  CellType::WALL,
      CellType::WALL,  CellType::WALL,  CellType::WALL,  CellType::WALL,
      CellType::WALL,  CellType::WALL,  CellType::EMPTY, CellType::EMPTY,
@@ -62,6 +66,7 @@ const std::vector<std::vector<CellType>> level1 = {
      CellType::EMPTY, CellType::EMPTY, CellType::EMPTY, CellType::EMPTY,
      CellType::FLOOR, CellType::FLOOR, CellType::FLOOR, CellType::FLOOR,
      CellType::FLOOR, CellType::FLOOR, CellType::WALL},
+
     {CellType::WALL,  CellType::EMPTY, CellType::EMPTY, CellType::EMPTY,
      CellType::EMPTY, CellType::EMPTY, CellType::EMPTY, CellType::EMPTY,
      CellType::EMPTY, CellType::EMPTY, CellType::EMPTY, CellType::EMPTY,
@@ -72,6 +77,7 @@ const std::vector<std::vector<CellType>> level1 = {
      CellType::EMPTY, CellType::EMPTY, CellType::EMPTY, CellType::EMPTY,
      CellType::WALL,  CellType::WALL,  CellType::EMPTY, CellType::EMPTY,
      CellType::EMPTY, CellType::EMPTY, CellType::WALL},
+
     {CellType::WALL,  CellType::EMPTY, CellType::EMPTY, CellType::EMPTY,
      CellType::EMPTY, CellType::EMPTY, CellType::EMPTY, CellType::EMPTY,
      CellType::EMPTY, CellType::EMPTY, CellType::EMPTY, CellType::EMPTY,
@@ -93,16 +99,7 @@ const std::vector<std::vector<CellType>> level1 = {
      CellType::EMPTY, CellType::EMPTY, CellType::EMPTY, CellType::EMPTY,
      CellType::EMPTY, CellType::EMPTY, CellType::EMPTY, CellType::EMPTY,
      CellType::EMPTY, CellType::EMPTY, CellType::WALL},
-    {CellType::WALL,  CellType::EMPTY, CellType::EMPTY, CellType::EMPTY,
-     CellType::EMPTY, CellType::EMPTY, CellType::EMPTY, CellType::EMPTY,
-     CellType::EMPTY, CellType::EMPTY, CellType::EMPTY, CellType::EMPTY,
-     CellType::EMPTY, CellType::EMPTY, CellType::EMPTY, CellType::EMPTY,
-     CellType::EMPTY, CellType::EMPTY, CellType::EMPTY, CellType::EMPTY,
-     CellType::EMPTY, CellType::EMPTY, CellType::EMPTY, CellType::EMPTY,
-     CellType::EMPTY, CellType::EMPTY, CellType::EMPTY, CellType::EMPTY,
-     CellType::EMPTY, CellType::EMPTY, CellType::EMPTY, CellType::EMPTY,
-     CellType::EMPTY, CellType::EMPTY, CellType::EMPTY, CellType::EMPTY,
-     CellType::EMPTY, CellType::EMPTY, CellType::WALL},
+
     {CellType::WALL,  CellType::EMPTY, CellType::EMPTY, CellType::EMPTY,
      CellType::EMPTY, CellType::EMPTY, CellType::EMPTY, CellType::EMPTY,
      CellType::EMPTY, CellType::EMPTY, CellType::EMPTY, CellType::EMPTY,
@@ -115,15 +112,27 @@ const std::vector<std::vector<CellType>> level1 = {
      CellType::EMPTY, CellType::EMPTY, CellType::WALL},
 
     {CellType::WALL,  CellType::EMPTY, CellType::EMPTY, CellType::EMPTY,
-     CellType::EMPTY, CellType::EMPTY, CellType::FLOOR, CellType::FLOOR,
+     CellType::EMPTY, CellType::EMPTY, CellType::EMPTY, CellType::EMPTY,
+     CellType::EMPTY, CellType::EMPTY, CellType::EMPTY, CellType::EMPTY,
+     CellType::EMPTY, CellType::EMPTY, CellType::EMPTY, CellType::EMPTY,
+     CellType::EMPTY, CellType::EMPTY, CellType::EMPTY, CellType::EMPTY,
+     CellType::EMPTY, CellType::EMPTY, CellType::EMPTY, CellType::EMPTY,
+     CellType::EMPTY, CellType::EMPTY, CellType::EMPTY, CellType::EMPTY,
+     CellType::EMPTY, CellType::EMPTY, CellType::EMPTY, CellType::EMPTY,
+     CellType::EMPTY, CellType::EMPTY, CellType::EMPTY, CellType::EMPTY,
+     CellType::EMPTY, CellType::EMPTY, CellType::WALL},
+
+    {CellType::WALL,  CellType::EMPTY, CellType::EMPTY, CellType::EMPTY,
+     CellType::EMPTY, CellType::EMPTY, CellType::EMPTY, CellType::FLOOR,
      CellType::FLOOR, CellType::FLOOR, CellType::FLOOR, CellType::FLOOR,
-     CellType::FLOOR, CellType::EMPTY, CellType::EMPTY, CellType::EMPTY,
+     CellType::FLOOR, CellType::FLOOR, CellType::EMPTY, CellType::EMPTY,
      CellType::EMPTY, CellType::EMPTY, CellType::EMPTY, CellType::EMPTY,
      CellType::EMPTY, CellType::EMPTY, CellType::EMPTY, CellType::EMPTY,
      CellType::EMPTY, CellType::EMPTY, CellType::FLOOR, CellType::FLOOR,
      CellType::FLOOR, CellType::FLOOR, CellType::FLOOR, CellType::EMPTY,
      CellType::EMPTY, CellType::EMPTY, CellType::EMPTY, CellType::EMPTY,
      CellType::EMPTY, CellType::EMPTY, CellType::WALL},
+
     {CellType::WALL,  CellType::FLOOR, CellType::FLOOR, CellType::FLOOR,
      CellType::FLOOR, CellType::FLOOR, CellType::WALL,  CellType::WALL,
      CellType::WALL,  CellType::WALL,  CellType::WALL,  CellType::WALL,
@@ -134,6 +143,7 @@ const std::vector<std::vector<CellType>> level1 = {
      CellType::WALL,  CellType::WALL,  CellType::WALL,  CellType::FLOOR,
      CellType::EMPTY, CellType::EMPTY, CellType::EMPTY, CellType::EMPTY,
      CellType::EMPTY, CellType::EMPTY, CellType::WALL},
+
     {CellType::WALL,  CellType::EMPTY, CellType::EMPTY, CellType::EMPTY,
      CellType::EMPTY, CellType::EMPTY, CellType::EMPTY, CellType::EMPTY,
      CellType::EMPTY, CellType::EMPTY, CellType::EMPTY, CellType::EMPTY,
@@ -144,6 +154,7 @@ const std::vector<std::vector<CellType>> level1 = {
      CellType::EMPTY, CellType::WALL,  CellType::WALL,  CellType::WALL,
      CellType::EMPTY, CellType::EMPTY, CellType::EMPTY, CellType::EMPTY,
      CellType::EMPTY, CellType::EMPTY, CellType::WALL},
+
     {CellType::WALL,  CellType::EMPTY, CellType::EMPTY, CellType::EMPTY,
      CellType::EMPTY, CellType::EMPTY, CellType::EMPTY, CellType::EMPTY,
      CellType::EMPTY, CellType::EMPTY, CellType::EMPTY, CellType::EMPTY,
@@ -154,6 +165,7 @@ const std::vector<std::vector<CellType>> level1 = {
      CellType::EMPTY, CellType::WALL,  CellType::WALL,  CellType::WALL,
      CellType::EMPTY, CellType::EMPTY, CellType::EMPTY, CellType::EMPTY,
      CellType::EMPTY, CellType::EMPTY, CellType::WALL},
+
     {CellType::WALL,  CellType::EMPTY, CellType::EMPTY, CellType::EMPTY,
      CellType::EMPTY, CellType::EMPTY, CellType::EMPTY, CellType::EMPTY,
      CellType::EMPTY, CellType::EMPTY, CellType::EMPTY, CellType::EMPTY,
@@ -164,6 +176,7 @@ const std::vector<std::vector<CellType>> level1 = {
      CellType::EMPTY, CellType::WALL,  CellType::WALL,  CellType::WALL,
      CellType::FLOOR, CellType::FLOOR, CellType::FLOOR, CellType::FLOOR,
      CellType::FLOOR, CellType::FLOOR, CellType::WALL},
+
     {CellType::WALL,  CellType::FLOOR, CellType::EMPTY, CellType::EMPTY,
      CellType::EMPTY, CellType::EMPTY, CellType::EMPTY, CellType::EMPTY,
      CellType::EMPTY, CellType::EMPTY, CellType::EMPTY, CellType::EMPTY,
@@ -185,6 +198,7 @@ const std::vector<std::vector<CellType>> level1 = {
      CellType::EMPTY, CellType::EMPTY, CellType::EMPTY, CellType::EMPTY,
      CellType::EMPTY, CellType::EMPTY, CellType::EMPTY, CellType::EMPTY,
      CellType::EMPTY, CellType::EMPTY, CellType::WALL},
+
     {CellType::WALL,  CellType::EMPTY, CellType::EMPTY, CellType::EMPTY,
      CellType::WALL,  CellType::WALL,  CellType::EMPTY, CellType::EMPTY,
      CellType::EMPTY, CellType::EMPTY, CellType::EMPTY, CellType::EMPTY,
@@ -195,6 +209,7 @@ const std::vector<std::vector<CellType>> level1 = {
      CellType::EMPTY, CellType::EMPTY, CellType::EMPTY, CellType::EMPTY,
      CellType::EMPTY, CellType::EMPTY, CellType::EMPTY, CellType::EMPTY,
      CellType::EMPTY, CellType::EMPTY, CellType::WALL},
+
     {CellType::WALL,  CellType::EMPTY, CellType::EMPTY, CellType::EMPTY,
      CellType::EMPTY, CellType::WALL,  CellType::WALL,  CellType::FLOOR,
      CellType::FLOOR, CellType::FLOOR, CellType::FLOOR, CellType::FLOOR,
@@ -216,6 +231,7 @@ const std::vector<std::vector<CellType>> level1 = {
      CellType::EMPTY, CellType::EMPTY, CellType::EMPTY, CellType::EMPTY,
      CellType::EMPTY, CellType::EMPTY, CellType::EMPTY, CellType::EMPTY,
      CellType::EMPTY, CellType::EMPTY, CellType::WALL},
+
     {CellType::WALL,  CellType::EMPTY, CellType::EMPTY, CellType::EMPTY,
      CellType::EMPTY, CellType::EMPTY, CellType::EMPTY, CellType::EMPTY,
      CellType::EMPTY, CellType::EMPTY, CellType::EMPTY, CellType::EMPTY,
@@ -237,6 +253,7 @@ const std::vector<std::vector<CellType>> level1 = {
      CellType::FLOOR, CellType::FLOOR, CellType::FLOOR, CellType::FLOOR,
      CellType::EMPTY, CellType::EMPTY, CellType::EMPTY, CellType::EMPTY,
      CellType::EMPTY, CellType::EMPTY, CellType::WALL},
+
     {CellType::WALL,  CellType::EMPTY, CellType::EMPTY, CellType::EMPTY,
      CellType::EMPTY, CellType::EMPTY, CellType::EMPTY, CellType::FLOOR,
      CellType::FLOOR, CellType::FLOOR, CellType::FLOOR, CellType::FLOOR,
@@ -247,6 +264,7 @@ const std::vector<std::vector<CellType>> level1 = {
      CellType::EMPTY, CellType::EMPTY, CellType::WALL,  CellType::WALL,
      CellType::EMPTY, CellType::EMPTY, CellType::EMPTY, CellType::EMPTY,
      CellType::EMPTY, CellType::EMPTY, CellType::WALL},
+
     {CellType::WALL,  CellType::EMPTY, CellType::EMPTY, CellType::EMPTY,
      CellType::EMPTY, CellType::EMPTY, CellType::EMPTY, CellType::WALL,
      CellType::EMPTY, CellType::EMPTY, CellType::EMPTY, CellType::EMPTY,
@@ -257,6 +275,7 @@ const std::vector<std::vector<CellType>> level1 = {
      CellType::EMPTY, CellType::EMPTY, CellType::EMPTY, CellType::WALL,
      CellType::FLOOR, CellType::FLOOR, CellType::FLOOR, CellType::FLOOR,
      CellType::FLOOR, CellType::FLOOR, CellType::WALL},
+
     {CellType::WALL,  CellType::EMPTY, CellType::EMPTY, CellType::EMPTY,
      CellType::EMPTY, CellType::EMPTY, CellType::EMPTY, CellType::WALL,
      CellType::EMPTY, CellType::EMPTY, CellType::EMPTY, CellType::EMPTY,
@@ -267,6 +286,7 @@ const std::vector<std::vector<CellType>> level1 = {
      CellType::EMPTY, CellType::EMPTY, CellType::EMPTY, CellType::WALL,
      CellType::EMPTY, CellType::EMPTY, CellType::EMPTY, CellType::EMPTY,
      CellType::EMPTY, CellType::EMPTY, CellType::WALL},
+
     {CellType::WALL,  CellType::EMPTY, CellType::EMPTY, CellType::EMPTY,
      CellType::EMPTY, CellType::EMPTY, CellType::EMPTY, CellType::WALL,
      CellType::EMPTY, CellType::EMPTY, CellType::EMPTY, CellType::EMPTY,
@@ -277,6 +297,7 @@ const std::vector<std::vector<CellType>> level1 = {
      CellType::EMPTY, CellType::EMPTY, CellType::EMPTY, CellType::WALL,
      CellType::EMPTY, CellType::EMPTY, CellType::EMPTY, CellType::EMPTY,
      CellType::EMPTY, CellType::EMPTY, CellType::WALL},
+
     {CellType::WALL,  CellType::EMPTY, CellType::EMPTY, CellType::EMPTY,
      CellType::EMPTY, CellType::EMPTY, CellType::EMPTY, CellType::WALL,
      CellType::EMPTY, CellType::EMPTY, CellType::EMPTY, CellType::EMPTY,

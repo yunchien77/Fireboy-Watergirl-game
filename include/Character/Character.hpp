@@ -16,9 +16,7 @@ public:
         m_IsOnGround(true), m_UpKeyWasPressed(false), m_FacingRight(true) {
 
     glm::vec2 size = GetScaledSize();
-    SetPivot(glm::vec2(
-        0.0f,
-        -size.y / 2 - 13.5));
+    SetPivot(glm::vec2(0.0f, -size.y / 2 - 13.5));
   }
 
   Character(const Character &) = delete;
@@ -48,7 +46,8 @@ public:
     m_Transform.translation = position;
   }
 
-  void Move(int deltaX, bool upKeyPressed, const GridSystem& grid, bool isFireboy) {
+  void Move(int deltaX, bool upKeyPressed, const GridSystem &grid,
+            bool isFireboy) {
     isMoving = (deltaX != 0);
 
     if (deltaX < 0) {
@@ -69,33 +68,38 @@ public:
     }
 
     // 處理跳躍
-    if (upKeyPressed && m_IsOnGround) {
+    // 只有當上鍵是新按下的(之前沒有按下)並且角色在地面上時才跳躍
+    if (upKeyPressed && !m_UpKeyWasPressed && m_IsOnGround) {
       m_IsJumping = true;
       m_IsOnGround = false;
       m_JumpHeight = 0;
     }
 
+    // 更新上一次按鍵狀態
+    m_UpKeyWasPressed = upKeyPressed;
+
     UpdateAnimation();
   }
 
-  void UpdateJump(const GridSystem& grid, bool isFireboy) {
+  void UpdateJump(const GridSystem &grid) {
     if (m_IsJumping) {
       glm::vec2 pos = GetPosition();
-      float fallSpeed = 5.0f;   // 下落速度
-      float jumpSpeed = 7.0f;  // 跳躍速度
+      float fallSpeed = 5.0f; // 下落速度
+      float jumpSpeed = 7.0f; // 跳躍速度
 
       // **🔼 上升階段**
       if (m_JumpHeight < m_JumpMaxHeight) {
         glm::vec2 nextPos = pos;
-        nextPos.y += jumpSpeed;  // 嘗試向上跳
+        nextPos.y += jumpSpeed; // 嘗試向上跳
 
         // **檢查跳躍後頭部會到達的格子**
-        glm::ivec2 gridPosTop = grid.GameToCellPosition(glm::vec2(pos.x, pos.y + m_JumpMaxHeight));
+        glm::ivec2 gridPosTop =
+            grid.GameToCellPosition(glm::vec2(pos.x, pos.y + m_JumpMaxHeight));
         CellType aboveCell = grid.GetCell(gridPosTop.x, gridPosTop.y);
 
         // **🛑 如果即將撞到天花板，則停止上升**
         if (aboveCell == CellType::FLOOR) {
-          m_JumpHeight = m_JumpMaxHeight;  // 強制結束跳躍
+          m_JumpHeight = m_JumpMaxHeight; // 強制結束跳躍
         } else {
           pos = nextPos;
           m_JumpHeight += jumpSpeed;
@@ -116,7 +120,8 @@ public:
           m_JumpHeight = 0;
 
           // **🔧 修正 Y 軸位置，讓角色貼合地板**
-          float cellBottomY = grid.CellToGamePosition(gridPosBelow.x, gridPosBelow.y).y;
+          float cellBottomY =
+              grid.CellToGamePosition(gridPosBelow.x, gridPosBelow.y).y;
           pos.y = cellBottomY + (grid.GetCellSize() / 2.0f - 12.0f);
         } else {
           pos = nextPos;
@@ -127,9 +132,7 @@ public:
     }
   }
 
-
-
-  void ApplyGravity(const GridSystem& grid, bool isFireboy) {
+  void ApplyGravity(const GridSystem &grid) {
     if (!m_IsJumping) { // 只有在未跳躍時才應用重力
       glm::vec2 pos = GetPosition();
       glm::vec2 nextPos = pos;
@@ -155,8 +158,7 @@ public:
   }
 
   virtual void UpdateAnimation() = 0; // 更新角色的動畫(純虛擬函數 -> Fireboy 和
-                                      // Watergirl 會實現)\
-
+                                      // Watergirl 會實現)
 
 protected:
   // 應用水平翻轉

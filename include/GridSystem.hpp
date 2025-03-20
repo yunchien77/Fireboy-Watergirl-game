@@ -34,9 +34,6 @@ public:
              int backgroundWidth = 975, int backgroundHeight = 725,
              int cellSize = 25);
 
-  // 從檔案載入網格
-  // bool LoadFromFile(const std::string &filePath);
-
   // 取得指定位置的格子類型
   CellType GetCell(int x, int y) const;
 
@@ -50,7 +47,8 @@ public:
   bool CanMoveOn(CellType type, bool isFireboy) const;
 
   // 檢查指定的遊戲座標位置是否有碰撞
-  bool CheckCollision(const glm::vec2 &worldPos, bool isFireboy) const;
+  bool CheckCollision(const glm::vec2 &worldPos, glm::vec2 size, bool isFireboy,
+                      int deltaX = 0) const;
 
   // 取得格子系統的邊界限制 (基於背景圖片大小)
   float GetMinX() const { return -m_BackgroundWidth / 2.0f; }

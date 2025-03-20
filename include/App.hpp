@@ -47,7 +47,8 @@ public:
   GridSystem &GetGridSystem() { return m_GridSystem; }
 
   // 檢查角色碰撞
-  bool CheckCharacterCollision(const glm::vec2 &position, bool isFireboy);
+  bool CheckCharacterCollision(const glm::vec2 &position, glm::vec2 size,
+                               bool isFireboy, int deltaX = 0);
 
   bool LoadLevel(int levelNumber);
 

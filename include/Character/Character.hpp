@@ -5,6 +5,7 @@
 
 #include "Util/GameObject.hpp"
 #include "Util/Image.hpp"
+#include <glm/fwd.hpp>
 #include <string>
 
 class Character : public Util::GameObject {
@@ -15,8 +16,8 @@ public:
         m_IsJumping(false), m_JumpHeight(0), m_JumpMaxHeight(90),
         m_IsOnGround(true), m_UpKeyWasPressed(false), m_FacingRight(true) {
 
-    glm::vec2 size = GetScaledSize();
-    SetPivot(glm::vec2(0.0f, -size.y / 2 - 13.5));
+    m_Size = GetScaledSize();
+    SetPivot(glm::vec2(0.0f, -m_Size.y / 2 - 13.5));
   }
 
   Character(const Character &) = delete;
@@ -46,6 +47,8 @@ public:
     m_Transform.translation = position;
   }
 
+  glm::vec2 GetSize() { return m_Size; } // 取得角色的尺寸
+
   void Move(int deltaX, bool upKeyPressed, const GridSystem &grid,
             bool isFireboy) {
     isMoving = (deltaX != 0);
@@ -63,7 +66,7 @@ public:
     newPos.x += deltaX;
 
     // 只有當新位置不會碰撞時，才進行移動
-    if (!grid.CheckCollision(newPos, isFireboy)) {
+    if (!grid.CheckCollision(newPos, m_Size, isFireboy)) {
       SetPosition(newPos);
     }
 
@@ -179,6 +182,11 @@ protected:
   bool m_IsOnGround;   // 角色是否在地面上
   bool m_UpKeyWasPressed; // 上鍵是否已被按下（用於防止持續按住時重複跳躍）
   bool m_FacingRight; // 角色面向方向：true為右，false為左
+  glm::vec2 m_Size;   // 角色的尺寸
+
+  int m_LandingStabilityFrames = 0; // Counter for landing stabilization
+  const int LANDING_STABILITY_DURATION =
+      5; // Number of frames to stabilize after landing
 };
 
 #endif // CHARACTER_HPP

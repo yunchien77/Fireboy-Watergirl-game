@@ -9,11 +9,12 @@
 #include <iostream>
 #include <memory>
 
-bool App::CheckCharacterCollision(const glm::vec2 &position, bool isFireboy) {
+bool App::CheckCharacterCollision(const glm::vec2 &position, glm::vec2 size,
+                                  bool isFireboy) {
   if (!m_IsGridLoaded) {
     return false; // 如果網格未載入，默認無碰撞
   }
-  return m_GridSystem.CheckCollision(position, isFireboy);
+  return m_GridSystem.CheckCollision(position, size, isFireboy);
 }
 
 // 載入地圖網格，並初始化 GridSystem
@@ -82,9 +83,10 @@ void RestrictPlayerPosition(Character &player, App &app) {
 // 處理角色碰撞
 void HandleCollision(Character &player, App &app, bool isFireboy) {
   glm::vec2 pos = player.GetPosition();
+  glm::vec2 size = player.GetSize();
 
   // 檢查碰撞
-  if (app.CheckCharacterCollision(pos, isFireboy)) {
+  if (app.CheckCharacterCollision(pos, size, isFireboy)) {
     // 如果發生碰撞，嘗試找一個安全的位置
     GridSystem &grid = app.GetGridSystem();
     float adjustment = grid.GetCellSize() / 4.0f;
@@ -98,14 +100,11 @@ void HandleCollision(Character &player, App &app, bool isFireboy) {
     };
 
     for (const auto &testPos : testPositions) {
-      if (!app.CheckCharacterCollision(testPos, isFireboy)) {
+      if (!app.CheckCharacterCollision(testPos, size, isFireboy)) {
         player.SetPosition(testPos);
         return;
       }
     }
-
-    // 如果所有調整都失敗，可以選擇使用其他策略
-    // 這裡可以根據需要實現更複雜的碰撞響應
   }
 }
 

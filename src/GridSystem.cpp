@@ -139,41 +139,37 @@ bool GridSystem::CanMoveOn(CellType type, bool isFireboy) const {
   }
 }
 
-bool GridSystem::CheckCollision(const glm::vec2 &worldPos,
+bool GridSystem::CheckCollision(const glm::vec2 &worldPos, glm::vec2 size,
                                 bool isFireboy) const {
-  // 存儲上一次的位置來判斷角色是否有移動
-  static glm::ivec2 lastFireboyPos(-1, -1);
-  static glm::ivec2 lastWatergirlPos(-1, -1);
+  glm::vec2 Left = glm::vec2(worldPos.x - (size.x / 2.0f), worldPos.y);
+  glm::vec2 Right = glm::vec2(worldPos.x + (size.x / 2.0f), worldPos.y);
 
   // 轉換遊戲座標為格子座標
-  glm::ivec2 gridPos = GameToCellPosition(worldPos);
+  // glm::ivec2 gridPos = GameToCellPosition(worldPos);
+  glm::ivec2 gridPosLeft = GameToCellPosition(Left);
+  glm::ivec2 gridPosRight = GameToCellPosition(Right);
 
   // 取得該位置的格子類型
-  CellType cellType = GetCell(gridPos.x, gridPos.y);
+  // CellType cellType = GetCell(gridPos.x, gridPos.y);
 
-  // 判斷角色是否移動了
-  glm::ivec2 &lastPos = isFireboy ? lastFireboyPos : lastWatergirlPos;
-  bool hasMoved = (gridPos != lastPos);
+  CellType cellTypeLeft = GetCell(gridPosLeft.x, gridPosLeft.y);
+  CellType cellTypeRight = GetCell(gridPosRight.x, gridPosRight.y);
 
-  // 僅在角色移動時輸出碰撞檢測信息
-  if (hasMoved) {
-    lastPos = gridPos; // 更新上一次位置
-
-    if (isFireboy) {
-      std::cout << "Fireboy ";
-      std::cout << "Collision check at (" << gridPos.x << ", " << gridPos.y
-                << ") ";
-      std::cout << "Cell Type: " << CellTypeToString(cellType) << std::endl;
-    } else {
-      std::cout << "Watergirl ";
-      std::cout << "Collision check at (" << gridPos.x << ", " << gridPos.y
-                << ") ";
-      std::cout << "Cell Type: " << CellTypeToString(cellType) << std::endl;
-    }
-  }
+  // if (isFireboy) {
+  //   std::cout << "Fireboy ";
+  //   std::cout << "Collision check at (" << gridPos.x << ", " << gridPos.y
+  //             << ") ";
+  //   std::cout << "Cell Type: " << CellTypeToString(cellType) << std::endl;
+  // } else {
+  //   std::cout << "Watergirl ";
+  //   std::cout << "Collision check at (" << gridPos.x << ", " << gridPos.y
+  //             << ") ";
+  //   std::cout << "Cell Type: " << CellTypeToString(cellType) << std::endl;
+  // }
 
   // 檢查是否可以在該格子類型上移動
-  return !CanMoveOn(cellType, isFireboy);
+  return !CanMoveOn(cellTypeLeft, isFireboy) ||
+         !CanMoveOn(cellTypeRight, isFireboy);
 }
 
 bool GridSystem::IsValidGridPosition(int x, int y) const {

@@ -10,11 +10,11 @@
 #include <memory>
 
 bool App::CheckCharacterCollision(const glm::vec2 &position, glm::vec2 size,
-                                  bool isFireboy) {
+                                  bool isFireboy, int deltaX) {
   if (!m_IsGridLoaded) {
     return false; // 如果網格未載入，默認無碰撞
   }
-  return m_GridSystem.CheckCollision(position, size, isFireboy);
+  return m_GridSystem.CheckCollision(position, size, isFireboy, deltaX);
 }
 
 // 載入地圖網格，並初始化 GridSystem
@@ -86,7 +86,8 @@ void HandleCollision(Character &player, App &app, bool isFireboy) {
   glm::vec2 size = player.GetSize();
 
   // 檢查碰撞
-  if (app.CheckCharacterCollision(pos, size, isFireboy)) {
+  // deltaX=0 -> 檢查當前位置是否有碰撞
+  if (app.CheckCharacterCollision(pos, size, isFireboy, 0)) {
     // 如果發生碰撞，嘗試找一個安全的位置
     GridSystem &grid = app.GetGridSystem();
     float adjustment = grid.GetCellSize() / 4.0f;

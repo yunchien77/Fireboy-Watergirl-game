@@ -48,7 +48,7 @@ public:
 
   // 檢查角色碰撞
   bool CheckCharacterCollision(const glm::vec2 &position, glm::vec2 size,
-                               bool isFireboy);
+                               bool isFireboy, int deltaX = 0);
 
   bool LoadLevel(int levelNumber);
 

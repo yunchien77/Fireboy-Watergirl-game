@@ -139,37 +139,30 @@ bool GridSystem::CanMoveOn(CellType type, bool isFireboy) const {
   }
 }
 
+// 檢查指定的遊戲座標位置是否有碰撞
 bool GridSystem::CheckCollision(const glm::vec2 &worldPos, glm::vec2 size,
-                                bool isFireboy) const {
-  glm::vec2 Left = glm::vec2(worldPos.x - (size.x / 2.0f), worldPos.y);
-  glm::vec2 Right = glm::vec2(worldPos.x + (size.x / 2.0f), worldPos.y);
-
-  // 轉換遊戲座標為格子座標
-  // glm::ivec2 gridPos = GameToCellPosition(worldPos);
-  glm::ivec2 gridPosLeft = GameToCellPosition(Left);
-  glm::ivec2 gridPosRight = GameToCellPosition(Right);
-
-  // 取得該位置的格子類型
-  // CellType cellType = GetCell(gridPos.x, gridPos.y);
-
-  CellType cellTypeLeft = GetCell(gridPosLeft.x, gridPosLeft.y);
-  CellType cellTypeRight = GetCell(gridPosRight.x, gridPosRight.y);
-
-  // if (isFireboy) {
-  //   std::cout << "Fireboy ";
-  //   std::cout << "Collision check at (" << gridPos.x << ", " << gridPos.y
-  //             << ") ";
-  //   std::cout << "Cell Type: " << CellTypeToString(cellType) << std::endl;
-  // } else {
-  //   std::cout << "Watergirl ";
-  //   std::cout << "Collision check at (" << gridPos.x << ", " << gridPos.y
-  //             << ") ";
-  //   std::cout << "Cell Type: " << CellTypeToString(cellType) << std::endl;
-  // }
-
-  // 檢查是否可以在該格子類型上移動
-  return !CanMoveOn(cellTypeLeft, isFireboy) ||
-         !CanMoveOn(cellTypeRight, isFireboy);
+                                bool isFireboy, int deltaX) const {
+  // 根據移動方向確定需要檢查的側面
+  // 向右移動，只檢查右側
+  if (deltaX > 0) {
+    // 向右移動，只檢查右側
+    glm::vec2 rightEdge = glm::vec2(worldPos.x + (size.x / 2.0f), worldPos.y);
+    glm::ivec2 gridPosRight = GameToCellPosition(rightEdge);
+    CellType cellTypeRight = GetCell(gridPosRight.x, gridPosRight.y);
+    return !CanMoveOn(cellTypeRight, isFireboy);
+  } // 向左移動，只檢查左側
+  else if (deltaX < 0) {
+    glm::vec2 leftEdge = glm::vec2(worldPos.x - (size.x / 2.0f), worldPos.y);
+    glm::ivec2 gridPosLeft = GameToCellPosition(leftEdge);
+    CellType cellTypeLeft = GetCell(gridPosLeft.x, gridPosLeft.y);
+    return !CanMoveOn(cellTypeLeft, isFireboy);
+  }
+  // 垂直移動或原地不動，檢查角色所在位置
+  else {
+    glm::ivec2 gridPos = GameToCellPosition(worldPos);
+    CellType cellType = GetCell(gridPos.x, gridPos.y);
+    return !CanMoveOn(cellType, isFireboy);
+  }
 }
 
 bool GridSystem::IsValidGridPosition(int x, int y) const {

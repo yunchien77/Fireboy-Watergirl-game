@@ -12,7 +12,7 @@ public:
   explicit Character(const std::string &imagePath)
       : GameObject(std::make_shared<Util::Image>(imagePath), 10),
         m_ImagePath(imagePath), isMoving(false), currentSprite(false),
-        m_IsJumping(false), m_JumpHeight(0), m_JumpMaxHeight(60),
+        m_IsJumping(false), m_JumpHeight(0), m_JumpMaxHeight(65),
         m_IsOnGround(true), m_UpKeyWasPressed(false), m_FacingRight(true) {
 
     glm::vec2 size = GetScaledSize();
@@ -81,31 +81,35 @@ public:
   void UpdateJump(const GridSystem& grid, bool isFireboy) {
     if (m_IsJumping) {
       glm::vec2 pos = GetPosition();
-      float fallSpeed = 5.0f;
-      float jumpSpeed = 10.0f;
+      float fallSpeed = 5.0f;   // 下落速度
+      float jumpSpeed = 10.0f;  // 跳躍速度
 
+      // **🔼 上升階段**
       if (m_JumpHeight < m_JumpMaxHeight) {
         glm::vec2 nextPos = pos;
-        nextPos.y += jumpSpeed;
+        nextPos.y += jumpSpeed;  // 嘗試向上跳
 
+        // **檢查跳躍後頭部會到達的格子**
         glm::ivec2 gridPosTop = grid.GameToCellPosition(glm::vec2(pos.x, pos.y + m_JumpMaxHeight));
         CellType aboveCell = grid.GetCell(gridPosTop.x, gridPosTop.y);
 
+        // **🛑 如果即將撞到天花板，則停止上升**
         if (aboveCell == CellType::FLOOR) {
-          m_JumpHeight = m_JumpMaxHeight;
+          m_JumpHeight = m_JumpMaxHeight;  // 強制結束跳躍
         } else {
           pos = nextPos;
           m_JumpHeight += jumpSpeed;
         }
       }
-
+      // **🔽 下降階段**
       else {
         glm::vec2 nextPos = pos;
-        nextPos.y -= fallSpeed;
+        nextPos.y -= fallSpeed; // 嘗試下降
 
         glm::ivec2 gridPosBelow = grid.GameToCellPosition(nextPos);
         CellType belowCell = grid.GetCell(gridPosBelow.x, gridPosBelow.y);
 
+        // **✅ 如果腳底碰到地板，則停止下降**
         if (belowCell == CellType::FLOOR) {
           m_IsJumping = false;
           m_IsOnGround = true;

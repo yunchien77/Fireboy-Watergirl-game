@@ -12,7 +12,7 @@ public:
   explicit Character(const std::string &imagePath)
       : GameObject(std::make_shared<Util::Image>(imagePath), 10),
         m_ImagePath(imagePath), isMoving(false), currentSprite(false),
-        m_IsJumping(false), m_JumpHeight(0), m_JumpMaxHeight(65),
+        m_IsJumping(false), m_JumpHeight(0), m_JumpMaxHeight(90),
         m_IsOnGround(true), m_UpKeyWasPressed(false), m_FacingRight(true) {
 
     glm::vec2 size = GetScaledSize();
@@ -82,7 +82,7 @@ public:
     if (m_IsJumping) {
       glm::vec2 pos = GetPosition();
       float fallSpeed = 5.0f;   // 下落速度
-      float jumpSpeed = 10.0f;  // 跳躍速度
+      float jumpSpeed = 7.0f;  // 跳躍速度
 
       // **🔼 上升階段**
       if (m_JumpHeight < m_JumpMaxHeight) {

@@ -75,7 +75,7 @@ const std::vector<std::vector<CellType>> level1 = {
     {CellType::WALL,  CellType::EMPTY, CellType::EMPTY, CellType::EMPTY,
      CellType::EMPTY, CellType::EMPTY, CellType::EMPTY, CellType::EMPTY,
      CellType::EMPTY, CellType::EMPTY, CellType::EMPTY, CellType::EMPTY,
-     CellType::EMPTY, CellType::FLOOR, CellType::FLOOR, CellType::FLOOR,
+     CellType::FLOOR, CellType::FLOOR, CellType::FLOOR, CellType::FLOOR,
      CellType::FLOOR, CellType::FLOOR, CellType::FLOOR, CellType::FLOOR,
      CellType::FLOOR, CellType::FLOOR, CellType::FLOOR, CellType::FLOOR,
      CellType::FLOOR, CellType::FLOOR, CellType::FLOOR, CellType::FLOOR,

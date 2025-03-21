@@ -20,9 +20,38 @@ bool App::CheckCharacterCollision(const glm::vec2 &position, glm::vec2 size,
 // 載入地圖網格，並初始化 GridSystem
 bool App::LoadLevelGrid(int levelNumber) {
   switch (levelNumber) {
-  case 1:
+  case 1: {
     m_GridSystem = GridSystem(level1);
-    break;
+
+    // 初始化角色 Fireboy
+    if (!m_Fireboy) {
+      m_Fireboy = std::make_shared<Fireboy>();
+      glm::vec2 fireboyInitPos = m_GridSystem.CellToGamePosition(35, 5);
+      m_Fireboy->SetPosition(fireboyInitPos);
+      m_Root.AddChild(m_Fireboy);
+    }
+
+    // 初始化角色 Watergirl
+    if (!m_Watergirl) {
+      m_Watergirl = std::make_shared<Watergirl>();
+      glm::vec2 watergirlInitPos = m_GridSystem.CellToGamePosition(3, 17);
+      m_Watergirl->SetPosition(watergirlInitPos);
+      m_Root.AddChild(m_Watergirl);
+    }
+
+    // Fireboy 的門
+    glm::vec2 fireboyDoorPos = m_GridSystem.CellToGamePosition(32, 14);
+    m_Fireboy_Door->SetPosition(fireboyDoorPos);
+    m_Fireboy_Door->SetOpen(false);
+    m_Fireboy_Door->SetVisible(true);
+
+    // Watergirl 的門
+    glm::vec2 watergirlDoorPos = m_GridSystem.CellToGamePosition(4, 27);
+    m_Watergirl_Door->SetPosition(watergirlDoorPos);
+    m_Watergirl_Door->SetOpen(false);
+    m_Watergirl_Door->SetVisible(true);
+  } break;
+
   case 2: // 先讓 level2 ~ level5 預設為 level1，等你完成後再改回來
   case 3:
   case 4:
@@ -33,9 +62,6 @@ bool App::LoadLevelGrid(int levelNumber) {
     LOG_ERROR("Invalid level number: {}", levelNumber);
     return false;
   }
-
-  CellType type = m_GridSystem.GetCell(10, 10);
-  std::cout << "Cell at (10,10) is: " << static_cast<int>(type) << std::endl;
 
   m_IsGridLoaded = true;
   LOG_INFO("Successfully loaded level {}", levelNumber);
@@ -119,22 +145,6 @@ void App::GamePlay() {
       LOG_ERROR("Failed to load level {}", m_CurrentLevel);
       return;
     }
-  }
-
-  // 初始化角色 Fireboy
-  if (!m_Fireboy) {
-    m_Fireboy = std::make_shared<Fireboy>();
-    glm::vec2 fireboyInitPos = m_GridSystem.CellToGamePosition(35, 5);
-    m_Fireboy->SetPosition(fireboyInitPos);
-    m_Root.AddChild(m_Fireboy);
-  }
-
-  // 初始化角色 Watergirl
-  if (!m_Watergirl) {
-    m_Watergirl = std::make_shared<Watergirl>();
-    glm::vec2 watergirlInitPos = m_GridSystem.CellToGamePosition(3, 17);
-    m_Watergirl->SetPosition(watergirlInitPos);
-    m_Root.AddChild(m_Watergirl);
   }
 
   // 記錄角色位置

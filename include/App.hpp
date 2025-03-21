@@ -6,6 +6,7 @@
 #include "Character/Character.hpp"
 #include "GridSystem.hpp"
 #include "LevelData.hpp"
+#include "Object/Door.hpp"
 #include "Util/GameObject.hpp"
 #include "Util/Image.hpp"
 #include "Util/Renderer.hpp"
@@ -78,6 +79,9 @@ private:
 
   std::shared_ptr<Character> m_Fireboy;
   std::shared_ptr<Character> m_Watergirl;
+
+  std::shared_ptr<Door> m_Fireboy_Door;
+  std::shared_ptr<Door> m_Watergirl_Door;
 
   // 網格系統
   GridSystem m_GridSystem;

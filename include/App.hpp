@@ -1,11 +1,11 @@
 #ifndef APP_HPP
 #define APP_HPP
 
-#include "BackgroundImage.hpp"
-#include "Button.hpp"
 #include "Character/Character.hpp"
-#include "GridSystem.hpp"
+#include "Object/BackgroundImage.hpp"
 #include "Object/Door.hpp"
+#include "Object/GridSystem.hpp"
+#include "Object/Option.hpp"
 #include "Util/GameObject.hpp"
 #include "Util/Image.hpp"
 #include "Util/Renderer.hpp"
@@ -63,12 +63,12 @@ private:
   std::shared_ptr<BackgroundImage> m_TitleBackground; // 遊戲封面背景
   std::shared_ptr<BackgroundImage> m_LevelSelectBackground; // 關卡選擇背景
 
-  std::shared_ptr<Button> m_Level1Button; // 第一關按鈕
-  std::shared_ptr<Button> m_Level2Button; // 第二關按鈕
-  std::shared_ptr<Button> m_Level3Button; // 第三關按鈕
-  std::shared_ptr<Button> m_Level4Button; // 第四關按鈕
-  std::shared_ptr<Button> m_Level5Button; // 第五關按鈕
-  std::shared_ptr<Button> m_BackButton;   // 返回按鈕
+  std::shared_ptr<Option> m_Level1Button; // 第一關按鈕
+  std::shared_ptr<Option> m_Level2Button; // 第二關按鈕
+  std::shared_ptr<Option> m_Level3Button; // 第三關按鈕
+  std::shared_ptr<Option> m_Level4Button; // 第四關按鈕
+  std::shared_ptr<Option> m_Level5Button; // 第五關按鈕
+  std::shared_ptr<Option> m_BackButton;   // 返回按鈕
 
   std::shared_ptr<BackgroundImage> m_Level1Background; // 第一關背景
   std::shared_ptr<BackgroundImage> m_Level2Background; // 第二關背景

@@ -23,7 +23,7 @@ App::App() {
 
   // 創建關卡按鈕
   // 第一關按鈕
-  m_Level1Button = std::make_shared<Button>(
+  m_Level1Button = std::make_shared<Option>(
       RESOURCE_DIR "/material/background/button/current-level.png",
       glm::vec2(0, -220));
   m_Level1Button->SetVisible(false);
@@ -44,7 +44,7 @@ App::App() {
   m_Root.AddChild(m_Level1Button);
 
   // 第二關按鈕
-  m_Level2Button = std::make_shared<Button>(
+  m_Level2Button = std::make_shared<Option>(
       RESOURCE_DIR "/material/background/button/unlevel.png",
       glm::vec2(0, -102));
   m_Level2Button->SetVisible(false);
@@ -66,7 +66,7 @@ App::App() {
   m_Root.AddChild(m_Level2Button);
 
   // 第三關按鈕
-  m_Level3Button = std::make_shared<Button>(
+  m_Level3Button = std::make_shared<Option>(
       RESOURCE_DIR "/material/background/button/unlevel.png", glm::vec2(0, 16));
   m_Level3Button->SetVisible(false);
   m_Level3Button->SetInteractable(false); // 第三關不可互動
@@ -87,7 +87,7 @@ App::App() {
   m_Root.AddChild(m_Level3Button);
 
   // 第四關按鈕
-  m_Level4Button = std::make_shared<Button>(
+  m_Level4Button = std::make_shared<Option>(
       RESOURCE_DIR "/material/background/button/unlevel.png",
       glm::vec2(0, 134));
   m_Level4Button->SetVisible(false);
@@ -109,7 +109,7 @@ App::App() {
   m_Root.AddChild(m_Level4Button);
 
   // 第五關按鈕
-  m_Level5Button = std::make_shared<Button>(
+  m_Level5Button = std::make_shared<Option>(
       RESOURCE_DIR "/material/background/button/unlevel.png",
       glm::vec2(0, 252));
   m_Level5Button->SetVisible(false);
@@ -130,7 +130,7 @@ App::App() {
   m_Root.AddChild(m_Level5Button);
 
   // 返回按鈕
-  m_BackButton = std::make_shared<Button>(
+  m_BackButton = std::make_shared<Option>(
       RESOURCE_DIR "/material/background/button/back-button.png",
       glm::vec2(-450, -250));
   m_BackButton->SetVisible(false);

@@ -1,7 +1,7 @@
 #include "App.hpp"
 #include "Character/Fireboy.hpp"
 #include "Character/Watergirl.hpp"
-#include "GridSystem.hpp"
+#include "Object/GridSystem.hpp"
 #include "Util/Input.hpp"
 #include "Util/Keycode.hpp"
 #include "Util/Logger.hpp"

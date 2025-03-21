@@ -6,20 +6,21 @@ set(SRC_FILES
         Game/AppGamePlay.cpp
         Game/AppGameWin.cpp
         Game/AppGameOver.cpp
+        Character/Character.cpp
         Character/Fireboy.cpp
         Character/Watergirl.cpp
-        GridSystem.cpp
+        Object/GridSystem.cpp
 )
 
 set(INCLUDE_FILES
         App.hpp
-        BackgroundImage.hpp
-        Button.hpp
+        Object/BackgroundImage.hpp
+        Object/Option.hpp
         Character/Character.hpp
         Character/Fireboy.hpp
         Character/Watergirl.hpp
         Object/Door.hpp
-        GridSystem.hpp
+        Object/GridSystem.hpp
 )
 
 set(TEST_FILES

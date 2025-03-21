@@ -3,11 +3,9 @@
 #include "Util/Input.hpp"
 #include "Util/Keycode.hpp"
 #include "Util/Logger.hpp"
-#include "LevelData.hpp"
 #include "config.hpp"
 #include <SDL.h>
 #include <memory>
-
 
 App::App() {
   LOG_TRACE("Game Initialize");
@@ -157,6 +155,22 @@ App::App() {
       RESOURCE_DIR "/material/background/rlevel1.png");
   m_Level1Background->SetVisible(false);
   m_Root.AddChild(m_Level1Background);
+
+  // 第二關背景
+  // 第三關背景
+  // 第四關背景
+  // 第五關背景
+
+  // Door
+  m_Fireboy_Door = std::make_shared<Door>(
+      RESOURCE_DIR "/material/props/door/door-fireboy.png");
+  m_Fireboy_Door->SetVisible(false);
+  m_Root.AddChild(m_Fireboy_Door);
+
+  m_Watergirl_Door = std::make_shared<Door>(
+      RESOURCE_DIR "/material/props/door/door-watergirl.png");
+  m_Watergirl_Door->SetVisible(false);
+  m_Root.AddChild(m_Watergirl_Door);
 
   m_Root.Update();
 }

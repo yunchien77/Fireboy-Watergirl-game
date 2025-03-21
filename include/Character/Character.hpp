@@ -1,8 +1,11 @@
 #ifndef CHARACTER_HPP
 #define CHARACTER_HPP
 
+#include <GridSystem.hpp>
+
 #include "Util/GameObject.hpp"
 #include "Util/Image.hpp"
+#include <glm/fwd.hpp>
 #include <string>
 
 class Character : public Util::GameObject {
@@ -10,14 +13,11 @@ public:
   explicit Character(const std::string &imagePath)
       : GameObject(std::make_shared<Util::Image>(imagePath), 10),
         m_ImagePath(imagePath), isMoving(false), currentSprite(false),
-        m_IsJumping(false), m_JumpHeight(0), m_JumpMaxHeight(50),
+        m_IsJumping(false), m_JumpHeight(0), m_JumpMaxHeight(90),
         m_IsOnGround(true), m_UpKeyWasPressed(false), m_FacingRight(true) {
 
-    glm::vec2 size = GetScaledSize();
-    SetPivot(glm::vec2(
-        0.0f,
-        -size.y / 2 +
-            12.5)); // 12.5是格子的一半(原本預設圖片錨點在圖片中心)，讓角色可以顯示在陸地上
+    m_Size = GetScaledSize();
+    SetPivot(glm::vec2(0.0f, -m_Size.y / 2 - 13.5));
   }
 
   Character(const Character &) = delete;
@@ -47,63 +47,113 @@ public:
     m_Transform.translation = position;
   }
 
-  // 處理角色移動
-  void Move(int deltaX, bool upKeyPressed) {
+  glm::vec2 GetSize() { return m_Size; } // 取得角色的尺寸
+
+  void Move(int deltaX, bool upKeyPressed, const GridSystem &grid,
+            bool isFireboy) {
     isMoving = (deltaX != 0);
 
-    // 更新面向方向
     if (deltaX < 0) {
       m_FacingRight = false;
     } else if (deltaX > 0) {
       m_FacingRight = true;
     }
 
-    // 應用水平翻轉
     ApplyFlip();
 
-    // 處理水平移動
+    // 嘗試水平移動
     glm::vec2 newPos = GetPosition();
     newPos.x += deltaX;
-    SetPosition(newPos);
 
-    // 處理跳躍請求
-    if (upKeyPressed) {
-      // 如果在地面上且之前上鍵沒有被按下（或已釋放）
-      if (m_IsOnGround && !m_UpKeyWasPressed) {
-        m_IsJumping = true;
-        m_IsOnGround = false;
-        m_JumpHeight = 0;
-      }
-      // 記錄上鍵已被按下
-      m_UpKeyWasPressed = true;
-    } else {
-      // 上鍵被釋放
-      m_UpKeyWasPressed = false;
+    // 只有當新位置不會碰撞時，才進行移動
+    if (!grid.CheckCollision(newPos, m_Size, isFireboy, deltaX)) {
+      SetPosition(newPos);
     }
+
+    // 處理跳躍
+    // 只有當上鍵是新按下的(之前沒有按下)並且角色在地面上時才跳躍
+    if (upKeyPressed && !m_UpKeyWasPressed && m_IsOnGround) {
+      m_IsJumping = true;
+      m_IsOnGround = false;
+      m_JumpHeight = 0;
+    }
+
+    // 更新上一次按鍵狀態
+    m_UpKeyWasPressed = upKeyPressed;
 
     UpdateAnimation();
   }
 
-  void UpdateJump() {
+  void UpdateJump(const GridSystem &grid) {
     if (m_IsJumping) {
       glm::vec2 pos = GetPosition();
+      float fallSpeed = 5.0f; // 下落速度
+      float jumpSpeed = 7.0f; // 跳躍速度
 
-      // 上升階段
+      // 🔼 上升階段
       if (m_JumpHeight < m_JumpMaxHeight) {
-        pos.y += 25; // 向上移動的速度
-        m_JumpHeight += 15;
-      }
-      // 下降階段
-      else {
-        pos.y -= 5; // 向下移動的速度
+        glm::vec2 nextPos = pos;
+        nextPos.y += jumpSpeed; // 嘗試向上跳
 
-        // 檢查是否到達地面
-        if (pos.y <= -312) {
-          pos.y = -312;
-          m_IsJumping = false;
-          m_JumpHeight = 0;
-          m_IsOnGround = true;
+        // 檢查跳躍後頭部會到達的格子
+        glm::ivec2 gridPosTop =
+            grid.GameToCellPosition(glm::vec2(pos.x, pos.y + m_JumpMaxHeight));
+        CellType aboveCell = grid.GetCell(gridPosTop.x, gridPosTop.y);
+
+        // 如果即將撞到天花板，則停止上升
+        if (aboveCell == CellType::FLOOR) {
+          m_JumpHeight = m_JumpMaxHeight; // 強制結束跳躍
+        } else {
+          pos = nextPos;
+          m_JumpHeight += jumpSpeed;
         }
+      }
+      // 🔽 下降階段
+      else {
+        glm::vec2 nextPos = pos;
+        nextPos.y -= fallSpeed; // 嘗試下降
+
+        glm::ivec2 gridPosBelow = grid.GameToCellPosition(nextPos);
+        CellType belowCell = grid.GetCell(gridPosBelow.x, gridPosBelow.y);
+
+        // 如果腳底碰到地板，則停止下降
+        if (belowCell == CellType::FLOOR) {
+          m_IsJumping = false;
+          m_IsOnGround = true;
+          m_JumpHeight = 0;
+
+          // 修正 Y 軸位置，讓角色貼合地板
+          float cellBottomY =
+              grid.CellToGamePosition(gridPosBelow.x, gridPosBelow.y).y;
+          pos.y = cellBottomY + (grid.GetCellSize() / 2.0f - 12.0f);
+        } else {
+          pos = nextPos;
+        }
+      }
+
+      SetPosition(pos);
+    }
+  }
+
+  void ApplyGravity(const GridSystem &grid) {
+    if (!m_IsJumping) { // 只有在未跳躍時才應用重力
+      glm::vec2 pos = GetPosition();
+      glm::vec2 nextPos = pos;
+      float fallSpeed = 5.0f; // 下落速度
+
+      nextPos.y -= fallSpeed; // 嘗試往下移動
+      glm::ivec2 gridPos = grid.GameToCellPosition(nextPos);
+      CellType belowCell = grid.GetCell(gridPos.x, gridPos.y);
+
+      if (belowCell == CellType::FLOOR) {
+        // 落地時，修正 Y 軸位置，避免浮空
+        m_IsOnGround = true;
+        float cellBottomY = grid.CellToGamePosition(gridPos.x, gridPos.y).y;
+        pos.y = cellBottomY + (grid.GetCellSize() / 2.0f - 12.0f);
+      } else {
+        // 沒有地板，繼續掉落
+        m_IsOnGround = false;
+        pos = nextPos;
       }
 
       SetPosition(pos);
@@ -132,6 +182,7 @@ protected:
   bool m_IsOnGround;   // 角色是否在地面上
   bool m_UpKeyWasPressed; // 上鍵是否已被按下（用於防止持續按住時重複跳躍）
   bool m_FacingRight; // 角色面向方向：true為右，false為左
+  glm::vec2 m_Size;   // 角色的尺寸
 };
 
 #endif // CHARACTER_HPP

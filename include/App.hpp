@@ -5,7 +5,7 @@
 #include "Button.hpp"
 #include "Character/Character.hpp"
 #include "GridSystem.hpp"
-#include "LevelData.hpp"
+#include "Object/Door.hpp"
 #include "Util/GameObject.hpp"
 #include "Util/Image.hpp"
 #include "Util/Renderer.hpp"
@@ -47,7 +47,8 @@ public:
   GridSystem &GetGridSystem() { return m_GridSystem; }
 
   // 檢查角色碰撞
-  bool CheckCharacterCollision(const glm::vec2 &position, bool isFireboy);
+  bool CheckCharacterCollision(const glm::vec2 &position, glm::vec2 size,
+                               bool isFireboy, int deltaX = 0);
 
   bool LoadLevel(int levelNumber);
 
@@ -77,6 +78,9 @@ private:
 
   std::shared_ptr<Character> m_Fireboy;
   std::shared_ptr<Character> m_Watergirl;
+
+  std::shared_ptr<Door> m_Fireboy_Door;
+  std::shared_ptr<Door> m_Watergirl_Door;
 
   // 網格系統
   GridSystem m_GridSystem;

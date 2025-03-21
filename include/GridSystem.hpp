@@ -30,9 +30,7 @@ class GridSystem {
 public:
   GridSystem();
 
-  GridSystem(const std::vector<std::vector<CellType>> &levelData,
-             int backgroundWidth = 975, int backgroundHeight = 725,
-             int cellSize = 25);
+  bool LoadFromFile(const std::string &filePath);
 
   // 取得指定位置的格子類型
   CellType GetCell(int x, int y) const;

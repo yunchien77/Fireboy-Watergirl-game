@@ -60,16 +60,33 @@ GridSystem::GridSystem()
            m_GridHeight);
 }
 
-GridSystem::GridSystem(const std::vector<std::vector<CellType>> &levelData,
-                       int backgroundWidth, int backgroundHeight, int cellSize)
-    : m_Grid(levelData), m_CellSize(cellSize),
-      m_BackgroundWidth(backgroundWidth), m_BackgroundHeight(backgroundHeight) {
+bool GridSystem::LoadFromFile(const std::string &filePath) {
+  std::ifstream file(filePath);
+  if (!file.is_open()) {
+    LOG_ERROR("Failed to open grid file: {}", filePath);
+    return false;
+  }
 
-  m_GridWidth = m_Grid[0].size();
-  m_GridHeight = m_Grid.size();
+  // Clear existing grid data
+  m_Grid.clear();
+  m_Grid.resize(m_GridHeight,
+                std::vector<CellType>(m_GridWidth, CellType::EMPTY));
 
-  LOG_INFO("GridSystem initialized with level data: {}x{}", m_GridWidth,
-           m_GridHeight);
+  std::string line;
+  int y = 0;
+  while (std::getline(file, line) && y < m_GridHeight) {
+    std::istringstream iss(line);
+    int x = 0;
+    int cellValue;
+    while (iss >> cellValue && x < m_GridWidth) {
+      m_Grid[y][x] = static_cast<CellType>(cellValue);
+      x++;
+    }
+    y++;
+  }
+
+  LOG_INFO("Grid loaded from file: {}", filePath);
+  return true;
 }
 
 CellType GridSystem::GetCell(int x, int y) const {

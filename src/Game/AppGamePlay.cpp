@@ -1,7 +1,7 @@
 #include "App.hpp"
 #include "Character/Fireboy.hpp"
 #include "Character/Watergirl.hpp"
-#include "LevelData.hpp"
+#include "GridSystem.hpp"
 #include "Util/Input.hpp"
 #include "Util/Keycode.hpp"
 #include "Util/Logger.hpp"
@@ -19,10 +19,17 @@ bool App::CheckCharacterCollision(const glm::vec2 &position, glm::vec2 size,
 
 // 載入地圖網格，並初始化 GridSystem
 bool App::LoadLevelGrid(int levelNumber) {
+  std::string gridFilePath =
+      RESOURCE_DIR "/map/level" + std::to_string(levelNumber) + "_grid.txt";
+
+  bool success = m_GridSystem.LoadFromFile(gridFilePath);
+  if (success) {
+    m_IsGridLoaded = true;
+    LOG_INFO("Successfully loaded grid for level {}", levelNumber);
+  }
+
   switch (levelNumber) {
   case 1: {
-    m_GridSystem = GridSystem(level1);
-
     // 初始化角色 Fireboy
     if (!m_Fireboy) {
       m_Fireboy = std::make_shared<Fireboy>();
@@ -56,15 +63,11 @@ bool App::LoadLevelGrid(int levelNumber) {
   case 3:
   case 4:
   case 5:
-    m_GridSystem = GridSystem(level1);
     break;
   default:
     LOG_ERROR("Invalid level number: {}", levelNumber);
     return false;
   }
-
-  m_IsGridLoaded = true;
-  LOG_INFO("Successfully loaded level {}", levelNumber);
 
   for (int y = 0; y < m_GridSystem.GetGridHeight(); ++y) {
     for (int x = 0; x < m_GridSystem.GetGridWidth(); ++x) {

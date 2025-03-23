@@ -40,6 +40,8 @@ public:
 
   void End(); // NOLINT(readability-convert-member-functions-to-static)
 
+  void ResetGame();
+
   // 載入關卡的網格檔案
   bool LoadLevelGrid(int levelNumber);
 
@@ -90,6 +92,12 @@ private:
 
   std::shared_ptr<BackgroundImage> m_GameWinBackground;
   std::shared_ptr<BackgroundImage> m_GameOverBackground;
+
+  std::shared_ptr<Option> m_EndButton;      // 結束按鈕
+  std::shared_ptr<Option> m_MenuButton;     // 返回主選單按鈕
+  std::shared_ptr<Option> m_RetryButton;    // 重新開始按鈕
+  std::shared_ptr<Option> m_ResumeButton;   // 繼續按鈕
+  std::shared_ptr<Option> m_ContinueButton; // 切換道關卡選擇按鈕
 
   // 網格系統
   GridSystem m_GridSystem;

@@ -17,6 +17,16 @@ void App::GameWin() {
     m_Root.AddChild(m_GameWinBackground);
   }
   m_GameWinBackground->SetVisible(true);
+  m_ContinueButton->SetVisible(true);
+
+  int mouseX, mouseY;
+  Uint32 mouseState = SDL_GetMouseState(&mouseX, &mouseY);
+  glm::vec2 gameCoords = ConvertToGameCoordinates(mouseX, mouseY);
+
+  if (mouseState & SDL_BUTTON(SDL_BUTTON_LEFT)) {
+    if (m_ContinueButton->HandleClick(gameCoords.x, gameCoords.y)) {
+    }
+  }
 
   // 處理遊戲結束條件
   if (Util::Input::IsKeyUp(Util::Keycode::ESCAPE) || Util::Input::IfExit()) {

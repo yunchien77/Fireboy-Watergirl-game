@@ -6,6 +6,7 @@ set(SRC_FILES
         Game/AppGamePlay.cpp
         Game/AppGameWin.cpp
         Game/AppGameOver.cpp
+        Game/AppReset.cpp
         Character/Character.cpp
         Character/Fireboy.cpp
         Character/Watergirl.cpp

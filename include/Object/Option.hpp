@@ -14,7 +14,7 @@
 class Option : public Util::GameObject {
 public:
   Option(const std::string &imagePath, const glm::vec2 &position = {0, 0},
-         int zIndex = 0)
+         int zIndex = 40)
       : GameObject(std::make_unique<Util::Image>(imagePath), zIndex) {
 
     glm::vec2 size = GetScaledSize();

@@ -29,8 +29,20 @@ App::App() {
   m_Level1Button->SetVisible(false);
 
   // 設置按鈕點擊事件回調
+  // m_Level1Button->SetOnClickCallback([this]() {
+  //   m_CurrentState = State::GAME_PLAY;
+  //   m_Level1Button->SetVisible(false);
+  //   m_Level2Button->SetVisible(false);
+  //   m_Level3Button->SetVisible(false);
+  //   m_Level4Button->SetVisible(false);
+  //   m_Level5Button->SetVisible(false);
+  //   m_BackButton->SetVisible(false);
+  //   m_LevelSelectBackground->SetVisible(false);
+  //   m_Level1Background->SetVisible(true);
+  // });
   m_Level1Button->SetOnClickCallback([this]() {
-    m_CurrentState = State::GAME_PLAY;
+    ResetGame();
+
     m_Level1Button->SetVisible(false);
     m_Level2Button->SetVisible(false);
     m_Level3Button->SetVisible(false);
@@ -38,7 +50,10 @@ App::App() {
     m_Level5Button->SetVisible(false);
     m_BackButton->SetVisible(false);
     m_LevelSelectBackground->SetVisible(false);
+
     m_Level1Background->SetVisible(true);
+    m_CurrentLevel = 1;
+    m_IsGridLoaded = false;
   });
 
   m_Root.AddChild(m_Level1Button);
@@ -184,6 +199,34 @@ App::App() {
       RESOURCE_DIR "/material/background/game-win.png", 35);
   m_GameWinBackground->SetVisible(false); // Hide initially
   m_Root.AddChild(m_GameWinBackground);
+
+  // 切換到關卡選擇按鈕
+  m_ContinueButton = std::make_shared<Option>(
+      RESOURCE_DIR "/material/background/button/continue-button.png",
+      glm::vec2(0, -150));
+  m_ContinueButton->SetVisible(false);
+
+  // 設置按鈕點擊事件回調
+  m_ContinueButton->SetOnClickCallback([this]() {
+    ResetGame();
+
+    m_CurrentState = State::LEVEL_SELECT;
+    m_Level1Button->SetVisible(true);
+    m_Level2Button->SetVisible(true);
+    m_Level3Button->SetVisible(true);
+    m_Level4Button->SetVisible(true);
+    m_Level5Button->SetVisible(true);
+    m_BackButton->SetVisible(true);
+    m_LevelSelectBackground->SetVisible(true);
+
+    m_Level1Background->SetVisible(false);
+    // m_Level2Background->SetVisible(false);
+    // m_Level3Background->SetVisible(false);
+    // m_Level4Background->SetVisible(false);
+    // m_Level5Background->SetVisible(false);
+  });
+
+  m_Root.AddChild(m_ContinueButton);
 
   m_Root.Update();
 }

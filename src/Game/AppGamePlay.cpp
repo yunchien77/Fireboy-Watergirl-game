@@ -140,9 +140,8 @@ void HandleCollision(Character &player, App &app, bool isFireboy) {
 
 // 檢查是否達成勝利條件
 bool App::CheckWinCondition() {
-  // Check if both characters are at their respective doors
-  return (m_Fireboy_Door->IsCharacterAtDoor() &&
-          m_Watergirl_Door->IsCharacterAtDoor());
+  // 兩個門都必須為全開狀態
+  return (m_Fireboy_Door->IsOpen() && m_Watergirl_Door->IsOpen());
 }
 
 // 檢查角色與門的互動
@@ -175,10 +174,7 @@ void App::CheckCharacterDoorInteraction() {
     m_Watergirl_Door->SetCharacterAtDoor(watergirlAtDoor);
   }
 
-  // Check if both characters are at their doors
   if (CheckWinCondition()) {
-    // Give a small delay to show both doors open before transitioning
-    // You could implement a timer here or use a simple counter
     m_CurrentState = State::GAME_WIN;
     LOG_INFO("Level completed! Both characters at their doors.");
   }

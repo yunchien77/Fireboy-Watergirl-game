@@ -138,7 +138,52 @@ void HandleCollision(Character &player, App &app, bool isFireboy) {
   }
 }
 
-// 遊戲主循環
+// 檢查是否達成勝利條件
+bool App::CheckWinCondition() {
+  // Check if both characters are at their respective doors
+  return (m_Fireboy_Door->IsCharacterAtDoor() &&
+          m_Watergirl_Door->IsCharacterAtDoor());
+}
+
+// 檢查角色與門的互動
+void App::CheckCharacterDoorInteraction() {
+  // Check if Fireboy is at his door
+  glm::vec2 fireboyPos = m_Fireboy->GetPosition();
+  glm::vec2 fireboyDoorPos = m_Fireboy_Door->GetPosition();
+
+  // Define a distance threshold for door interaction
+  const float interactionDistance = m_GridSystem.GetCellSize() * 1.5f;
+
+  // Calculate distances
+  float fireboyToDoorDistance = glm::length(fireboyPos - fireboyDoorPos);
+
+  // Update Fireboy's door state based on proximity
+  bool fireboyAtDoor = (fireboyToDoorDistance < interactionDistance);
+  if (fireboyAtDoor != m_Fireboy_Door->IsCharacterAtDoor()) {
+    m_Fireboy_Door->SetCharacterAtDoor(fireboyAtDoor);
+  }
+
+  // Check if Watergirl is at her door
+  glm::vec2 watergirlPos = m_Watergirl->GetPosition();
+  glm::vec2 watergirlDoorPos = m_Watergirl_Door->GetPosition();
+
+  float watergirlToDoorDistance = glm::length(watergirlPos - watergirlDoorPos);
+
+  // Update Watergirl's door state based on proximity
+  bool watergirlAtDoor = (watergirlToDoorDistance < interactionDistance);
+  if (watergirlAtDoor != m_Watergirl_Door->IsCharacterAtDoor()) {
+    m_Watergirl_Door->SetCharacterAtDoor(watergirlAtDoor);
+  }
+
+  // Check if both characters are at their doors
+  if (CheckWinCondition()) {
+    // Give a small delay to show both doors open before transitioning
+    // You could implement a timer here or use a simple counter
+    m_CurrentState = State::GAME_WIN;
+    LOG_INFO("Level completed! Both characters at their doors.");
+  }
+}
+
 void App::GamePlay() {
   LOG_TRACE("Game Play");
 
@@ -149,10 +194,6 @@ void App::GamePlay() {
       return;
     }
   }
-
-  // 記錄角色位置
-  static glm::vec2 prevFireboyPos = m_Fireboy->GetPosition();
-  static glm::vec2 prevWatergirlPos = m_Watergirl->GetPosition();
 
   // Fireboy 控制
   int fireboyMoveX = 0;
@@ -190,15 +231,12 @@ void App::GamePlay() {
   RestrictPlayerPosition(*m_Watergirl, *this);
   HandleCollision(*m_Watergirl, *this, false);
 
-  // Debug 顯示角色位置
-  if (m_Fireboy->GetPosition() != prevFireboyPos) {
-    prevFireboyPos = m_Fireboy->GetPosition();
-  }
-  if (m_Watergirl->GetPosition() != prevWatergirlPos) {
-    prevWatergirlPos = m_Watergirl->GetPosition();
-  }
+  m_Fireboy_Door->UpdateAnimation();
+  m_Watergirl_Door->UpdateAnimation();
 
-  // 處理遊戲結束條件
+  // 檢查 Fireboy 和Watergirl 是否在各自的門前
+  CheckCharacterDoorInteraction();
+
   if (Util::Input::IsKeyUp(Util::Keycode::ESCAPE) || Util::Input::IfExit()) {
     m_CurrentState = State::END;
   }

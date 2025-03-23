@@ -2,7 +2,7 @@
 #include "config.hpp"
 
 Watergirl::Watergirl()
-    : Character(RESOURCE_DIR "/material/character/watergirl-front.png"),
+    : Character(RESOURCE_DIR "/material/character/watergirl-front.png", 30),
       animationFrame(0) {}
 
 void Watergirl::UpdateAnimation() {

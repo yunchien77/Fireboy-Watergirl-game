@@ -2,7 +2,7 @@
 #include "config.hpp"
 
 Fireboy::Fireboy()
-    : Character(RESOURCE_DIR "/material/character/fireboy-front.png"),
+    : Character(RESOURCE_DIR "/material/character/fireboy-front.png", 30),
       animationFrame(0) {}
 
 void Fireboy::UpdateAnimation() {

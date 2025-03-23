@@ -1,8 +1,8 @@
 #include "Character/Character.hpp"
 #include <cmath>
 
-Character::Character(const std::string &imagePath)
-    : GameObject(std::make_shared<Util::Image>(imagePath), 10),
+Character::Character(const std::string &imagePath, const float zindex = 30)
+    : GameObject(std::make_shared<Util::Image>(imagePath), zindex),
       m_ImagePath(imagePath), isMoving(false), currentSprite(false),
       m_IsJumping(false), m_JumpHeight(0), m_JumpMaxHeight(90),
       m_IsOnGround(true), m_UpKeyWasPressed(false), m_FacingRight(true) {

@@ -162,15 +162,28 @@ App::App() {
   // 第五關背景
 
   // Door
-  m_Fireboy_Door = std::make_shared<Door>(
-      RESOURCE_DIR "/material/props/door/door-fireboy.png");
-  m_Fireboy_Door->SetVisible(false);
-  m_Root.AddChild(m_Fireboy_Door);
+  if (!m_Fireboy_Door) {
+    m_Fireboy_Door = std::make_shared<Door>(
+        RESOURCE_DIR "/material/props/door/door-fireboy-closed.png",
+        RESOURCE_DIR "/material/props/door/door-fireboy-half.png",
+        RESOURCE_DIR "/material/props/door/door-fireboy-open.png", true, 10);
+    m_Fireboy_Door->SetVisible(false);
+    m_Root.AddChild(m_Fireboy_Door);
+  }
 
-  m_Watergirl_Door = std::make_shared<Door>(
-      RESOURCE_DIR "/material/props/door/door-watergirl.png");
-  m_Watergirl_Door->SetVisible(false);
-  m_Root.AddChild(m_Watergirl_Door);
+  if (!m_Watergirl_Door) {
+    m_Watergirl_Door = std::make_shared<Door>(
+        RESOURCE_DIR "/material/props/door/door-watergirl-closed.png",
+        RESOURCE_DIR "/material/props/door/door-watergirl-half.png",
+        RESOURCE_DIR "/material/props/door/door-watergirl-open.png", false, 10);
+    m_Watergirl_Door->SetVisible(false);
+    m_Root.AddChild(m_Watergirl_Door);
+  }
+
+  m_GameWinBackground = std::make_shared<BackgroundImage>(
+      RESOURCE_DIR "/material/background/game-win.png", 35);
+  m_GameWinBackground->SetVisible(false); // Hide initially
+  m_Root.AddChild(m_GameWinBackground);
 
   m_Root.Update();
 }

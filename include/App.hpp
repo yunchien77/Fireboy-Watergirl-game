@@ -52,6 +52,12 @@ public:
 
   bool LoadLevel(int levelNumber);
 
+  // 檢查是否達成勝利條件
+  bool CheckWinCondition();
+
+  // 檢查角色與門的互動
+  void CheckCharacterDoorInteraction();
+
 private:
   void ValidTask();
 
@@ -81,6 +87,9 @@ private:
 
   std::shared_ptr<Door> m_Fireboy_Door;
   std::shared_ptr<Door> m_Watergirl_Door;
+
+  std::shared_ptr<BackgroundImage> m_GameWinBackground;
+  std::shared_ptr<BackgroundImage> m_GameOverBackground;
 
   // 網格系統
   GridSystem m_GridSystem;

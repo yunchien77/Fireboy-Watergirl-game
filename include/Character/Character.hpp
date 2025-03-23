@@ -10,7 +10,7 @@
 
 class Character : public Util::GameObject {
 public:
-  explicit Character(const std::string &imagePath);
+  explicit Character(const std::string &imagePath, const float zindex);
 
   Character(const Character &) = delete;
   Character(Character &&) = delete;

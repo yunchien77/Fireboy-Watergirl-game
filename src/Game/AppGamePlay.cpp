@@ -324,12 +324,12 @@ void App::GamePlay() {
       }
 
   // Debug 顯示角色位置
-  if (m_Fireboy->GetPosition() != prevFireboyPos) {
+  /*if (m_Fireboy->GetPosition() != prevFireboyPos) {
     prevFireboyPos = m_Fireboy->GetPosition();
   }
-  if (m_Watergirl->GetPosition() != prevWatergirlPos) {
+  if (m_Watergirl->GetPosition() != prevWatergirlPos) {／
     prevWatergirlPos = m_Watergirl->GetPosition();
-  }
+  }*/
   m_Fireboy_Door->UpdateAnimation();
   m_Watergirl_Door->UpdateAnimation();
 

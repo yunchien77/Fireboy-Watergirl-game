@@ -322,7 +322,7 @@ void App::GamePlay() {
       trap->OnCharacterEnter(m_Watergirl.get());
     }
       }
-  
+
   m_Fireboy_Door->UpdateAnimation();
   m_Watergirl_Door->UpdateAnimation();
 

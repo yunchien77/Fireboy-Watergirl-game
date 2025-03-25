@@ -144,15 +144,26 @@ bool GridSystem::CanMoveOn(CellType type, bool isFireboy) const {
   case CellType::WALL:
     return false;
   case CellType::LAVA:
-    return isFireboy; // 只有火男可以在岩漿上移動
+    return true;
   case CellType::WATER:
-    return !isFireboy; // 只有水女可以在水上移動
+    return true;
   case CellType::DOOR_FIRE:
     return isFireboy; // 只有火男可以通過火門
   case CellType::DOOR_WATER:
     return !isFireboy; // 只有水女可以通過水門
   default:
     return false;
+  }
+}
+
+bool GridSystem::CanStandOn(CellType type, bool isFireboy) const {
+  switch (type) {
+    case CellType::FLOOR:
+    case CellType::PLATFORM:
+    case CellType::WATER:
+      return true;
+    default:
+      return false;
   }
 }
 
@@ -166,18 +177,29 @@ bool GridSystem::CheckCollision(const glm::vec2 &worldPos, glm::vec2 size,
     glm::vec2 rightEdge = glm::vec2(worldPos.x + (size.x / 2.0f), worldPos.y);
     glm::ivec2 gridPosRight = GameToCellPosition(rightEdge);
     CellType cellTypeRight = GetCell(gridPosRight.x, gridPosRight.y);
+
+    if (cellTypeRight == CellType::WATER && isFireboy)
+      return false;
+
     return !CanMoveOn(cellTypeRight, isFireboy);
+
   } // 向左移動，只檢查左側
   else if (deltaX < 0) {
     glm::vec2 leftEdge = glm::vec2(worldPos.x - (size.x / 2.0f), worldPos.y);
     glm::ivec2 gridPosLeft = GameToCellPosition(leftEdge);
     CellType cellTypeLeft = GetCell(gridPosLeft.x, gridPosLeft.y);
+
+    if (cellTypeLeft == CellType::WATER && isFireboy)
+      return false;
+
     return !CanMoveOn(cellTypeLeft, isFireboy);
   }
   // 垂直移動或原地不動，檢查角色所在位置
   else {
     glm::ivec2 gridPos = GameToCellPosition(worldPos);
     CellType cellType = GetCell(gridPos.x, gridPos.y);
+    if (cellType == CellType::WATER && isFireboy)
+      return false;
     return !CanMoveOn(cellType, isFireboy);
   }
 }

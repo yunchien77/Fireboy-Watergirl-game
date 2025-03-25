@@ -11,6 +11,7 @@ set(SRC_FILES
         Character/Fireboy.cpp
         Character/Watergirl.cpp
         Object/GridSystem.cpp
+        Mechanism/LiquidTrap.cpp
 )
 
 set(INCLUDE_FILES
@@ -22,6 +23,8 @@ set(INCLUDE_FILES
         Character/Watergirl.hpp
         Object/Door.hpp
         Object/GridSystem.hpp
+        Mechanism/LiquidTrap.hpp
+        Interface/ITrap.hpp
 )
 
 set(TEST_FILES

@@ -8,6 +8,7 @@
 #include "config.hpp"
 #include <iostream>
 #include <memory>
+#include <Mechanism/LiquidTrap.hpp>
 
 bool App::CheckCharacterCollision(const glm::vec2 &position, glm::vec2 size,
                                   bool isFireboy, int deltaX) {
@@ -35,6 +36,7 @@ bool App::LoadLevelGrid(int levelNumber) {
       m_Fireboy = std::make_shared<Fireboy>();
       glm::vec2 fireboyInitPos = m_GridSystem.CellToGamePosition(35, 5);
       m_Fireboy->SetPosition(fireboyInitPos);
+      m_Fireboy->SetSpawnPoint(fireboyInitPos);
       m_Root.AddChild(m_Fireboy);
     }
 
@@ -43,6 +45,7 @@ bool App::LoadLevelGrid(int levelNumber) {
       m_Watergirl = std::make_shared<Watergirl>();
       glm::vec2 watergirlInitPos = m_GridSystem.CellToGamePosition(3, 17);
       m_Watergirl->SetPosition(watergirlInitPos);
+      m_Watergirl->SetSpawnPoint(watergirlInitPos);
       m_Root.AddChild(m_Watergirl);
     }
 
@@ -57,7 +60,73 @@ bool App::LoadLevelGrid(int levelNumber) {
     m_Watergirl_Door->SetPosition(watergirlDoorPos);
     m_Watergirl_Door->SetOpen(false);
     m_Watergirl_Door->SetVisible(true);
-  } break;
+
+    // 水池
+    auto water1 = std::make_shared<LiquidTrap>(CellType::WATER, SizeType::SMALL);
+    glm::vec2 waterPos1 = m_GridSystem.CellToGamePosition(27, 7);
+    waterPos1.y += 5.0f;
+    water1->SetPosition(waterPos1);
+    m_Traps.push_back(water1);
+    m_Root.AddChild(water1);
+
+    // 水池
+    auto water2 = std::make_shared<LiquidTrap>(CellType::WATER, SizeType::SMALL);
+    glm::vec2 waterPos2 = m_GridSystem.CellToGamePosition(22, 7);
+    waterPos2.y += 5.0f;
+    water2->SetPosition(waterPos2);
+    m_Traps.push_back(water2);
+    m_Root.AddChild(water2);
+
+    // 水池
+    auto water3 = std::make_shared<LiquidTrap>(CellType::WATER, SizeType::SMALL);
+    glm::vec2 waterPos3 = m_GridSystem.CellToGamePosition(17, 7);
+    waterPos3.y += 5.0f;
+    water3->SetPosition(waterPos3);
+    m_Traps.push_back(water3);
+    m_Root.AddChild(water3);
+
+    // 水池
+    auto water4 = std::make_shared<LiquidTrap>(CellType::WATER, SizeType::SMALL);
+    glm::vec2 waterPos4 = m_GridSystem.CellToGamePosition(19, 12);
+    waterPos4.y += 5.0f;
+    water4->SetPosition(waterPos4);
+    m_Traps.push_back(water4);
+    m_Root.AddChild(water4);
+
+    // 岩漿
+    auto lava1 = std::make_shared<LiquidTrap>(CellType::LAVA, SizeType::SMALL);
+    glm::vec2 lavaPos1 = m_GridSystem.CellToGamePosition(19, 19);
+    lavaPos1.y += 3.0f;
+    lava1->SetPosition(lavaPos1);
+    m_Traps.push_back(lava1);
+    m_Root.AddChild(lava1);
+
+    // 岩漿
+    auto lava2 = std::make_shared<LiquidTrap>(CellType::LAVA, SizeType::SMALL);
+    glm::vec2 lavaPos2 = m_GridSystem.CellToGamePosition(14, 19);
+    lavaPos2.y += 3.0f;
+    lava2->SetPosition(lavaPos2);
+    m_Traps.push_back(lava2);
+    m_Root.AddChild(lava2);
+
+    // 岩漿
+    auto lava3 = std::make_shared<LiquidTrap>(CellType::LAVA, SizeType::SMALL);
+    glm::vec2 lavaPos3 = m_GridSystem.CellToGamePosition(9, 19);
+    lavaPos3.y += 3.0f;
+    lava3->SetPosition(lavaPos3);
+    m_Traps.push_back(lava3);
+    m_Root.AddChild(lava3);
+
+    // 岩漿
+    auto lava4 = std::make_shared<LiquidTrap>(CellType::LAVA, SizeType::SMALL);
+    glm::vec2 lavaPos4 = m_GridSystem.CellToGamePosition(28, 22);
+    lavaPos4.y += 6.0f;
+    lava4->SetPosition(lavaPos4);
+    m_Traps.push_back(lava4);
+    m_Root.AddChild(lava4);
+
+
+} break;
 
   case 2: // 先讓 level2 ~ level5 預設為 level1，等你完成後再改回來
   case 3:
@@ -138,6 +207,13 @@ void HandleCollision(Character &player, App &app, bool isFireboy) {
   }
 }
 
+void App::ResetGameLevel() {
+  if (m_Fireboy) m_Fireboy->Respawn();
+  if (m_Watergirl) m_Watergirl->Respawn();
+  std::cout << "🔁 關卡重新開始\n";
+}
+
+// 遊戲主循環
 // 檢查是否達成勝利條件
 bool App::CheckWinCondition() {
   // 兩個門都必須為全開狀態
@@ -227,6 +303,33 @@ void App::GamePlay() {
   RestrictPlayerPosition(*m_Watergirl, *this);
   HandleCollision(*m_Watergirl, *this, false);
 
+  glm::ivec2 fireboyCell = m_GridSystem.GameToCellPosition(m_Fireboy->GetPosition());
+  CellType cellTypeFireboy = m_GridSystem.GetCell(fireboyCell.x, fireboyCell.y);
+  if (cellTypeFireboy == CellType::WATER ||
+      cellTypeFireboy == CellType::LAVA ||
+      cellTypeFireboy == CellType::POISON) {
+    for (auto& trap : m_Traps) {
+      trap->OnCharacterEnter(m_Fireboy.get());
+    }
+      }
+
+  glm::ivec2 watergirlCell = m_GridSystem.GameToCellPosition(m_Watergirl->GetPosition());
+  CellType cellTypeWatergirl = m_GridSystem.GetCell(watergirlCell.x, watergirlCell.y);
+  if (cellTypeWatergirl == CellType::WATER ||
+      cellTypeWatergirl == CellType::LAVA ||
+      cellTypeWatergirl == CellType::POISON) {
+    for (auto& trap : m_Traps) {
+      trap->OnCharacterEnter(m_Watergirl.get());
+    }
+      }
+
+  // Debug 顯示角色位置
+  if (m_Fireboy->GetPosition() != prevFireboyPos) {
+    prevFireboyPos = m_Fireboy->GetPosition();
+  }
+  if (m_Watergirl->GetPosition() != prevWatergirlPos) {
+    prevWatergirlPos = m_Watergirl->GetPosition();
+  }
   m_Fireboy_Door->UpdateAnimation();
   m_Watergirl_Door->UpdateAnimation();
 
@@ -237,5 +340,12 @@ void App::GamePlay() {
     m_CurrentState = State::END;
   }
 
+  if (m_Fireboy->IsDead() || m_Watergirl->IsDead()) {
+    std::cout << "有角色死亡，關卡重置中...\n";
+    ResetGameLevel();
+    return;
+  }
+
   m_Root.Update();
 }
+

@@ -1,5 +1,6 @@
 #include "Character/Character.hpp"
 #include <cmath>
+#include <iostream>
 
 Character::Character(const std::string &imagePath, const float zindex = 30)
     : GameObject(std::make_shared<Util::Image>(imagePath), zindex),
@@ -78,7 +79,7 @@ void Character::UpdateJump(const GridSystem &grid) {
     float fallSpeed = 5.0f; // 下落速度
     float jumpSpeed = 7.0f; // 跳躍速度
 
-    // 🔼 上升階段
+    // 上升階段
     if (m_JumpHeight < m_JumpMaxHeight) {
       glm::vec2 nextPos = pos;
       nextPos.y += jumpSpeed; // 嘗試向上跳
@@ -89,14 +90,14 @@ void Character::UpdateJump(const GridSystem &grid) {
       CellType aboveCell = grid.GetCell(gridPosTop.x, gridPosTop.y);
 
       // 如果即將撞到天花板，則停止上升
-      if (aboveCell == CellType::FLOOR) {
+      if (aboveCell == CellType::FLOOR || aboveCell == CellType::WATER) {
         m_JumpHeight = m_JumpMaxHeight; // 強制結束跳躍
       } else {
         pos = nextPos;
         m_JumpHeight += jumpSpeed;
       }
     }
-    // 🔽 下降階段
+    // 下降階段
     else {
       glm::vec2 nextPos = pos;
       nextPos.y -= fallSpeed; // 嘗試下降
@@ -105,7 +106,7 @@ void Character::UpdateJump(const GridSystem &grid) {
       CellType belowCell = grid.GetCell(gridPosBelow.x, gridPosBelow.y);
 
       // 如果腳底碰到地板，則停止下降
-      if (belowCell == CellType::FLOOR) {
+      if (grid.CanStandOn(belowCell, this->IsFireboy())) {
         m_IsJumping = false;
         m_IsOnGround = true;
         m_JumpHeight = 0;
@@ -124,22 +125,20 @@ void Character::UpdateJump(const GridSystem &grid) {
 }
 
 void Character::ApplyGravity(const GridSystem &grid) {
-  if (!m_IsJumping) { // 只有在未跳躍時才應用重力
+  if (!m_IsJumping) {
     glm::vec2 pos = GetPosition();
     glm::vec2 nextPos = pos;
-    float fallSpeed = 5.0f; // 下落速度
+    float fallSpeed = 5.0f;
+    nextPos.y -= fallSpeed;
 
-    nextPos.y -= fallSpeed; // 嘗試往下移動
     glm::ivec2 gridPos = grid.GameToCellPosition(nextPos);
     CellType belowCell = grid.GetCell(gridPos.x, gridPos.y);
 
-    if (belowCell == CellType::FLOOR) {
-      // 落地時，修正 Y 軸位置，避免浮空
+    if (grid.CanStandOn(belowCell, this->IsFireboy())) {
       m_IsOnGround = true;
       float cellBottomY = grid.CellToGamePosition(gridPos.x, gridPos.y).y;
       pos.y = cellBottomY + (grid.GetCellSize() / 2.0f - 12.0f);
     } else {
-      // 沒有地板，繼續掉落
       m_IsOnGround = false;
       pos = nextPos;
     }
@@ -154,4 +153,25 @@ void Character::ApplyFlip() {
   } else {
     m_Transform.scale.x = -std::abs(m_Transform.scale.x); // 確保負向
   }
+}
+
+void Character::Die() {
+  m_IsDead = true;
+  std::cout << "角色死亡\n";
+  SetPosition(m_SpawnPoint);
+  // TODO：加入動畫、暫停輸入等效果
+}
+
+bool Character::IsDead() const {
+  return m_IsDead;
+}
+
+void Character::Respawn() {
+  m_IsDead = false;
+  SetPosition(m_SpawnPoint);
+  std::cout << "角色重生，回到出生點\n";
+}
+
+void Character::SetSpawnPoint(const glm::vec2 &spawn) {
+  m_SpawnPoint = spawn;
 }

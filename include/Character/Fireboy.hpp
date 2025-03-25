@@ -7,6 +7,7 @@ class Fireboy : public Character {
 public:
   explicit Fireboy();
   void UpdateAnimation() override;
+  bool IsFireboy() const override { return true; }
 
 private:
   int animationFrame;

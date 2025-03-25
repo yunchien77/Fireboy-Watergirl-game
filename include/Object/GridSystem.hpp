@@ -44,6 +44,9 @@ public:
   // 檢查角色是否能夠在特定格子類型上移動
   bool CanMoveOn(CellType type, bool isFireboy) const;
 
+  // 檢查角色是否能夠在特定格子類型上站立
+  bool CanStandOn(CellType type, bool isFireboy) const;
+
   // 檢查指定的遊戲座標位置是否有碰撞
   bool CheckCollision(const glm::vec2 &worldPos, glm::vec2 size, bool isFireboy,
                       int deltaX = 0) const;

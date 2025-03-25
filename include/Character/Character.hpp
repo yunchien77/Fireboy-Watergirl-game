@@ -5,6 +5,7 @@
 #include "Util/GameObject.hpp"
 #include "Util/Image.hpp"
 #include <glm/fwd.hpp>
+#include <glm/glm.hpp>
 #include <memory>
 #include <string>
 
@@ -45,6 +46,13 @@ public:
   // 更新角色的動畫(純虛擬函數 -> Fireboy 和 Watergirl 會實現)
   virtual void UpdateAnimation() = 0;
 
+  virtual void Die();                          // 設定角色死亡
+  bool IsDead() const;                         // 查詢死亡狀態
+  void Respawn();                              // 重生
+  void SetSpawnPoint(const glm::vec2 &spawn);
+
+  virtual bool IsFireboy() const = 0;
+
 protected:
   // 應用水平翻轉
   void ApplyFlip();
@@ -59,6 +67,8 @@ protected:
   bool m_UpKeyWasPressed; // 上鍵是否已被按下（用於防止持續按住時重複跳躍）
   bool m_FacingRight; // 角色面向方向：true為右，false為左
   glm::vec2 m_Size;   // 角色的尺寸
+  bool m_IsDead = false;
+  glm::vec2 m_SpawnPoint;
 };
 
 #endif // CHARACTER_HPP

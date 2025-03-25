@@ -12,6 +12,7 @@
 #include "pch.hpp" // IWYU pragma: export
 #include <memory>
 #include <string>
+#include <Interface/ITrap.hpp>
 
 class App {
 public:
@@ -54,6 +55,12 @@ public:
 
   bool LoadLevel(int levelNumber);
 
+  void ResetGameLevel();
+
+  std::shared_ptr<Character> GetFireboy() { return m_Fireboy; }
+  std::shared_ptr<Character> GetWatergirl() { return m_Watergirl; }
+
+
   // 檢查是否達成勝利條件
   bool CheckWinCondition();
 
@@ -89,6 +96,8 @@ private:
 
   std::shared_ptr<Door> m_Fireboy_Door;
   std::shared_ptr<Door> m_Watergirl_Door;
+
+  std::vector<std::shared_ptr<ITrap>> m_Traps;
 
   std::shared_ptr<BackgroundImage> m_GameWinBackground;
   std::shared_ptr<BackgroundImage> m_GameOverBackground;

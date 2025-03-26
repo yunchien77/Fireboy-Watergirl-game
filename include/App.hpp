@@ -13,6 +13,7 @@
 #include <memory>
 #include <string>
 #include <Interface/ITrap.hpp>
+#include "Interface/IGem.hpp"
 
 class App {
 public:
@@ -98,6 +99,7 @@ private:
   std::shared_ptr<Door> m_Watergirl_Door;
 
   std::vector<std::shared_ptr<ITrap>> m_Traps;
+  std::vector<std::shared_ptr<IGem>> m_Gems;
 
   std::shared_ptr<BackgroundImage> m_GameWinBackground;
   std::shared_ptr<BackgroundImage> m_GameOverBackground;

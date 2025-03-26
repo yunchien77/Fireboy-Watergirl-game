@@ -31,7 +31,7 @@ public:
   void SetPosition(const glm::vec2 &position);
 
   // 取得角色的尺寸
-  glm::vec2 GetSize();
+  glm::vec2 GetSize() const;
 
   // 移動角色
   void Move(int deltaX, bool upKeyPressed, const GridSystem &grid,
@@ -51,7 +51,15 @@ public:
   void Respawn();                              // 重生
   void SetSpawnPoint(const glm::vec2 &spawn);
 
+  virtual const SDL_Rect& getRect() const = 0;
+
   virtual bool IsFireboy() const = 0;
+
+  virtual float getX() const = 0;
+  virtual float getY() const = 0;
+  virtual int getWidth() const = 0;
+  virtual int getHeight() const = 0;
+
 
 protected:
   // 應用水平翻轉

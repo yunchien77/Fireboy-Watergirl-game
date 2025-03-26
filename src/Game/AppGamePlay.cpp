@@ -9,6 +9,7 @@
 #include <iostream>
 #include <memory>
 #include <Mechanism/LiquidTrap.hpp>
+#include <Mechanism/Gem.hpp>
 
 bool App::CheckCharacterCollision(const glm::vec2 &position, glm::vec2 size,
                                   bool isFireboy, int deltaX) {
@@ -125,6 +126,33 @@ bool App::LoadLevelGrid(int levelNumber) {
     m_Traps.push_back(lava4);
     m_Root.AddChild(lava4);
 
+    // 寶石
+    auto gem1 = std::make_shared<Gem>(GemType::FIRE);
+    glm::vec2 gemPos1 = m_GridSystem.CellToGamePosition(24, 5);
+    gemPos1.x += 13.0f;
+    gem1->SetPosition(gemPos1);
+    gem1->SetInitialPosition(gemPos1);
+    m_Gems.push_back(gem1);
+    m_Root.AddChild(gem1);
+
+    // 寶石
+    auto gem2 = std::make_shared<Gem>(GemType::FIRE);
+    glm::vec2 gemPos2 = m_GridSystem.CellToGamePosition(19, 5);
+    gemPos2.x += 13.0f;
+    gem2->SetPosition(gemPos2);
+    gem2->SetInitialPosition(gemPos2);
+    m_Gems.push_back(gem2);
+    m_Root.AddChild(gem2);
+
+    // 寶石
+    auto gem3 = std::make_shared<Gem>(GemType::FIRE);
+    glm::vec2 gemPos3 = m_GridSystem.CellToGamePosition(14, 5);
+    gemPos3.x += 13.0f;
+    gem3->SetPosition(gemPos3);
+    gem3->SetInitialPosition(gemPos3);
+    m_Gems.push_back(gem3);
+    m_Root.AddChild(gem3);
+
 
 } break;
 
@@ -207,9 +235,19 @@ void HandleCollision(Character &player, App &app, bool isFireboy) {
   }
 }
 
+
 void App::ResetGameLevel() {
   if (m_Fireboy) m_Fireboy->Respawn();
   if (m_Watergirl) m_Watergirl->Respawn();
+
+  for (auto& trap : m_Traps) {
+    trap->OnCharacterEnter(nullptr);
+  }
+
+  for (auto& gem : m_Gems) {
+    gem->Respawn();
+  }
+
   std::cout << "🔁 關卡重新開始\n";
 }
 
@@ -284,6 +322,16 @@ void App::GamePlay() {
   // 分別處理邊界限制和碰撞檢測
   RestrictPlayerPosition(*m_Fireboy, *this);
   HandleCollision(*m_Fireboy, *this, true);
+
+  // 檢查角色與寶石碰撞
+  for (auto& gem : m_Gems) {
+    if (SDL_HasIntersection(&gem->getRect(), &m_Fireboy->getRect())) {
+      gem->OnCharacterEnter(m_Fireboy.get());
+    }
+    if (SDL_HasIntersection(&gem->getRect(), &m_Watergirl->getRect())) {
+      gem->OnCharacterEnter(m_Watergirl.get());
+    }
+  }
 
   // Watergirl 控制
   int watergirlMoveX = 0;

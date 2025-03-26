@@ -12,6 +12,7 @@ set(SRC_FILES
         Character/Watergirl.cpp
         Object/GridSystem.cpp
         Mechanism/LiquidTrap.cpp
+        Mechanism/Gem.cpp
 )
 
 set(INCLUDE_FILES
@@ -25,6 +26,8 @@ set(INCLUDE_FILES
         Object/GridSystem.hpp
         Mechanism/LiquidTrap.hpp
         Interface/ITrap.hpp
+        Interface/IGem.hpp
+        Mechanism/Gem.hpp
 )
 
 set(TEST_FILES

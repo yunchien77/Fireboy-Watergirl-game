@@ -36,7 +36,7 @@ void Character::SetPosition(const glm::vec2 &position) {
   m_Transform.translation = position;
 }
 
-glm::vec2 Character::GetSize() { return m_Size; }
+glm::vec2 Character::GetSize() const { return m_Size; }
 
 void Character::Move(int deltaX, bool upKeyPressed, const GridSystem &grid,
                      bool isFireboy) {

@@ -8,6 +8,15 @@ public:
   explicit Fireboy();
   void UpdateAnimation() override;
   bool IsFireboy() const override { return true; }
+  const SDL_Rect& getRect() const override;
+
+
+  float getX() const override;
+  float getY() const override;
+  int getWidth() const override;
+  int getHeight() const override;
+
+
 
 private:
   int animationFrame;

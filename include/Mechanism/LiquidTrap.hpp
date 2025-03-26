@@ -3,7 +3,6 @@
 
 #include "Interface/ITrap.hpp"
 #include "Object/GridSystem.hpp"
-#include "Util/GameObject.hpp"
 #include "Character/Fireboy.hpp"
 #include "Character/Watergirl.hpp"
 
@@ -12,7 +11,7 @@ enum class SizeType {
     LARGE
 };
 
-class LiquidTrap : public ITrap, public Util::GameObject {
+class LiquidTrap : public ITrap {
 public:
     explicit LiquidTrap(CellType type, SizeType sizeType = SizeType::LARGE);
     void OnCharacterEnter(Character* character) override;

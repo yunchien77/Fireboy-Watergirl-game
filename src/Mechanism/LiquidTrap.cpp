@@ -1,6 +1,5 @@
 #include "Mechanism/LiquidTrap.hpp"
 #include <iostream>
-#include <stdexcept>
 
 void LiquidTrap::SetImage(const std::string &imagePath) {
     m_ImagePath = imagePath;
@@ -17,13 +16,16 @@ LiquidTrap::LiquidTrap(CellType type, SizeType sizeType) : type(type), sizeType(
 
     switch (type) {
         case CellType::LAVA:
-            imagePath = (sizeType == SizeType::LARGE) ? RESOURCE_DIR "/material/props/lava/lava-red-big.png" : RESOURCE_DIR "/material/props/lava/lava-red-small.png";
+            imagePath = (sizeType == SizeType::LARGE) ? RESOURCE_DIR "/material/props/lava/lava-red-big.png"
+                                                        : RESOURCE_DIR "/material/props/lava/lava-red-small.png";
         break;
         case CellType::WATER:
-            imagePath = (sizeType == SizeType::LARGE) ? RESOURCE_DIR "/material/props/lava/lava-blue-big.png" : RESOURCE_DIR "/material/props/lava/lava-blue-small.png";
+            imagePath = (sizeType == SizeType::LARGE) ? RESOURCE_DIR "/material/props/lava/lava-blue-big.png"
+                                                        : RESOURCE_DIR "/material/props/lava/lava-blue-small.png";
         break;
         case CellType::POISON:
-            imagePath = (sizeType == SizeType::LARGE) ? RESOURCE_DIR "/material/props/lava/lava-green-big.png" : RESOURCE_DIR "/material/props/lava/lava-green-small.png";
+            imagePath = (sizeType == SizeType::LARGE) ? RESOURCE_DIR "/material/props/lava/lava-green-big.png"
+                                                        : RESOURCE_DIR "/material/props/lava/lava-green-small.png";
         break;
         default:
             std::cerr << "⚠️ Warning: 未知的 CellType (" << static_cast<int>(type) << ")，使用預設值\n";
@@ -51,4 +53,3 @@ void LiquidTrap::OnCharacterEnter(Character* character) {
         default: ;
     }
 }
-

@@ -157,7 +157,6 @@ void Character::ApplyFlip() {
 
 void Character::Die() {
   m_IsDead = true;
-  std::cout << "角色死亡\n";
   SetPosition(m_SpawnPoint);
   // TODO：加入動畫、暫停輸入等效果
 }
@@ -167,7 +166,6 @@ bool Character::IsDead() const { return m_IsDead; }
 void Character::Respawn() {
   m_IsDead = false;
   SetPosition(m_SpawnPoint);
-  std::cout << "角色重生，回到出生點\n";
 }
 
 void Character::SetSpawnPoint(const glm::vec2 &spawn) { m_SpawnPoint = spawn; }

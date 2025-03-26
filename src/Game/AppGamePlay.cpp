@@ -63,6 +63,9 @@ bool App::LoadLevelGrid(int levelNumber) {
     m_Watergirl_Door->SetVisible(true);
 
     // 水池
+    for (auto& trap : m_Traps) {
+      trap->SetVisible(true);
+    }
     auto water1 =
         std::make_shared<LiquidTrap>(CellType::WATER, SizeType::SMALL);
     glm::vec2 waterPos1 = m_GridSystem.CellToGamePosition(27, 7);
@@ -265,6 +268,7 @@ void HandleCollision(Character &player, App &app, bool isFireboy) {
   }
 }
 
+
 void App::ResetGameLevel() {
   if (m_Fireboy)
     m_Fireboy->Respawn();
@@ -278,8 +282,6 @@ void App::ResetGameLevel() {
   for (auto &gem : m_Gems) {
     gem->Respawn();
   }
-
-  std::cout << "🔁 關卡重新開始\n";
 }
 
 // 檢查是否達成勝利條件
@@ -354,7 +356,7 @@ void App::GamePlay() {
   HandleCollision(*m_Fireboy, *this, true);
 
   // 檢查角色與寶石碰撞
-  for (auto &gem : m_Gems) {
+  for (auto& gem : m_Gems) {
     if (SDL_HasIntersection(&gem->getRect(), &m_Fireboy->getRect())) {
       gem->OnCharacterEnter(m_Fireboy.get());
     }
@@ -421,3 +423,4 @@ void App::GamePlay() {
 
   m_Root.Update();
 }
+

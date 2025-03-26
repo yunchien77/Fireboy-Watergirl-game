@@ -51,8 +51,6 @@ void Gem::OnCharacterEnter(Character* character) {
             return;
         }
 
-        std::cout << "💎 " << (m_Type == GemType::FIRE ? "Fire" : m_Type == GemType::WATER ? "Water" : "Green")
-                  << " Gem collected!\n";
         SetVisible(false);
     }
 }

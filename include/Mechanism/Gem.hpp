@@ -4,7 +4,6 @@
 #include "Interface/IGem.hpp"
 #include "Util/GameObject.hpp"
 #include "Character/Character.hpp"
-#include <string>
 
 enum class GemType {
     FIRE,
@@ -12,7 +11,7 @@ enum class GemType {
     GREEN
 };
 
-class Gem : public IGem, public Util::GameObject {
+class Gem : public IGem, public Util::GameObject{
 public:
     explicit Gem(GemType type);
 
@@ -24,7 +23,7 @@ public:
     GemType GetType() const;
 
     void SetInitialPosition(const glm::vec2& pos);
-    void Respawn();
+    void Respawn() override;
 
 private:
     GemType m_Type;

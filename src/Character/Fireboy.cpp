@@ -10,7 +10,7 @@ void Fireboy::UpdateAnimation() {
     SetImage(RESOURCE_DIR "/material/character/fireboy-front.png");
     animationFrame = 0;
   } else if (isMoving) {
-    if (animationFrame % 7 == 0) {
+    if (animationFrame % 10 == 0) {
       if (currentSprite) {
         SetImage(RESOURCE_DIR "/material/character/fireboy-side-run.png");
       } else {
@@ -25,23 +25,15 @@ void Fireboy::UpdateAnimation() {
   }
 }
 
-float Fireboy::getX() const {
-  return GetPosition().x;
-}
+float Fireboy::getX() const { return GetPosition().x; }
 
-float Fireboy::getY() const {
-  return GetPosition().y;
-}
+float Fireboy::getY() const { return GetPosition().y; }
 
-int Fireboy::getWidth() const {
-  return static_cast<int>(GetSize().x);
-}
+int Fireboy::getWidth() const { return static_cast<int>(GetSize().x); }
 
-int Fireboy::getHeight() const {
-  return static_cast<int>(GetSize().y);
-}
+int Fireboy::getHeight() const { return static_cast<int>(GetSize().y); }
 
-const SDL_Rect& Fireboy::getRect() const {
+const SDL_Rect &Fireboy::getRect() const {
   static SDL_Rect rect;
   glm::vec2 pos = GetPosition();
   glm::vec2 size = GetSize();
@@ -51,6 +43,3 @@ const SDL_Rect& Fireboy::getRect() const {
   rect.h = static_cast<int>(size.y);
   return rect;
 }
-
-
-

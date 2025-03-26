@@ -6,10 +6,10 @@
 #include "Util/Keycode.hpp"
 #include "Util/Logger.hpp"
 #include "config.hpp"
+#include <Mechanism/Gem.hpp>
+#include <Mechanism/LiquidTrap.hpp>
 #include <iostream>
 #include <memory>
-#include <Mechanism/LiquidTrap.hpp>
-#include <Mechanism/Gem.hpp>
 
 bool App::CheckCharacterCollision(const glm::vec2 &position, glm::vec2 size,
                                   bool isFireboy, int deltaX) {
@@ -63,7 +63,8 @@ bool App::LoadLevelGrid(int levelNumber) {
     m_Watergirl_Door->SetVisible(true);
 
     // 水池
-    auto water1 = std::make_shared<LiquidTrap>(CellType::WATER, SizeType::SMALL);
+    auto water1 =
+        std::make_shared<LiquidTrap>(CellType::WATER, SizeType::SMALL);
     glm::vec2 waterPos1 = m_GridSystem.CellToGamePosition(27, 7);
     waterPos1.y += 5.0f;
     water1->SetPosition(waterPos1);
@@ -71,7 +72,8 @@ bool App::LoadLevelGrid(int levelNumber) {
     m_Root.AddChild(water1);
 
     // 水池
-    auto water2 = std::make_shared<LiquidTrap>(CellType::WATER, SizeType::SMALL);
+    auto water2 =
+        std::make_shared<LiquidTrap>(CellType::WATER, SizeType::SMALL);
     glm::vec2 waterPos2 = m_GridSystem.CellToGamePosition(22, 7);
     waterPos2.y += 5.0f;
     water2->SetPosition(waterPos2);
@@ -79,7 +81,8 @@ bool App::LoadLevelGrid(int levelNumber) {
     m_Root.AddChild(water2);
 
     // 水池
-    auto water3 = std::make_shared<LiquidTrap>(CellType::WATER, SizeType::SMALL);
+    auto water3 =
+        std::make_shared<LiquidTrap>(CellType::WATER, SizeType::SMALL);
     glm::vec2 waterPos3 = m_GridSystem.CellToGamePosition(17, 7);
     waterPos3.y += 5.0f;
     water3->SetPosition(waterPos3);
@@ -87,7 +90,8 @@ bool App::LoadLevelGrid(int levelNumber) {
     m_Root.AddChild(water3);
 
     // 水池
-    auto water4 = std::make_shared<LiquidTrap>(CellType::WATER, SizeType::SMALL);
+    auto water4 =
+        std::make_shared<LiquidTrap>(CellType::WATER, SizeType::SMALL);
     glm::vec2 waterPos4 = m_GridSystem.CellToGamePosition(19, 12);
     waterPos4.y += 5.0f;
     water4->SetPosition(waterPos4);
@@ -180,8 +184,7 @@ bool App::LoadLevelGrid(int levelNumber) {
     m_Gems.push_back(waterGem3);
     m_Root.AddChild(waterGem3);
 
-
-} break;
+  } break;
 
   case 2: // 先讓 level2 ~ level5 預設為 level1，等你完成後再改回來
   case 3:
@@ -262,23 +265,23 @@ void HandleCollision(Character &player, App &app, bool isFireboy) {
   }
 }
 
-
 void App::ResetGameLevel() {
-  if (m_Fireboy) m_Fireboy->Respawn();
-  if (m_Watergirl) m_Watergirl->Respawn();
+  if (m_Fireboy)
+    m_Fireboy->Respawn();
+  if (m_Watergirl)
+    m_Watergirl->Respawn();
 
-  for (auto& trap : m_Traps) {
+  for (auto &trap : m_Traps) {
     trap->OnCharacterEnter(nullptr);
   }
 
-  for (auto& gem : m_Gems) {
+  for (auto &gem : m_Gems) {
     gem->Respawn();
   }
 
   std::cout << "🔁 關卡重新開始\n";
 }
 
-// 遊戲主循環
 // 檢查是否達成勝利條件
 bool App::CheckWinCondition() {
   // 兩個門都必須為全開狀態
@@ -351,7 +354,7 @@ void App::GamePlay() {
   HandleCollision(*m_Fireboy, *this, true);
 
   // 檢查角色與寶石碰撞
-  for (auto& gem : m_Gems) {
+  for (auto &gem : m_Gems) {
     if (SDL_HasIntersection(&gem->getRect(), &m_Fireboy->getRect())) {
       gem->OnCharacterEnter(m_Fireboy.get());
     }
@@ -378,25 +381,27 @@ void App::GamePlay() {
   RestrictPlayerPosition(*m_Watergirl, *this);
   HandleCollision(*m_Watergirl, *this, false);
 
-  glm::ivec2 fireboyCell = m_GridSystem.GameToCellPosition(m_Fireboy->GetPosition());
+  glm::ivec2 fireboyCell =
+      m_GridSystem.GameToCellPosition(m_Fireboy->GetPosition());
   CellType cellTypeFireboy = m_GridSystem.GetCell(fireboyCell.x, fireboyCell.y);
-  if (cellTypeFireboy == CellType::WATER ||
-      cellTypeFireboy == CellType::LAVA ||
+  if (cellTypeFireboy == CellType::WATER || cellTypeFireboy == CellType::LAVA ||
       cellTypeFireboy == CellType::POISON) {
-    for (auto& trap : m_Traps) {
+    for (auto &trap : m_Traps) {
       trap->OnCharacterEnter(m_Fireboy.get());
     }
-      }
+  }
 
-  glm::ivec2 watergirlCell = m_GridSystem.GameToCellPosition(m_Watergirl->GetPosition());
-  CellType cellTypeWatergirl = m_GridSystem.GetCell(watergirlCell.x, watergirlCell.y);
+  glm::ivec2 watergirlCell =
+      m_GridSystem.GameToCellPosition(m_Watergirl->GetPosition());
+  CellType cellTypeWatergirl =
+      m_GridSystem.GetCell(watergirlCell.x, watergirlCell.y);
   if (cellTypeWatergirl == CellType::WATER ||
       cellTypeWatergirl == CellType::LAVA ||
       cellTypeWatergirl == CellType::POISON) {
-    for (auto& trap : m_Traps) {
+    for (auto &trap : m_Traps) {
       trap->OnCharacterEnter(m_Watergirl.get());
     }
-      }
+  }
 
   m_Fireboy_Door->UpdateAnimation();
   m_Watergirl_Door->UpdateAnimation();
@@ -416,4 +421,3 @@ void App::GamePlay() {
 
   m_Root.Update();
 }
-

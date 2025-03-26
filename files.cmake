@@ -22,7 +22,7 @@ set(INCLUDE_FILES
         Character/Character.hpp
         Character/Fireboy.hpp
         Character/Watergirl.hpp
-        Object/Door.hpp
+        Mechanism/Door.hpp
         Object/GridSystem.hpp
         Mechanism/LiquidTrap.hpp
         Interface/ITrap.hpp

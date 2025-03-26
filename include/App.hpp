@@ -2,18 +2,19 @@
 #define APP_HPP
 
 #include "Character/Character.hpp"
+#include "Interface/IGem.hpp"
+#include "Mechanism/Door.hpp"
 #include "Object/BackgroundImage.hpp"
-#include "Object/Door.hpp"
 #include "Object/GridSystem.hpp"
 #include "Object/Option.hpp"
 #include "Util/GameObject.hpp"
 #include "Util/Image.hpp"
 #include "Util/Renderer.hpp"
 #include "pch.hpp" // IWYU pragma: export
+#include <Interface/ITrap.hpp>
 #include <memory>
 #include <string>
-#include <Interface/ITrap.hpp>
-#include "Interface/IGem.hpp"
+
 
 class App {
 public:
@@ -60,7 +61,6 @@ public:
 
   std::shared_ptr<Character> GetFireboy() { return m_Fireboy; }
   std::shared_ptr<Character> GetWatergirl() { return m_Watergirl; }
-
 
   // 檢查是否達成勝利條件
   bool CheckWinCondition();

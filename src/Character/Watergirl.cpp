@@ -10,7 +10,7 @@ void Watergirl::UpdateAnimation() {
     SetImage(RESOURCE_DIR "/material/character/watergirl-front.png");
     animationFrame = 0;
   } else if (isMoving) {
-    if (animationFrame % 7 == 0) {
+    if (animationFrame % 10 == 0) {
       if (currentSprite) {
         SetImage(RESOURCE_DIR "/material/character/watergirl-side-run.png");
       } else {
@@ -25,23 +25,15 @@ void Watergirl::UpdateAnimation() {
   }
 }
 
-float Watergirl::getX() const {
-  return GetPosition().x;
-}
+float Watergirl::getX() const { return GetPosition().x; }
 
-float Watergirl::getY() const {
-  return GetPosition().y;
-}
+float Watergirl::getY() const { return GetPosition().y; }
 
-int Watergirl::getWidth() const {
-  return static_cast<int>(GetSize().x);
-}
+int Watergirl::getWidth() const { return static_cast<int>(GetSize().x); }
 
-int Watergirl::getHeight() const {
-  return static_cast<int>(GetSize().y);
-}
+int Watergirl::getHeight() const { return static_cast<int>(GetSize().y); }
 
-const SDL_Rect& Watergirl::getRect() const {
+const SDL_Rect &Watergirl::getRect() const {
   static SDL_Rect rect;
   glm::vec2 pos = GetPosition();
   glm::vec2 size = GetSize();
@@ -51,7 +43,3 @@ const SDL_Rect& Watergirl::getRect() const {
   rect.h = static_cast<int>(size.y);
   return rect;
 }
-
-
-
-

@@ -86,12 +86,12 @@ void Character::UpdateJump(const GridSystem &grid) {
 
       // 檢查跳躍後頭部會到達的格子
       glm::ivec2 gridPosTop =
-          grid.GameToCellPosition(glm::vec2(pos.x, pos.y + m_JumpMaxHeight));
+          grid.GameToCellPosition(glm::vec2(pos.x, pos.y + (m_Size.y + 13.5f)));
       CellType aboveCell = grid.GetCell(gridPosTop.x, gridPosTop.y);
 
-      // 如果即將撞到天花板，則停止上升
-      if (aboveCell == CellType::FLOOR || aboveCell == CellType::WATER) {
-        m_JumpHeight = m_JumpMaxHeight; // 強制結束跳躍
+      // 如果即將碰到任何非空的地形，則停止上升
+      if (aboveCell != CellType::EMPTY) {
+        m_JumpHeight += isMoving ? (jumpSpeed / 1.5f) : m_JumpMaxHeight;
       } else {
         pos = nextPos;
         m_JumpHeight += jumpSpeed;
@@ -105,8 +105,8 @@ void Character::UpdateJump(const GridSystem &grid) {
       glm::ivec2 gridPosBelow = grid.GameToCellPosition(nextPos);
       CellType belowCell = grid.GetCell(gridPosBelow.x, gridPosBelow.y);
 
-      // 如果腳底碰到地板，則停止下降
-      if (grid.CanStandOn(belowCell, this->IsFireboy())) {
+      // 如果腳底碰到非空的地形，則停止下降
+      if (belowCell != CellType::EMPTY) {
         m_IsJumping = false;
         m_IsOnGround = true;
         m_JumpHeight = 0;
@@ -114,7 +114,7 @@ void Character::UpdateJump(const GridSystem &grid) {
         // 修正 Y 軸位置，讓角色貼合地板
         float cellBottomY =
             grid.CellToGamePosition(gridPosBelow.x, gridPosBelow.y).y;
-        pos.y = cellBottomY + (grid.GetCellSize() / 2.0f - 12.0f);
+        pos.y = cellBottomY + (grid.GetCellSize() / 2.0f - 13.5f);
       } else {
         pos = nextPos;
       }
@@ -162,9 +162,7 @@ void Character::Die() {
   // TODO：加入動畫、暫停輸入等效果
 }
 
-bool Character::IsDead() const {
-  return m_IsDead;
-}
+bool Character::IsDead() const { return m_IsDead; }
 
 void Character::Respawn() {
   m_IsDead = false;
@@ -172,6 +170,4 @@ void Character::Respawn() {
   std::cout << "角色重生，回到出生點\n";
 }
 
-void Character::SetSpawnPoint(const glm::vec2 &spawn) {
-  m_SpawnPoint = spawn;
-}
+void Character::SetSpawnPoint(const glm::vec2 &spawn) { m_SpawnPoint = spawn; }

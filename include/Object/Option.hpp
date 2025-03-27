@@ -29,6 +29,10 @@ public:
     m_Position = position;
   }
 
+  void SetImage(const std::string &imagePath) {
+    SetDrawable(std::make_unique<Util::Image>(imagePath));
+  }
+
   // 啟用/禁用按鈕
   void SetInteractable(bool interactable) { m_Interactable = interactable; }
   bool IsInteractable() const { return m_Interactable; }

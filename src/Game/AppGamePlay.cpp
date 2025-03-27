@@ -63,7 +63,7 @@ bool App::LoadLevelGrid(int levelNumber) {
     m_Watergirl_Door->SetVisible(true);
 
     // 水池
-    for (auto& trap : m_Traps) {
+    for (auto &trap : m_Traps) {
       trap->SetVisible(true);
     }
     auto water1 =
@@ -189,7 +189,36 @@ bool App::LoadLevelGrid(int levelNumber) {
 
   } break;
 
-  case 2: // 先讓 level2 ~ level5 預設為 level1，等你完成後再改回來
+  case 2: { // 初始化角色 Fireboy
+    if (!m_Fireboy) {
+      m_Fireboy = std::make_shared<Fireboy>();
+      glm::vec2 fireboyInitPos = m_GridSystem.CellToGamePosition(35, 5);
+      m_Fireboy->SetPosition(fireboyInitPos);
+      m_Fireboy->SetSpawnPoint(fireboyInitPos);
+      m_Root.AddChild(m_Fireboy);
+    }
+
+    // 初始化角色 Watergirl
+    if (!m_Watergirl) {
+      m_Watergirl = std::make_shared<Watergirl>();
+      glm::vec2 watergirlInitPos = m_GridSystem.CellToGamePosition(3, 17);
+      m_Watergirl->SetPosition(watergirlInitPos);
+      m_Watergirl->SetSpawnPoint(watergirlInitPos);
+      m_Root.AddChild(m_Watergirl);
+    }
+
+    // Fireboy 的門
+    glm::vec2 fireboyDoorPos = m_GridSystem.CellToGamePosition(32, 14);
+    m_Fireboy_Door->SetPosition(fireboyDoorPos);
+    m_Fireboy_Door->SetOpen(false);
+    m_Fireboy_Door->SetVisible(true);
+
+    // Watergirl 的門
+    glm::vec2 watergirlDoorPos = m_GridSystem.CellToGamePosition(4, 27);
+    m_Watergirl_Door->SetPosition(watergirlDoorPos);
+    m_Watergirl_Door->SetOpen(false);
+    m_Watergirl_Door->SetVisible(true);
+  } break;
   case 3:
   case 4:
   case 5:
@@ -267,7 +296,6 @@ void HandleCollision(Character &player, App &app, bool isFireboy) {
     }
   }
 }
-
 
 void App::ResetGameLevel() {
   if (m_Fireboy)
@@ -356,7 +384,7 @@ void App::GamePlay() {
   HandleCollision(*m_Fireboy, *this, true);
 
   // 檢查角色與寶石碰撞
-  for (auto& gem : m_Gems) {
+  for (auto &gem : m_Gems) {
     if (SDL_HasIntersection(&gem->getRect(), &m_Fireboy->getRect())) {
       gem->OnCharacterEnter(m_Fireboy.get());
     }
@@ -423,4 +451,3 @@ void App::GamePlay() {
 
   m_Root.Update();
 }
-

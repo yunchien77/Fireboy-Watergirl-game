@@ -15,7 +15,6 @@
 #include <memory>
 #include <string>
 
-
 class App {
 public:
   enum class State {
@@ -75,6 +74,7 @@ private:
   State m_CurrentState = State::START;
   int m_CurrentLevel = 1;
   bool m_IsLevelCompleted = false;
+  int unlockedLevel = 1;
 
   std::shared_ptr<BackgroundImage> m_TitleBackground; // 遊戲封面背景
   std::shared_ptr<BackgroundImage> m_LevelSelectBackground; // 關卡選擇背景

@@ -25,6 +25,12 @@ void App::GameWin() {
 
   if (mouseState & SDL_BUTTON(SDL_BUTTON_LEFT)) {
     if (m_ContinueButton->HandleClick(gameCoords.x, gameCoords.y)) {
+      if (m_CurrentLevel == 1) {
+        unlockedLevel = 2;
+        m_Level2Button->SetImage(
+            RESOURCE_DIR "/material/background/button/current-level.png");
+        m_Level2Button->SetInteractable(true);
+      }
     }
   }
 

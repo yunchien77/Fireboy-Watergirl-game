@@ -8,7 +8,7 @@
 #include <memory>
 
 App::App() {
-  LOG_TRACE("Game Initialize");
+  LOG_INFO("Game Initialize");
 
   // 初始化背景
   m_TitleBackground = std::make_shared<BackgroundImage>(
@@ -29,17 +29,6 @@ App::App() {
   m_Level1Button->SetVisible(false);
 
   // 設置按鈕點擊事件回調
-  // m_Level1Button->SetOnClickCallback([this]() {
-  //   m_CurrentState = State::GAME_PLAY;
-  //   m_Level1Button->SetVisible(false);
-  //   m_Level2Button->SetVisible(false);
-  //   m_Level3Button->SetVisible(false);
-  //   m_Level4Button->SetVisible(false);
-  //   m_Level5Button->SetVisible(false);
-  //   m_BackButton->SetVisible(false);
-  //   m_LevelSelectBackground->SetVisible(false);
-  //   m_Level1Background->SetVisible(true);
-  // });
   m_Level1Button->SetOnClickCallback([this]() {
     ResetGame();
 
@@ -67,7 +56,8 @@ App::App() {
 
   // 設置按鈕點擊事件回調
   m_Level2Button->SetOnClickCallback([this]() {
-    m_CurrentState = State::GAME_PLAY;
+    ResetGame();
+
     m_Level1Button->SetVisible(false);
     m_Level2Button->SetVisible(false);
     m_Level3Button->SetVisible(false);
@@ -75,7 +65,10 @@ App::App() {
     m_Level5Button->SetVisible(false);
     m_BackButton->SetVisible(false);
     m_LevelSelectBackground->SetVisible(false);
+
     m_Level2Background->SetVisible(true);
+    m_CurrentLevel = 2;
+    m_IsGridLoaded = false;
   });
 
   m_Root.AddChild(m_Level2Button);
@@ -172,6 +165,11 @@ App::App() {
   m_Root.AddChild(m_Level1Background);
 
   // 第二關背景
+  m_Level2Background = std::make_shared<BackgroundImage>(
+      RESOURCE_DIR "/material/background/rlevel3.png");
+  m_Level2Background->SetVisible(false);
+  m_Root.AddChild(m_Level2Background);
+
   // 第三關背景
   // 第四關背景
   // 第五關背景
@@ -197,7 +195,7 @@ App::App() {
 
   m_GameWinBackground = std::make_shared<BackgroundImage>(
       RESOURCE_DIR "/material/background/game-win.png", 35);
-  m_GameWinBackground->SetVisible(false); // Hide initially
+  m_GameWinBackground->SetVisible(false);
   m_Root.AddChild(m_GameWinBackground);
 
   // 切換到關卡選擇按鈕

@@ -166,7 +166,7 @@ App::App() {
 
   // 第二關背景
   m_Level2Background = std::make_shared<BackgroundImage>(
-      RESOURCE_DIR "/material/background/rlevel3.png");
+      RESOURCE_DIR "/material/background/rlevel2.png");
   m_Level2Background->SetVisible(false);
   m_Root.AddChild(m_Level2Background);
 

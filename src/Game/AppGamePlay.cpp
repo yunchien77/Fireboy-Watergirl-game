@@ -21,6 +21,11 @@ bool App::CheckCharacterCollision(const glm::vec2 &position, glm::vec2 size,
 
 // 載入地圖網格，並初始化 GridSystem
 bool App::LoadLevelGrid(int levelNumber) {
+  for (auto& gem : m_Gems) {
+    m_Root.RemoveChild(gem);
+  }
+  m_Gems.clear();
+
   std::string gridFilePath =
       RESOURCE_DIR "/map/level" + std::to_string(levelNumber) + "_grid.txt";
 
@@ -209,7 +214,7 @@ bool App::LoadLevelGrid(int levelNumber) {
     }
 
     // Fireboy 的門
-    glm::vec2 fireboyDoorPos = m_GridSystem.CellToGamePosition(3, 4);
+    glm::vec2 fireboyDoorPos = m_GridSystem.CellToGamePosition(2, 4);
     m_Fireboy_Door->SetPosition(fireboyDoorPos);
     m_Fireboy_Door->SetOpen(false);
     m_Fireboy_Door->SetVisible(true);
@@ -219,6 +224,151 @@ bool App::LoadLevelGrid(int levelNumber) {
     m_Watergirl_Door->SetPosition(watergirlDoorPos);
     m_Watergirl_Door->SetOpen(false);
     m_Watergirl_Door->SetVisible(true);
+
+    // 火寶石
+    auto fireGem1 = std::make_shared<Gem>(GemType::FIRE);
+    glm::vec2 fireGemPos1 = m_GridSystem.CellToGamePosition(8, 27);
+    fireGemPos1.y += 13.0f;
+    fireGem1->SetPosition(fireGemPos1);
+    fireGem1->SetInitialPosition(fireGemPos1);
+    m_Gems.push_back(fireGem1);
+    m_Root.AddChild(fireGem1);
+
+    // 火寶石
+    auto fireGem2 = std::make_shared<Gem>(GemType::FIRE);
+    glm::vec2 fireGemPos2 = m_GridSystem.CellToGamePosition(12, 27);
+    fireGemPos2.y += 13.0f;
+    fireGem2->SetPosition(fireGemPos2);
+    fireGem2->SetInitialPosition(fireGemPos2);
+    m_Gems.push_back(fireGem2);
+    m_Root.AddChild(fireGem2);
+
+    // 火寶石
+    auto fireGem3 = std::make_shared<Gem>(GemType::FIRE);
+    glm::vec2 fireGemPos3 = m_GridSystem.CellToGamePosition(24, 24);
+    fireGemPos3.y += 13.0f;
+    fireGem3->SetPosition(fireGemPos3);
+    fireGem3->SetInitialPosition(fireGemPos3);
+    m_Gems.push_back(fireGem3);
+    m_Root.AddChild(fireGem3);
+
+    // 火寶石
+    auto fireGem4 = std::make_shared<Gem>(GemType::FIRE);
+    glm::vec2 fireGemPos4 = m_GridSystem.CellToGamePosition(28, 24);
+    fireGemPos4.y += 13.0f;
+    fireGem4->SetPosition(fireGemPos4);
+    fireGem4->SetInitialPosition(fireGemPos4);
+    m_Gems.push_back(fireGem4);
+    m_Root.AddChild(fireGem4);
+
+    // 火寶石
+    auto fireGem5 = std::make_shared<Gem>(GemType::FIRE);
+    glm::vec2 fireGemPos5 = m_GridSystem.CellToGamePosition(28, 18);
+    fireGemPos5.y += 13.0f;
+    fireGem5->SetPosition(fireGemPos5);
+    fireGem5->SetInitialPosition(fireGemPos5);
+    m_Gems.push_back(fireGem5);
+    m_Root.AddChild(fireGem5);
+
+    // 火寶石
+    auto fireGem6 = std::make_shared<Gem>(GemType::FIRE);
+    glm::vec2 fireGemPos6 = m_GridSystem.CellToGamePosition(15, 18);
+    fireGemPos6.y += 13.0f;
+    fireGem6->SetPosition(fireGemPos6);
+    fireGem6->SetInitialPosition(fireGemPos6);
+    m_Gems.push_back(fireGem6);
+    m_Root.AddChild(fireGem6);
+
+    // 火寶石
+    auto fireGem7 = std::make_shared<Gem>(GemType::FIRE);
+    glm::vec2 fireGemPos7 = m_GridSystem.CellToGamePosition(18, 13);
+    fireGemPos7.y += 13.0f;
+    fireGem7->SetPosition(fireGemPos7);
+    fireGem7->SetInitialPosition(fireGemPos7);
+    m_Gems.push_back(fireGem7);
+    m_Root.AddChild(fireGem7);
+
+    // 火寶石
+    auto fireGem8 = std::make_shared<Gem>(GemType::FIRE);
+    glm::vec2 fireGemPos8 = m_GridSystem.CellToGamePosition(17, 3);
+    fireGemPos8.y += 13.0f;
+    fireGem8->SetPosition(fireGemPos8);
+    fireGem8->SetInitialPosition(fireGemPos8);
+    m_Gems.push_back(fireGem8);
+    m_Root.AddChild(fireGem8);
+
+    // 水寶石 1
+    auto waterGem1 = std::make_shared<Gem>(GemType::WATER);
+    glm::vec2 waterGemPos1 = m_GridSystem.CellToGamePosition(8, 24);
+    waterGemPos1.y += 13.0f;
+    waterGem1->SetPosition(waterGemPos1);
+    waterGem1->SetInitialPosition(waterGemPos1);
+    m_Gems.push_back(waterGem1);
+    m_Root.AddChild(waterGem1);
+
+    // 水寶石 2
+    auto waterGem2 = std::make_shared<Gem>(GemType::WATER);
+    glm::vec2 waterGemPos2 = m_GridSystem.CellToGamePosition(12, 24);
+    waterGemPos2.y += 13.0f;
+    waterGem2->SetPosition(waterGemPos2);
+    waterGem2->SetInitialPosition(waterGemPos2);
+    m_Gems.push_back(waterGem2);
+    m_Root.AddChild(waterGem2);
+
+    // 水寶石 3
+    auto waterGem3 = std::make_shared<Gem>(GemType::WATER);
+    glm::vec2 waterGemPos3 = m_GridSystem.CellToGamePosition(24, 27);
+    waterGemPos3.y += 13.0f;
+    waterGem3->SetPosition(waterGemPos3);
+    waterGem3->SetInitialPosition(waterGemPos3);
+    m_Gems.push_back(waterGem3);
+    m_Root.AddChild(waterGem3);
+
+    // 水寶石 4
+    auto waterGem4 = std::make_shared<Gem>(GemType::WATER);
+    glm::vec2 waterGemPos4 = m_GridSystem.CellToGamePosition(28, 27);
+    waterGemPos4.y += 13.0f;
+    waterGem4->SetPosition(waterGemPos4);
+    waterGem4->SetInitialPosition(waterGemPos4);
+    m_Gems.push_back(waterGem4);
+    m_Root.AddChild(waterGem4);
+
+    // 水寶石 5
+    auto waterGem5 = std::make_shared<Gem>(GemType::WATER);
+    glm::vec2 waterGemPos5 = m_GridSystem.CellToGamePosition(24, 18);
+    waterGemPos5.y += 13.0f;
+    waterGem5->SetPosition(waterGemPos5);
+    waterGem5->SetInitialPosition(waterGemPos5);
+    m_Gems.push_back(waterGem5);
+    m_Root.AddChild(waterGem5);
+
+    // 水寶石 6
+    auto waterGem6 = std::make_shared<Gem>(GemType::WATER);
+    glm::vec2 waterGemPos6 = m_GridSystem.CellToGamePosition(10, 18);
+    waterGemPos6.y += 13.0f;
+    waterGem6->SetPosition(waterGemPos6);
+    waterGem6->SetInitialPosition(waterGemPos6);
+    m_Gems.push_back(waterGem6);
+    m_Root.AddChild(waterGem6);
+
+    // 水寶石 7
+    auto waterGem7 = std::make_shared<Gem>(GemType::WATER);
+    glm::vec2 waterGemPos7 = m_GridSystem.CellToGamePosition(21, 13);
+    waterGemPos7.y += 13.0f;
+    waterGem7->SetPosition(waterGemPos7);
+    waterGem7->SetInitialPosition(waterGemPos7);
+    m_Gems.push_back(waterGem7);
+    m_Root.AddChild(waterGem7);
+
+    // 水寶石 8
+    auto waterGem8 = std::make_shared<Gem>(GemType::WATER);
+    glm::vec2 waterGemPos8 = m_GridSystem.CellToGamePosition(20, 3);
+    waterGemPos8.y += 13.0f;
+    waterGem8->SetPosition(waterGemPos8);
+    waterGem8->SetInitialPosition(waterGemPos8);
+    m_Gems.push_back(waterGem8);
+    m_Root.AddChild(waterGem8);
+
   } break;
   case 3:
   case 4:

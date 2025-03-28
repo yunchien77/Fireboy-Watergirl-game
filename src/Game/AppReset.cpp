@@ -36,4 +36,12 @@ void App::ResetGame() {
   m_Watergirl_Door->SetOpen(false);
   m_Watergirl_Door->SetCharacterAtDoor(false);
   m_Watergirl_Door->SetVisible(false);
+
+  for (auto &trap : m_Traps) {
+    trap->SetVisible(false);
+  }
+
+  for (auto &gem : m_Gems) {
+    gem->SetVisible(false);
+  }
 }

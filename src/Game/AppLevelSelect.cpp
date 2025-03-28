@@ -14,10 +14,6 @@ void App::LevelSelect() {
     m_TitleBackground->SetVisible(false);
     m_LevelSelectBackground->SetVisible(true);
 
-    for (auto& trap : m_Traps) {
-      trap->SetVisible(false);
-    }
-
     // 顯示所有關卡按鈕
     m_Level1Button->SetVisible(true);
     m_Level2Button->SetVisible(true);

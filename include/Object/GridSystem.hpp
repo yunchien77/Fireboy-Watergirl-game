@@ -6,23 +6,23 @@
 #include <vector>
 
 enum class CellType {
-  EMPTY,      // 空的區域，可以通過
-  FLOOR,      // 地板
-  WALL,       // 牆壁
-  DOOR_FIRE,  // 火門
-  DOOR_WATER, // 水門
-  GEM_FIRE,   // 火寶石
-  GEM_WATER,  // 水寶石
-  GEM_GREEN,  // 綠寶石
-  LAVA,       // 岩漿
-  WATER,      // 水池
-  POISON,     // 毒池
-  BUTTON,     // 按鈕
-  LEVER,      // 拉桿
-  PLATFORM,   // 平台
-  FAN,        // 風扇
-  BOX,        // 箱子
-  STONE,      // 小石子
+  EMPTY,      // 空的區域，可以通過0
+  FLOOR,      // 地板1
+  WALL,       // 牆壁2
+  DOOR_FIRE,  // 火門3
+  DOOR_WATER, // 水門4
+  GEM_FIRE,   // 火寶石5
+  GEM_WATER,  // 水寶石6
+  GEM_GREEN,  // 綠寶石7
+  LAVA,       // 岩漿8
+  WATER,      // 水池9
+  POISON,     // 毒池10
+  BUTTON,     // 按鈕11
+  LEVER,      // 拉桿12
+  PLATFORM,   // 平台13
+  FAN,        // 風扇14
+  BOX,        // 箱子15
+  STONE,      // 小石子16
 
 };
 
@@ -43,6 +43,9 @@ public:
 
   // 檢查角色是否能夠在特定格子類型上移動
   bool CanMoveOn(CellType type, bool isFireboy) const;
+
+  // 檢查角色是否能夠在特定格子類型上站立
+  bool CanStandOn(CellType type, bool isFireboy) const;
 
   // 檢查指定的遊戲座標位置是否有碰撞
   bool CheckCollision(const glm::vec2 &worldPos, glm::vec2 size, bool isFireboy,

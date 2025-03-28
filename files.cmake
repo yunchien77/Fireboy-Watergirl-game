@@ -6,20 +6,29 @@ set(SRC_FILES
         Game/AppGamePlay.cpp
         Game/AppGameWin.cpp
         Game/AppGameOver.cpp
+        Game/AppReset.cpp
+        Game/LoadLevel.cpp
+        Character/Character.cpp
         Character/Fireboy.cpp
         Character/Watergirl.cpp
-        GridSystem.cpp
+        Object/GridSystem.cpp
+        Mechanism/LiquidTrap.cpp
+        Mechanism/Gem.cpp
 )
 
 set(INCLUDE_FILES
         App.hpp
-        BackgroundImage.hpp
-        Button.hpp
+        Object/BackgroundImage.hpp
+        Object/Option.hpp
         Character/Character.hpp
         Character/Fireboy.hpp
         Character/Watergirl.hpp
-        Object/Door.hpp
-        GridSystem.hpp
+        Mechanism/Door.hpp
+        Object/GridSystem.hpp
+        Mechanism/LiquidTrap.hpp
+        Interface/ITrap.hpp
+        Interface/IGem.hpp
+        Mechanism/Gem.hpp
 )
 
 set(TEST_FILES

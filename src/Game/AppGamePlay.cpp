@@ -1,11 +1,13 @@
 #include "App.hpp"
 #include "Character/Fireboy.hpp"
 #include "Character/Watergirl.hpp"
-#include "GridSystem.hpp"
+#include "Object/GridSystem.hpp"
 #include "Util/Input.hpp"
 #include "Util/Keycode.hpp"
 #include "Util/Logger.hpp"
 #include "config.hpp"
+#include <Mechanism/Gem.hpp>
+#include <Mechanism/LiquidTrap.hpp>
 #include <iostream>
 #include <memory>
 
@@ -15,68 +17,6 @@ bool App::CheckCharacterCollision(const glm::vec2 &position, glm::vec2 size,
     return false; // 如果網格未載入，默認無碰撞
   }
   return m_GridSystem.CheckCollision(position, size, isFireboy, deltaX);
-}
-
-// 載入地圖網格，並初始化 GridSystem
-bool App::LoadLevelGrid(int levelNumber) {
-  std::string gridFilePath =
-      RESOURCE_DIR "/map/level" + std::to_string(levelNumber) + "_grid.txt";
-
-  bool success = m_GridSystem.LoadFromFile(gridFilePath);
-  if (success) {
-    m_IsGridLoaded = true;
-    LOG_INFO("Successfully loaded grid for level {}", levelNumber);
-  }
-
-  switch (levelNumber) {
-  case 1: {
-    // 初始化角色 Fireboy
-    if (!m_Fireboy) {
-      m_Fireboy = std::make_shared<Fireboy>();
-      glm::vec2 fireboyInitPos = m_GridSystem.CellToGamePosition(35, 5);
-      m_Fireboy->SetPosition(fireboyInitPos);
-      m_Root.AddChild(m_Fireboy);
-    }
-
-    // 初始化角色 Watergirl
-    if (!m_Watergirl) {
-      m_Watergirl = std::make_shared<Watergirl>();
-      glm::vec2 watergirlInitPos = m_GridSystem.CellToGamePosition(3, 17);
-      m_Watergirl->SetPosition(watergirlInitPos);
-      m_Root.AddChild(m_Watergirl);
-    }
-
-    // Fireboy 的門
-    glm::vec2 fireboyDoorPos = m_GridSystem.CellToGamePosition(32, 14);
-    m_Fireboy_Door->SetPosition(fireboyDoorPos);
-    m_Fireboy_Door->SetOpen(false);
-    m_Fireboy_Door->SetVisible(true);
-
-    // Watergirl 的門
-    glm::vec2 watergirlDoorPos = m_GridSystem.CellToGamePosition(4, 27);
-    m_Watergirl_Door->SetPosition(watergirlDoorPos);
-    m_Watergirl_Door->SetOpen(false);
-    m_Watergirl_Door->SetVisible(true);
-  } break;
-
-  case 2: // 先讓 level2 ~ level5 預設為 level1，等你完成後再改回來
-  case 3:
-  case 4:
-  case 5:
-    break;
-  default:
-    LOG_ERROR("Invalid level number: {}", levelNumber);
-    return false;
-  }
-
-  for (int y = 0; y < m_GridSystem.GetGridHeight(); ++y) {
-    for (int x = 0; x < m_GridSystem.GetGridWidth(); ++x) {
-      std::cout << static_cast<int>(m_GridSystem.GetCell(x, y)) << " ";
-    }
-    std::cout << std::endl;
-  }
-
-  return true;
 }
 
 // 限制玩家在地圖邊界內
@@ -138,7 +78,63 @@ void HandleCollision(Character &player, App &app, bool isFireboy) {
   }
 }
 
-// 遊戲主循環
+void App::ResetGameLevel() {
+  if (m_Fireboy)
+    m_Fireboy->Respawn();
+  if (m_Watergirl)
+    m_Watergirl->Respawn();
+
+  for (auto &trap : m_Traps) {
+    trap->OnCharacterEnter(nullptr);
+  }
+
+  for (auto &gem : m_Gems) {
+    gem->Respawn();
+  }
+}
+
+// 檢查是否達成勝利條件
+bool App::CheckWinCondition() {
+  // 兩個門都必須為全開狀態
+  return (m_Fireboy_Door->IsOpen() && m_Watergirl_Door->IsOpen());
+}
+
+// 檢查角色與門的互動
+void App::CheckCharacterDoorInteraction() {
+  // Check if Fireboy is at his door
+  glm::vec2 fireboyPos = m_Fireboy->GetPosition();
+  glm::vec2 fireboyDoorPos = m_Fireboy_Door->GetPosition();
+
+  // Define a distance threshold for door interaction
+  const float interactionDistance = m_GridSystem.GetCellSize() * 1.5f;
+
+  // Calculate distances
+  float fireboyToDoorDistance = glm::length(fireboyPos - fireboyDoorPos);
+
+  // Update Fireboy's door state based on proximity
+  bool fireboyAtDoor = (fireboyToDoorDistance < interactionDistance);
+  if (fireboyAtDoor != m_Fireboy_Door->IsCharacterAtDoor()) {
+    m_Fireboy_Door->SetCharacterAtDoor(fireboyAtDoor);
+  }
+
+  // Check if Watergirl is at her door
+  glm::vec2 watergirlPos = m_Watergirl->GetPosition();
+  glm::vec2 watergirlDoorPos = m_Watergirl_Door->GetPosition();
+
+  float watergirlToDoorDistance = glm::length(watergirlPos - watergirlDoorPos);
+
+  // Update Watergirl's door state based on proximity
+  bool watergirlAtDoor = (watergirlToDoorDistance < interactionDistance);
+  if (watergirlAtDoor != m_Watergirl_Door->IsCharacterAtDoor()) {
+    m_Watergirl_Door->SetCharacterAtDoor(watergirlAtDoor);
+  }
+
+  if (CheckWinCondition()) {
+    m_CurrentState = State::GAME_WIN;
+    LOG_INFO("Level completed! Both characters at their doors.");
+  }
+}
+
 void App::GamePlay() {
   LOG_TRACE("Game Play");
 
@@ -149,10 +145,6 @@ void App::GamePlay() {
       return;
     }
   }
-
-  // 記錄角色位置
-  static glm::vec2 prevFireboyPos = m_Fireboy->GetPosition();
-  static glm::vec2 prevWatergirlPos = m_Watergirl->GetPosition();
 
   // Fireboy 控制
   int fireboyMoveX = 0;
@@ -172,6 +164,16 @@ void App::GamePlay() {
   RestrictPlayerPosition(*m_Fireboy, *this);
   HandleCollision(*m_Fireboy, *this, true);
 
+  // 檢查角色與寶石碰撞
+  for (auto &gem : m_Gems) {
+    if (SDL_HasIntersection(&gem->getRect(), &m_Fireboy->getRect())) {
+      gem->OnCharacterEnter(m_Fireboy.get());
+    }
+    if (SDL_HasIntersection(&gem->getRect(), &m_Watergirl->getRect())) {
+      gem->OnCharacterEnter(m_Watergirl.get());
+    }
+  }
+
   // Watergirl 控制
   int watergirlMoveX = 0;
   bool watergirlUpKeyPressed = false;
@@ -190,17 +192,41 @@ void App::GamePlay() {
   RestrictPlayerPosition(*m_Watergirl, *this);
   HandleCollision(*m_Watergirl, *this, false);
 
-  // Debug 顯示角色位置
-  if (m_Fireboy->GetPosition() != prevFireboyPos) {
-    prevFireboyPos = m_Fireboy->GetPosition();
-  }
-  if (m_Watergirl->GetPosition() != prevWatergirlPos) {
-    prevWatergirlPos = m_Watergirl->GetPosition();
+  glm::ivec2 fireboyCell =
+      m_GridSystem.GameToCellPosition(m_Fireboy->GetPosition());
+  CellType cellTypeFireboy = m_GridSystem.GetCell(fireboyCell.x, fireboyCell.y);
+  if (cellTypeFireboy == CellType::WATER ||
+      cellTypeFireboy == CellType::POISON) {
+    for (auto &trap : m_Traps) {
+      trap->OnCharacterEnter(m_Fireboy.get());
+    }
   }
 
-  // 處理遊戲結束條件
+  glm::ivec2 watergirlCell =
+      m_GridSystem.GameToCellPosition(m_Watergirl->GetPosition());
+  CellType cellTypeWatergirl =
+      m_GridSystem.GetCell(watergirlCell.x, watergirlCell.y);
+  if (cellTypeWatergirl == CellType::LAVA ||
+      cellTypeWatergirl == CellType::POISON) {
+    for (auto &trap : m_Traps) {
+      trap->OnCharacterEnter(m_Watergirl.get());
+    }
+  }
+
+  m_Fireboy_Door->UpdateAnimation();
+  m_Watergirl_Door->UpdateAnimation();
+
+  // 檢查 Fireboy 和Watergirl 是否在各自的門前
+  CheckCharacterDoorInteraction();
+
   if (Util::Input::IsKeyUp(Util::Keycode::ESCAPE) || Util::Input::IfExit()) {
     m_CurrentState = State::END;
+  }
+
+  if (m_Fireboy->IsDead() || m_Watergirl->IsDead()) {
+    std::cout << "有角色死亡，關卡重置中...\n";
+    ResetGameLevel();
+    return;
   }
 
   m_Root.Update();

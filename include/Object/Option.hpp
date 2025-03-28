@@ -1,5 +1,5 @@
-#ifndef BUTTON_HPP
-#define BUTTON_HPP
+#ifndef OPTION_HPP
+#define OPTION_HPP
 
 #include "Util/GameObject.hpp"
 #include "Util/Image.hpp"
@@ -11,10 +11,10 @@
 #include <stdio.h>
 #include <string>
 
-class Button : public Util::GameObject {
+class Option : public Util::GameObject {
 public:
-  Button(const std::string &imagePath, const glm::vec2 &position = {0, 0},
-         int zIndex = 0)
+  Option(const std::string &imagePath, const glm::vec2 &position = {0, 0},
+         int zIndex = 40)
       : GameObject(std::make_unique<Util::Image>(imagePath), zIndex) {
 
     glm::vec2 size = GetScaledSize();
@@ -27,6 +27,10 @@ public:
   void SetPosition(const glm::vec2 &position) {
     m_Transform.translation = position;
     m_Position = position;
+  }
+
+  void SetImage(const std::string &imagePath) {
+    SetDrawable(std::make_unique<Util::Image>(imagePath));
   }
 
   // 啟用/禁用按鈕
@@ -44,19 +48,11 @@ public:
       return false;
     }
 
-    // std::cout << "mouseX: " << mouseX << std::endl;
-    // std::cout << "mouseY: " << mouseY << std::endl;
-    // std::cout << "m_Position.x: " << m_Position.x
-    //           << ", m_Position.y: " << m_Position.y << std::endl;
-    // std::cout << "m_Width: " << m_Width << std::endl;
-    // std::cout << "m_Height: " << m_Height << std::endl;
-
     // 檢查滑鼠座標是否在按鈕範圍內
     bool isClicked = (mouseX >= m_Position.x - m_Width / 2 &&
                       mouseX <= m_Position.x + m_Width / 2 &&
                       mouseY >= m_Position.y - m_Height / 2 &&
                       mouseY <= m_Position.y + m_Height / 2);
-    // std::cout << "isClicked: " << isClicked << std::endl;
     return isClicked;
   }
 
@@ -93,4 +89,4 @@ private:
   std::function<void()> m_OnClickCallback = nullptr;
 };
 
-#endif // BUTTON_HPP
+#endif // OPTION_HPP

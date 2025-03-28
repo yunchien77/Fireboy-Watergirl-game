@@ -4,7 +4,6 @@
 #include "Util/Image.hpp"
 #include <iostream>
 
-
 Gem::Gem(GemType type) : m_Type(type) {
   std::string imagePath;
   switch (type) {
@@ -20,6 +19,7 @@ Gem::Gem(GemType type) : m_Type(type) {
   }
 
   SetDrawable(std::make_shared<Util::Image>(imagePath));
+  this->SetZIndex(20);
 }
 
 void Gem::SetPosition(const glm::vec2 &position) {

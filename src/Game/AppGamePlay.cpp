@@ -63,10 +63,10 @@ void HandleCollision(Character &player, App &app, bool isFireboy) {
 
     // 嘗試幾個方向的調整
     glm::vec2 testPositions[] = {
-        {pos.x, pos.y - adjustment}, // 上
-        {pos.x, pos.y + adjustment}, // 下
-        {pos.x - adjustment, pos.y}, // 左
-        {pos.x + adjustment, pos.y}, // 右
+        {pos.x, pos.y - adjustment}, //上
+        {pos.x, pos.y + adjustment}, //下
+        {pos.x - adjustment, pos.y}, //左
+        {pos.x + adjustment, pos.y}, //右
     };
 
     for (const auto &testPos : testPositions) {

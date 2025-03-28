@@ -158,12 +158,15 @@ bool GridSystem::CanMoveOn(CellType type, bool isFireboy) const {
 
 bool GridSystem::CanStandOn(CellType type, bool isFireboy) const {
   switch (type) {
-    case CellType::FLOOR:
-    case CellType::PLATFORM:
-    case CellType::WATER:
-      return true;
-    default:
-      return false;
+  case CellType::FLOOR:
+  case CellType::PLATFORM:
+    return true;
+  case CellType::WATER:
+    return !isFireboy;
+  case CellType::LAVA:
+    return isFireboy;
+  default:
+    return false;
   }
 }
 

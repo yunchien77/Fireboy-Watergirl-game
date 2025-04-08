@@ -21,6 +21,10 @@ public:
   // int GetWidth() const { return m_Width; }
   // int GetHeight() const { return m_Height; }
 
+  void SetImage(const std::string &imagePath) {
+    SetDrawable(std::make_unique<Util::Image>(imagePath));
+  }
+
 private:
   int m_X = 0;
   int m_Y = 0;

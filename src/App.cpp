@@ -210,6 +210,9 @@ App::App() {
 
     m_GameWinBackground->SetVisible(false);
     m_ContinueButton->SetVisible(false);
+    m_GemCollectedIndicator->SetVisible(false);
+    m_CharacterIndicator->SetVisible(false);
+    m_LevelResult->SetVisible(false);
 
     m_CurrentState = State::LEVEL_SELECT;
     m_LevelSelectBackground->SetVisible(true);

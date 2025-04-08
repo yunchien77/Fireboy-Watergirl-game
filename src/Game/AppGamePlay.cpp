@@ -63,10 +63,10 @@ void HandleCollision(Character &player, App &app, bool isFireboy) {
 
     // 嘗試幾個方向的調整
     glm::vec2 testPositions[] = {
-        {pos.x, pos.y - adjustment}, //上
-        {pos.x, pos.y + adjustment}, //下
-        {pos.x - adjustment, pos.y}, //左
-        {pos.x + adjustment, pos.y}, //右
+        {pos.x, pos.y - adjustment}, // 上
+        {pos.x, pos.y + adjustment}, // 下
+        {pos.x - adjustment, pos.y}, // 左
+        {pos.x + adjustment, pos.y}, // 右
     };
 
     for (const auto &testPos : testPositions) {
@@ -132,6 +132,23 @@ void App::CheckCharacterDoorInteraction() {
   if (CheckWinCondition()) {
     m_CurrentState = State::GAME_WIN;
     LOG_INFO("Level completed! Both characters at their doors.");
+  }
+}
+
+// 檢查寶石收集狀態
+bool App::GetGemCollectionStatus() {
+  int collectedGems = 0;
+  int totalGems = m_Gems.size();
+  for (auto &gem : m_Gems) {
+    if (gem->IsCollected()) {
+      collectedGems++;
+    }
+  }
+
+  if (totalGems == collectedGems) {
+    return true; // 所有寶石都已收集
+  } else {
+    return false; // 還有未收集的寶石
   }
 }
 

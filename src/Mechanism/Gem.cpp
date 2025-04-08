@@ -62,6 +62,8 @@ const SDL_Rect &Gem::getRect() const {
   return m_Rect;
 }
 
+bool Gem::IsCollected() const { return !m_Visible; }
+
 void Gem::Respawn() {
   SetPosition(m_InitialPosition);
   SetVisible(true);

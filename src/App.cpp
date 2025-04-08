@@ -208,17 +208,20 @@ App::App() {
   m_ContinueButton->SetOnClickCallback([this]() {
     ResetGame();
 
+    m_GameWinBackground->SetVisible(false);
+    m_ContinueButton->SetVisible(false);
+
     m_CurrentState = State::LEVEL_SELECT;
+    m_LevelSelectBackground->SetVisible(true);
     m_Level1Button->SetVisible(true);
     m_Level2Button->SetVisible(true);
     m_Level3Button->SetVisible(true);
     m_Level4Button->SetVisible(true);
     m_Level5Button->SetVisible(true);
     m_BackButton->SetVisible(true);
-    m_LevelSelectBackground->SetVisible(true);
 
     m_Level1Background->SetVisible(false);
-    // m_Level2Background->SetVisible(false);
+    m_Level2Background->SetVisible(false);
     // m_Level3Background->SetVisible(false);
     // m_Level4Background->SetVisible(false);
     // m_Level5Background->SetVisible(false);

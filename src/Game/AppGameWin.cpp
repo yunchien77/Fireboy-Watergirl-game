@@ -31,6 +31,13 @@ void App::GameWin() {
             RESOURCE_DIR "/material/background/button/current-level.png");
         m_Level2Button->SetInteractable(true);
       }
+      if (m_CurrentLevel == 2) {
+        m_Level2Background->SetVisible(false);
+        unlockedLevel = 3;
+        m_Level3Button->SetImage(
+            RESOURCE_DIR "/material/background/button/current-level.png");
+        m_Level3Button->SetInteractable(true);
+      }
     }
   }
 

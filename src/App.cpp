@@ -52,7 +52,7 @@ App::App() {
       RESOURCE_DIR "/material/background/button/unlevel.png",
       glm::vec2(0, -102));
   m_Level2Button->SetVisible(false);
-  // m_Level2Button->SetInteractable(false); // 第二關不可互動
+  m_Level2Button->SetInteractable(false); // 第二關不可互動
 
   // 設置按鈕點擊事件回調
   m_Level2Button->SetOnClickCallback([this]() {

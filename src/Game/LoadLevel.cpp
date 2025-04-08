@@ -162,17 +162,17 @@ bool App::LoadLevelGrid(int levelNumber) {
       m_Root.AddChild(lavaTrap);
     }
 
-    // // 毒池座標列表
-    // std::vector<std::pair<int, int>> poisionTrapCoords = {{12, 15}};
+    // 毒池座標列表
+    std::vector<std::pair<int, int>> poisionTrapCoords = {{12, 15}};
 
-    // for (const auto &[row, col] : poisionTrapCoords) {
-    //   auto poisionTrap =
-    //       std::make_shared<LiquidTrap>(CellType::POISON, SizeType::LARGE);
-    //   glm::vec2 pos = m_GridSystem.CellToGamePosition(row, col);
-    //   poisionTrap->SetPosition(pos);
-    //   m_Traps.push_back(poisionTrap);
-    //   m_Root.AddChild(poisionTrap);
-    // }
+    for (const auto &[row, col] : poisionTrapCoords) {
+      auto poisionTrap =
+          std::make_shared<LiquidTrap>(CellType::POISON, SizeType::LARGE);
+      glm::vec2 pos = m_GridSystem.CellToGamePosition(row, col);
+      poisionTrap->SetPosition(pos);
+      m_Traps.push_back(poisionTrap);
+      m_Root.AddChild(poisionTrap);
+    }
 
     // 火寶石座標 (row, col)
     std::vector<std::pair<int, int>> fireGemCoords = {

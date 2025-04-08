@@ -53,76 +53,31 @@ bool App::LoadLevelGrid(int levelNumber) {
     m_Watergirl_Door->SetOpen(false);
     m_Watergirl_Door->SetVisible(true);
 
-    // 水池
-    for (auto &trap : m_Traps) {
-      trap->SetVisible(true);
+    // 水池座標列表
+    std::vector<std::pair<int, int>> waterTrapCoords = {
+        {27, 7}, {22, 7}, {17, 7}, {19, 12}};
+
+    for (const auto &[row, col] : waterTrapCoords) {
+      auto waterTrap =
+          std::make_shared<LiquidTrap>(CellType::WATER, SizeType::SMALL);
+      glm::vec2 pos = m_GridSystem.CellToGamePosition(row, col);
+      waterTrap->SetPosition(pos);
+      m_Traps.push_back(waterTrap);
+      m_Root.AddChild(waterTrap);
     }
-    auto water1 =
-        std::make_shared<LiquidTrap>(CellType::WATER, SizeType::SMALL);
-    glm::vec2 waterPos1 = m_GridSystem.CellToGamePosition(27, 7);
-    waterPos1.y += 5.0f;
-    water1->SetPosition(waterPos1);
-    m_Traps.push_back(water1);
-    m_Root.AddChild(water1);
 
-    // 水池
-    auto water2 =
-        std::make_shared<LiquidTrap>(CellType::WATER, SizeType::SMALL);
-    glm::vec2 waterPos2 = m_GridSystem.CellToGamePosition(22, 7);
-    waterPos2.y += 5.0f;
-    water2->SetPosition(waterPos2);
-    m_Traps.push_back(water2);
-    m_Root.AddChild(water2);
+    // 岩漿座標列表
+    std::vector<std::pair<int, int>> lavaTrapCoords = {
+        {19, 19}, {14, 19}, {9, 19}, {28, 22}};
 
-    // 水池
-    auto water3 =
-        std::make_shared<LiquidTrap>(CellType::WATER, SizeType::SMALL);
-    glm::vec2 waterPos3 = m_GridSystem.CellToGamePosition(17, 7);
-    waterPos3.y += 5.0f;
-    water3->SetPosition(waterPos3);
-    m_Traps.push_back(water3);
-    m_Root.AddChild(water3);
-
-    // 水池
-    auto water4 =
-        std::make_shared<LiquidTrap>(CellType::WATER, SizeType::SMALL);
-    glm::vec2 waterPos4 = m_GridSystem.CellToGamePosition(19, 12);
-    waterPos4.y += 5.0f;
-    water4->SetPosition(waterPos4);
-    m_Traps.push_back(water4);
-    m_Root.AddChild(water4);
-
-    // 岩漿
-    auto lava1 = std::make_shared<LiquidTrap>(CellType::LAVA, SizeType::SMALL);
-    glm::vec2 lavaPos1 = m_GridSystem.CellToGamePosition(19, 19);
-    lavaPos1.y += 3.0f;
-    lava1->SetPosition(lavaPos1);
-    m_Traps.push_back(lava1);
-    m_Root.AddChild(lava1);
-
-    // 岩漿
-    auto lava2 = std::make_shared<LiquidTrap>(CellType::LAVA, SizeType::SMALL);
-    glm::vec2 lavaPos2 = m_GridSystem.CellToGamePosition(14, 19);
-    lavaPos2.y += 3.0f;
-    lava2->SetPosition(lavaPos2);
-    m_Traps.push_back(lava2);
-    m_Root.AddChild(lava2);
-
-    // 岩漿
-    auto lava3 = std::make_shared<LiquidTrap>(CellType::LAVA, SizeType::SMALL);
-    glm::vec2 lavaPos3 = m_GridSystem.CellToGamePosition(9, 19);
-    lavaPos3.y += 3.0f;
-    lava3->SetPosition(lavaPos3);
-    m_Traps.push_back(lava3);
-    m_Root.AddChild(lava3);
-
-    // 岩漿
-    auto lava4 = std::make_shared<LiquidTrap>(CellType::LAVA, SizeType::SMALL);
-    glm::vec2 lavaPos4 = m_GridSystem.CellToGamePosition(28, 22);
-    lavaPos4.y += 6.0f;
-    lava4->SetPosition(lavaPos4);
-    m_Traps.push_back(lava4);
-    m_Root.AddChild(lava4);
+    for (const auto &[row, col] : lavaTrapCoords) {
+      auto lavaTrap =
+          std::make_shared<LiquidTrap>(CellType::LAVA, SizeType::SMALL);
+      glm::vec2 pos = m_GridSystem.CellToGamePosition(row, col);
+      lavaTrap->SetPosition(pos);
+      m_Traps.push_back(lavaTrap);
+      m_Root.AddChild(lavaTrap);
+    }
 
     // 火寶石座標列表
     std::vector<std::pair<int, int>> fireGemCoords = {
@@ -131,7 +86,6 @@ bool App::LoadLevelGrid(int levelNumber) {
     for (const auto &[row, col] : fireGemCoords) {
       auto fireGem = std::make_shared<Gem>(GemType::FIRE);
       glm::vec2 pos = m_GridSystem.CellToGamePosition(row, col);
-      pos.x += 13.0f;
       fireGem->SetPosition(pos);
       fireGem->SetInitialPosition(pos);
       m_Gems.push_back(fireGem);
@@ -145,7 +99,6 @@ bool App::LoadLevelGrid(int levelNumber) {
     for (const auto &[row, col] : waterGemCoords) {
       auto waterGem = std::make_shared<Gem>(GemType::WATER);
       glm::vec2 pos = m_GridSystem.CellToGamePosition(row, col);
-      pos.x += 13.0f;
       waterGem->SetPosition(pos);
       waterGem->SetInitialPosition(pos);
       m_Gems.push_back(waterGem);
@@ -193,7 +146,6 @@ bool App::LoadLevelGrid(int levelNumber) {
     for (const auto &[row, col] : fireGemCoords) {
       auto gem = std::make_shared<Gem>(GemType::FIRE);
       glm::vec2 pos = m_GridSystem.CellToGamePosition(row, col);
-      pos.y += 13.0f;
       gem->SetPosition(pos);
       gem->SetInitialPosition(pos);
       m_Gems.push_back(gem);
@@ -208,7 +160,6 @@ bool App::LoadLevelGrid(int levelNumber) {
     for (const auto &[row, col] : waterGemCoords) {
       auto gem = std::make_shared<Gem>(GemType::WATER);
       glm::vec2 pos = m_GridSystem.CellToGamePosition(row, col);
-      pos.y += 13.0f;
       gem->SetPosition(pos);
       gem->SetInitialPosition(pos);
       m_Gems.push_back(gem);

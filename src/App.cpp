@@ -52,7 +52,7 @@ App::App() {
       RESOURCE_DIR "/material/background/button/unlevel.png",
       glm::vec2(0, -102));
   m_Level2Button->SetVisible(false);
-  m_Level2Button->SetInteractable(false); // 第二關不可互動
+  // m_Level2Button->SetInteractable(false); // 第二關不可互動
 
   // 設置按鈕點擊事件回調
   m_Level2Button->SetOnClickCallback([this]() {
@@ -166,7 +166,7 @@ App::App() {
 
   // 第二關背景
   m_Level2Background = std::make_shared<BackgroundImage>(
-      RESOURCE_DIR "/material/background/rlevel2.png");
+      RESOURCE_DIR "/material/background/rlevel2-clear.png");
   m_Level2Background->SetVisible(false);
   m_Root.AddChild(m_Level2Background);
 

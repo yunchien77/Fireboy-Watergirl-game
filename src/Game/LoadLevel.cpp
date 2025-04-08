@@ -138,6 +138,42 @@ bool App::LoadLevelGrid(int levelNumber) {
     m_Watergirl_Door->SetOpen(false);
     m_Watergirl_Door->SetVisible(true);
 
+    // 水池座標列表
+    std::vector<std::pair<int, int>> waterTrapCoords = {{10, 25}, {26, 28}};
+
+    for (const auto &[row, col] : waterTrapCoords) {
+      auto waterTrap =
+          std::make_shared<LiquidTrap>(CellType::WATER, SizeType::LARGE);
+      glm::vec2 pos = m_GridSystem.CellToGamePosition(row, col);
+      waterTrap->SetPosition(pos);
+      m_Traps.push_back(waterTrap);
+      m_Root.AddChild(waterTrap);
+    }
+
+    // 岩漿座標列表
+    std::vector<std::pair<int, int>> lavaTrapCoords = {{10, 28}, {26, 25}};
+
+    for (const auto &[row, col] : lavaTrapCoords) {
+      auto lavaTrap =
+          std::make_shared<LiquidTrap>(CellType::LAVA, SizeType::LARGE);
+      glm::vec2 pos = m_GridSystem.CellToGamePosition(row, col);
+      lavaTrap->SetPosition(pos);
+      m_Traps.push_back(lavaTrap);
+      m_Root.AddChild(lavaTrap);
+    }
+
+    // // 毒池座標列表
+    // std::vector<std::pair<int, int>> poisionTrapCoords = {{12, 15}};
+
+    // for (const auto &[row, col] : poisionTrapCoords) {
+    //   auto poisionTrap =
+    //       std::make_shared<LiquidTrap>(CellType::POISON, SizeType::LARGE);
+    //   glm::vec2 pos = m_GridSystem.CellToGamePosition(row, col);
+    //   poisionTrap->SetPosition(pos);
+    //   m_Traps.push_back(poisionTrap);
+    //   m_Root.AddChild(poisionTrap);
+    // }
+
     // 火寶石座標 (row, col)
     std::vector<std::pair<int, int>> fireGemCoords = {
         {8, 27},  {12, 27}, {24, 24}, {28, 24},

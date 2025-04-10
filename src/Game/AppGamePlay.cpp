@@ -250,6 +250,11 @@ void App::GamePlay() {
     b->update(m_Fireboy.get(), m_Watergirl.get());
   }
 
+  float deltaTime = 1.0f / 60.0f;
+  for (auto& g : m_Triggers) {
+    g->UpdateAnimation(deltaTime);
+  }
+
   m_Root.Update();
 }
 

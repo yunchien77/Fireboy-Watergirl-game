@@ -27,12 +27,15 @@ public:
     bool IsBlocking() const;
     GateColor GetColor() const;
     const SDL_Rect& getRect() const;
+    void UpdateAnimation(float deltaTime);
 
 private:
     GateColor m_Color;
     bool m_IsOpen = false;
     glm::vec2 m_InitialPosition;
     mutable SDL_Rect m_Rect;
+    bool m_IsAnimating = false;
+    bool m_ShouldOpen = false;
 
     std::string GetImagePath(GateColor color);
 };

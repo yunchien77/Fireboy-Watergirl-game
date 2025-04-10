@@ -8,6 +8,7 @@
 
 enum class SizeType {
     SMALL,
+    MIDDLE,
     LARGE
 };
 

@@ -183,8 +183,8 @@ void Character::UpdateJump(const GridSystem &grid) {
       nextPos.y += jumpSpeed; // 嘗試向上跳
 
       // 定義角色框框的四個角落點（上升後的位置）
-      float left = nextPos.x - (m_Size.x / 2);
-      float right = nextPos.x + (m_Size.x / 2);
+      float left = nextPos.x - (m_Size.x / 2) + 2.5f;
+      float right = nextPos.x + (m_Size.x / 2) - 2.5f;
       float top = nextPos.y + m_Size.y;
 
       // 檢查整個頂部邊緣的碰撞
@@ -299,7 +299,7 @@ void Character::ApplyGravity(const GridSystem &grid) {
     nextPos.y -= fallSpeed;
 
     // 腳的寬度保持不變
-    float footWidth = m_Size.x / 4.5f;
+    float footWidth = m_Size.x / 5.0f;
 
     // 計算腳的位置（底部中間）
     float footLeft = nextPos.x - (footWidth / 2);

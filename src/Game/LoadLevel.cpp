@@ -1,11 +1,11 @@
 #include "App.hpp"
 #include "Character/Fireboy.hpp"
 #include "Character/Watergirl.hpp"
+#include "Mechanism/Button.hpp"
+#include "Mechanism/Gate.hpp"
 #include "Object/GridSystem.hpp"
 #include <Mechanism/Gem.hpp>
 #include <Mechanism/LiquidTrap.hpp>
-#include "Mechanism/Button.hpp"
-#include "Mechanism/Gate.hpp"
 
 // 載入地圖網格，並初始化 GridSystem
 bool App::LoadLevelGrid(int levelNumber) {
@@ -57,14 +57,15 @@ bool App::LoadLevelGrid(int levelNumber) {
 
     // 水池座標
     std::vector<std::pair<glm::ivec2, float>> waterTraps = {
-      {{27, 7}, 5.0f},
-      {{22, 7}, 5.0f},
-      {{17, 7}, 5.0f},
-      {{19, 12}, 5.0f},
-  };
+        {{27, 7}, 5.0f},
+        {{22, 7}, 5.0f},
+        {{17, 7}, 5.0f},
+        {{19, 12}, 5.0f},
+    };
 
-    for (const auto& [cell, offsetY] : waterTraps) {
-      auto trap = std::make_shared<LiquidTrap>(CellType::WATER, SizeType::SMALL);
+    for (const auto &[cell, offsetY] : waterTraps) {
+      auto trap =
+          std::make_shared<LiquidTrap>(CellType::WATER, SizeType::SMALL);
       glm::vec2 pos = m_GridSystem.CellToGamePosition(cell.x, cell.y);
       pos.y -= 0.3f;
       trap->SetPosition(pos);
@@ -74,13 +75,13 @@ bool App::LoadLevelGrid(int levelNumber) {
 
     // 岩漿座標
     std::vector<std::pair<glm::ivec2, float>> lavaTraps = {
-      {{19, 19}, 3.0f},
-      {{14, 19}, 3.0f},
-      {{9, 19}, 3.0f},
-      {{28, 22}, 6.0f},
-  };
+        {{19, 19}, 3.0f},
+        {{14, 19}, 3.0f},
+        {{9, 19}, 3.0f},
+        {{28, 22}, 6.0f},
+    };
 
-    for (const auto& [cell, offsetY] : lavaTraps) {
+    for (const auto &[cell, offsetY] : lavaTraps) {
       auto trap = std::make_shared<LiquidTrap>(CellType::LAVA, SizeType::SMALL);
       glm::vec2 pos = m_GridSystem.CellToGamePosition(cell.x, cell.y);
       pos.y -= 0.3f;
@@ -121,7 +122,7 @@ bool App::LoadLevelGrid(int levelNumber) {
     // 初始化角色 Fireboy
     if (!m_Fireboy) {
       m_Fireboy = std::make_shared<Fireboy>();
-      glm::vec2 fireboyInitPos = m_GridSystem.CellToGamePosition(2, 27);
+      glm::vec2 fireboyInitPos = m_GridSystem.CellToGamePosition(2, 28);
       m_Fireboy->SetPosition(fireboyInitPos);
       m_Fireboy->SetSpawnPoint(fireboyInitPos);
       m_Root.AddChild(m_Fireboy);
@@ -130,7 +131,7 @@ bool App::LoadLevelGrid(int levelNumber) {
     // 初始化角色 Watergirl
     if (!m_Watergirl) {
       m_Watergirl = std::make_shared<Watergirl>();
-      glm::vec2 watergirlInitPos = m_GridSystem.CellToGamePosition(4, 27);
+      glm::vec2 watergirlInitPos = m_GridSystem.CellToGamePosition(4, 28);
       m_Watergirl->SetPosition(watergirlInitPos);
       m_Watergirl->SetSpawnPoint(watergirlInitPos);
       m_Root.AddChild(m_Watergirl);
@@ -195,7 +196,7 @@ bool App::LoadLevelGrid(int levelNumber) {
     for (const auto &[row, col] : fireGemCoords) {
       auto gem = std::make_shared<Gem>(GemType::FIRE);
       glm::vec2 pos = m_GridSystem.CellToGamePosition(row, col);
-      //pos.y += 13.0f;
+      // pos.y += 13.0f;
       gem->SetZIndex(10);
       gem->SetPosition(pos);
       gem->SetInitialPosition(pos);
@@ -228,7 +229,7 @@ bool App::LoadLevelGrid(int levelNumber) {
 
     // 按鈕座標列表
     std::vector<glm::ivec2> buttonCells = {{6, 20}, {33, 20}};
-    for (const auto& cell : buttonCells) {
+    for (const auto &cell : buttonCells) {
       glm::vec2 pos = m_GridSystem.CellToGamePosition(cell.x, cell.y);
       pos.y += 20;
       auto button = std::make_shared<Button>(ButtonColor::WHITE, pos);
@@ -236,8 +237,6 @@ bool App::LoadLevelGrid(int levelNumber) {
       m_Buttons.push_back(button);
       m_Root.AddChild(button);
     }
-
-
 
   } break;
   case 3:

@@ -46,12 +46,12 @@ public:
   // 更新角色的動畫(純虛擬函數 -> Fireboy 和 Watergirl 會實現)
   virtual void UpdateAnimation() = 0;
 
-  virtual void Die();                          // 設定角色死亡
-  bool IsDead() const;                         // 查詢死亡狀態
-  void Respawn();                              // 重生
+  virtual void Die();  // 設定角色死亡
+  bool IsDead() const; // 查詢死亡狀態
+  void Respawn();      // 重生
   void SetSpawnPoint(const glm::vec2 &spawn);
 
-  virtual const SDL_Rect& getRect() const = 0;
+  virtual const SDL_Rect &getRect() const = 0;
 
   virtual bool IsFireboy() const = 0;
 

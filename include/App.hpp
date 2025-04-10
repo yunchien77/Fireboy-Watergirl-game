@@ -15,6 +15,9 @@
 #include <memory>
 #include <string>
 
+#include "Mechanism/Button.hpp"
+#include "Mechanism/Gate.hpp"
+
 class App {
 public:
   enum class State {
@@ -101,6 +104,9 @@ private:
 
   std::vector<std::shared_ptr<ITrap>> m_Traps;
   std::vector<std::shared_ptr<IGem>> m_Gems;
+  std::vector<std::shared_ptr<Button>> m_Buttons;
+  std::vector<std::shared_ptr<Gate>> m_Triggers;
+
 
   std::shared_ptr<BackgroundImage> m_GameWinBackground;
   std::shared_ptr<BackgroundImage> m_GameOverBackground;

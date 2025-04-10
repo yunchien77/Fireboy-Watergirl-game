@@ -4,6 +4,8 @@
 #include "Object/GridSystem.hpp"
 #include <Mechanism/Gem.hpp>
 #include <Mechanism/LiquidTrap.hpp>
+#include "Mechanism/Button.hpp"
+#include "Mechanism/Gate.hpp"
 
 // 載入地圖網格，並初始化 GridSystem
 bool App::LoadLevelGrid(int levelNumber) {
@@ -215,6 +217,27 @@ bool App::LoadLevelGrid(int levelNumber) {
       m_Gems.push_back(gem);
       m_Root.AddChild(gem);
     }
+
+    // 初始化 Gate
+    glm::ivec2 gateCell = {20, 17};
+    glm::vec2 gatePos = m_GridSystem.CellToGamePosition(gateCell.x, gateCell.y);
+    gatePos.y -= 13.0f;
+    auto gate = std::make_shared<Gate>(GateColor::WHITE, gatePos);
+    m_Triggers.push_back(gate);
+    m_Root.AddChild(gate);
+
+    // 按鈕座標列表
+    std::vector<glm::ivec2> buttonCells = {{6, 20}, {33, 20}};
+    for (const auto& cell : buttonCells) {
+      glm::vec2 pos = m_GridSystem.CellToGamePosition(cell.x, cell.y);
+      pos.y += 20;
+      auto button = std::make_shared<Button>(ButtonColor::WHITE, pos);
+      button->linkTrigger(gate.get());
+      m_Buttons.push_back(button);
+      m_Root.AddChild(button);
+    }
+
+
 
   } break;
   case 3:

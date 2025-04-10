@@ -260,3 +260,11 @@ void Character::Respawn() {
 }
 
 void Character::SetSpawnPoint(const glm::vec2 &spawn) { m_SpawnPoint = spawn; }
+
+void Character::SetPreviousPosition() {
+  m_LastPosition = m_Transform.translation;
+}
+
+void Character::UndoMovement() {
+  m_Transform.translation = m_LastPosition;
+}

@@ -147,6 +147,8 @@ bool GridSystem::CanMoveOn(CellType type, bool isFireboy) const {
     return true;
   case CellType::WATER:
     return true;
+  case CellType::POISON:
+    return true;
   case CellType::DOOR_FIRE:
     return isFireboy; // 只有火男可以通過火門
   case CellType::DOOR_WATER:
@@ -165,6 +167,8 @@ bool GridSystem::CanStandOn(CellType type, bool isFireboy) const {
     return !isFireboy;
   case CellType::LAVA:
     return isFireboy;
+  case CellType::POISON:
+    return false;
   default:
     return false;
   }
@@ -181,7 +185,8 @@ bool GridSystem::CheckCollision(const glm::vec2 &worldPos, glm::vec2 size,
     glm::ivec2 gridPosRight = GameToCellPosition(rightEdge);
     CellType cellTypeRight = GetCell(gridPosRight.x, gridPosRight.y);
 
-    if (cellTypeRight == CellType::WATER && isFireboy)
+    if ((cellTypeRight == CellType::WATER && isFireboy) ||
+        cellTypeRight == CellType::POISON)
       return false;
 
     return !CanMoveOn(cellTypeRight, isFireboy);
@@ -192,7 +197,8 @@ bool GridSystem::CheckCollision(const glm::vec2 &worldPos, glm::vec2 size,
     glm::ivec2 gridPosLeft = GameToCellPosition(leftEdge);
     CellType cellTypeLeft = GetCell(gridPosLeft.x, gridPosLeft.y);
 
-    if (cellTypeLeft == CellType::WATER && isFireboy)
+    if ((cellTypeLeft == CellType::WATER && isFireboy) ||
+        cellTypeLeft == CellType::POISON)
       return false;
 
     return !CanMoveOn(cellTypeLeft, isFireboy);

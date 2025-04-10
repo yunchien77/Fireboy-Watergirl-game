@@ -20,6 +20,8 @@ Gem::Gem(GemType type) : m_Type(type) {
 
   SetDrawable(std::make_shared<Util::Image>(imagePath));
   this->SetZIndex(20);
+
+  SetPivot(glm::vec2(0.0f, -13.0f));
 }
 
 void Gem::SetPosition(const glm::vec2 &position) {
@@ -61,6 +63,8 @@ const SDL_Rect &Gem::getRect() const {
   m_Rect.h = static_cast<int>(size.y);
   return m_Rect;
 }
+
+bool Gem::IsCollected() const { return !m_Visible; }
 
 void Gem::Respawn() {
   SetPosition(m_InitialPosition);

@@ -14,6 +14,8 @@ set(SRC_FILES
         Object/GridSystem.cpp
         Mechanism/LiquidTrap.cpp
         Mechanism/Gem.cpp
+        Mechanism/Gate.cpp
+        Mechanism/Button.cpp
 )
 
 set(INCLUDE_FILES
@@ -28,7 +30,10 @@ set(INCLUDE_FILES
         Mechanism/LiquidTrap.hpp
         Interface/ITrap.hpp
         Interface/IGem.hpp
+        Interface/ITriggerable.hpp
         Mechanism/Gem.hpp
+        Mechanism/Gate.hpp
+        Mechanism/Button.hpp
 )
 
 set(TEST_FILES

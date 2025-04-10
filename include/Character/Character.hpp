@@ -60,6 +60,8 @@ public:
   virtual int getWidth() const = 0;
   virtual int getHeight() const = 0;
 
+  void SetPreviousPosition();
+  void UndoMovement();
 
 protected:
   // 應用水平翻轉
@@ -77,6 +79,7 @@ protected:
   glm::vec2 m_Size;   // 角色的尺寸
   bool m_IsDead = false;
   glm::vec2 m_SpawnPoint;
+  glm::vec2 m_LastPosition;
 };
 
 #endif // CHARACTER_HPP

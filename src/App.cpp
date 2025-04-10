@@ -52,7 +52,7 @@ App::App() {
       RESOURCE_DIR "/material/background/button/unlevel.png",
       glm::vec2(0, -102));
   m_Level2Button->SetVisible(false);
-  m_Level2Button->SetInteractable(true); // 第二關不可互動
+  m_Level2Button->SetInteractable(false); // 第二關不可互動
 
   // 設置按鈕點擊事件回調
   m_Level2Button->SetOnClickCallback([this]() {
@@ -166,7 +166,7 @@ App::App() {
 
   // 第二關背景
   m_Level2Background = std::make_shared<BackgroundImage>(
-      RESOURCE_DIR "/material/background/rlevel2.png");
+      RESOURCE_DIR "/material/background/rlevel2-clear.png");
   m_Level2Background->SetVisible(false);
   m_Root.AddChild(m_Level2Background);
 
@@ -208,17 +208,23 @@ App::App() {
   m_ContinueButton->SetOnClickCallback([this]() {
     ResetGame();
 
+    m_GameWinBackground->SetVisible(false);
+    m_ContinueButton->SetVisible(false);
+    m_GemCollectedIndicator->SetVisible(false);
+    m_CharacterIndicator->SetVisible(false);
+    m_LevelResult->SetVisible(false);
+
     m_CurrentState = State::LEVEL_SELECT;
+    m_LevelSelectBackground->SetVisible(true);
     m_Level1Button->SetVisible(true);
     m_Level2Button->SetVisible(true);
     m_Level3Button->SetVisible(true);
     m_Level4Button->SetVisible(true);
     m_Level5Button->SetVisible(true);
     m_BackButton->SetVisible(true);
-    m_LevelSelectBackground->SetVisible(true);
 
     m_Level1Background->SetVisible(false);
-    // m_Level2Background->SetVisible(false);
+    m_Level2Background->SetVisible(false);
     // m_Level3Background->SetVisible(false);
     // m_Level4Background->SetVisible(false);
     // m_Level5Background->SetVisible(false);

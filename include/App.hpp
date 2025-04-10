@@ -15,6 +15,9 @@
 #include <memory>
 #include <string>
 
+#include "Mechanism/Button.hpp"
+#include "Mechanism/Gate.hpp"
+
 class App {
 public:
   enum class State {
@@ -63,6 +66,7 @@ public:
 
   // 檢查是否達成勝利條件
   bool CheckWinCondition();
+  bool GetGemCollectionStatus();
 
   // 檢查角色與門的互動
   void CheckCharacterDoorInteraction();
@@ -73,7 +77,7 @@ private:
 private:
   State m_CurrentState = State::START;
   int m_CurrentLevel = 1;
-  bool m_IsLevelCompleted = false;
+  // bool m_IsLevelCompleted = false;
   int unlockedLevel = 1;
 
   std::shared_ptr<BackgroundImage> m_TitleBackground; // 遊戲封面背景
@@ -100,15 +104,22 @@ private:
 
   std::vector<std::shared_ptr<ITrap>> m_Traps;
   std::vector<std::shared_ptr<IGem>> m_Gems;
+  std::vector<std::shared_ptr<Button>> m_Buttons;
+  std::vector<std::shared_ptr<Gate>> m_Triggers;
+
 
   std::shared_ptr<BackgroundImage> m_GameWinBackground;
   std::shared_ptr<BackgroundImage> m_GameOverBackground;
 
-  std::shared_ptr<Option> m_EndButton;      // 結束按鈕
-  std::shared_ptr<Option> m_MenuButton;     // 返回主選單按鈕
-  std::shared_ptr<Option> m_RetryButton;    // 重新開始按鈕
-  std::shared_ptr<Option> m_ResumeButton;   // 繼續按鈕
+  // std::shared_ptr<Option> m_EndButton;      // 結束按鈕
+  // std::shared_ptr<Option> m_MenuButton;     // 返回主選單按鈕
+  // std::shared_ptr<Option> m_RetryButton;    // 重新開始按鈕
+  // std::shared_ptr<Option> m_ResumeButton;   // 繼續按鈕
   std::shared_ptr<Option> m_ContinueButton; // 切換道關卡選擇按鈕
+
+  std::shared_ptr<BackgroundImage> m_LevelResult;
+  std::shared_ptr<BackgroundImage> m_GemCollectedIndicator;
+  std::shared_ptr<BackgroundImage> m_CharacterIndicator;
 
   // 網格系統
   GridSystem m_GridSystem;

@@ -23,13 +23,14 @@ LiquidTrap::LiquidTrap(CellType type, SizeType sizeType)
                     : RESOURCE_DIR "/material/props/lava/lava-green-small.png";
     break;
   default:
-    std::cerr << "⚠️ Warning: 未知的 CellType (" << static_cast<int>(type)
-              << ")，使用預設值\n";
-    imagePath = "lava/default.png";
+    std::cerr << "⚠️ Warning: Unknown CellType (" << static_cast<int>(type)
+              << ")\n";
     break;
   }
   SetImage(imagePath);
   this->SetZIndex(20);
+
+  SetPivot(glm::vec2(0.0f, -5.0f));
 }
 
 void LiquidTrap::SetImage(const std::string &imagePath) {
@@ -42,6 +43,10 @@ void LiquidTrap::SetPosition(const glm::vec2 &position) {
 }
 
 void LiquidTrap::OnCharacterEnter(Character *character) {
+  if (character == nullptr) {
+    return;
+  }
+
   switch (type) {
   case CellType::LAVA:
     if (dynamic_cast<Watergirl *>(character)) {

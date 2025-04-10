@@ -17,12 +17,13 @@ public:
   void SetPosition(const glm::vec2 &position);
   GemType GetType() const;
 
+  bool IsCollected() const override;
+
   void SetInitialPosition(const glm::vec2 &pos);
   void Respawn() override;
 
 private:
   GemType m_Type;
-  //   bool m_Collected = false;
   mutable SDL_Rect m_Rect;
   glm::vec2 m_InitialPosition;
 };

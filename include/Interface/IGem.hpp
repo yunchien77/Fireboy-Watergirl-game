@@ -10,6 +10,7 @@ public:
   virtual void OnCharacterEnter(Character *character) = 0;
   virtual const SDL_Rect &getRect() const = 0;
   virtual void Respawn() = 0;
+  virtual bool IsCollected() const = 0;
 };
 
 #endif

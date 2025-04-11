@@ -81,15 +81,19 @@ App::App() {
 
   // 設置按鈕點擊事件回調
   m_Level3Button->SetOnClickCallback([this]() {
-    m_CurrentState = State::GAME_PLAY;
-    m_Level1Button->SetVisible(false);
-    m_Level2Button->SetVisible(false);
-    m_Level3Button->SetVisible(false);
-    m_Level4Button->SetVisible(false);
-    m_Level5Button->SetVisible(false);
-    m_BackButton->SetVisible(false);
-    m_LevelSelectBackground->SetVisible(false);
-    m_Level3Background->SetVisible(true);
+      ResetGame();
+
+      m_Level1Button->SetVisible(false);
+      m_Level2Button->SetVisible(false);
+      m_Level3Button->SetVisible(false);
+      m_Level4Button->SetVisible(false);
+      m_Level5Button->SetVisible(false);
+      m_BackButton->SetVisible(false);
+      m_LevelSelectBackground->SetVisible(false);
+
+      m_Level3Background->SetVisible(true);
+      m_CurrentLevel = 3;
+      m_IsGridLoaded = false;
   });
 
   m_Root.AddChild(m_Level3Button);
@@ -166,11 +170,15 @@ App::App() {
 
   // 第二關背景
   m_Level2Background = std::make_shared<BackgroundImage>(
-      RESOURCE_DIR "/material/background/rlevel2-clear.png");
+      RESOURCE_DIR "/material/background/rlevel2.png");
   m_Level2Background->SetVisible(false);
   m_Root.AddChild(m_Level2Background);
 
   // 第三關背景
+  m_Level3Background = std::make_shared<BackgroundImage>(
+  RESOURCE_DIR "/material/background/rlevel3.png");
+  m_Level3Background->SetVisible(false);
+  m_Root.AddChild(m_Level3Background);
   // 第四關背景
   // 第五關背景
 
@@ -225,7 +233,7 @@ App::App() {
 
     m_Level1Background->SetVisible(false);
     m_Level2Background->SetVisible(false);
-    // m_Level3Background->SetVisible(false);
+    m_Level3Background->SetVisible(false);
     // m_Level4Background->SetVisible(false);
     // m_Level5Background->SetVisible(false);
   });

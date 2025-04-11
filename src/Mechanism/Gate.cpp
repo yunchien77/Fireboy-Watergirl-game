@@ -5,7 +5,7 @@ Gate::Gate(GateColor color, const glm::vec2 &pos)
     : m_Color(color), m_InitialPosition(pos) {
   SetDrawable(std::make_shared<Util::Image>(GetImagePath(color)));
   SetPosition(pos);
-  SetPivot({0.0f, 13.0f});
+  SetPivot({0.0f, 0.0f});
   SetZIndex(25);
   SetVisible(true);
 }

@@ -5,7 +5,7 @@
 Button::Button(ButtonColor color, const glm::vec2 &pos) : m_Color(color) {
   SetDrawable(std::make_shared<Util::Image>(GetImagePath(color)));
   SetPosition(pos);
-  SetPivot({0.0f, -20.0f});
+  SetPivot({0.0f, 0.0f});
   SetZIndex(25);
 }
 

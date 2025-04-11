@@ -11,8 +11,6 @@ void App::GameWin() {
   LOG_TRACE("Game Win");
 
   bool gemsCollected = GetGemCollectionStatus();
-  // std::cout << "Gems collected: " << (gemsCollected ? "true" : "false") <<
-  // std::endl;
 
   // Create and initialize the game win background if it doesn't exist
   if (!m_GameWinBackground) {

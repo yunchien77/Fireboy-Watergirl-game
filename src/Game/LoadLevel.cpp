@@ -9,6 +9,10 @@
 
 // 載入地圖網格，並初始化 GridSystem
 bool App::LoadLevelGrid(int levelNumber) {
+  std::cout << "Loading level " << levelNumber << " grid..." << std::endl;
+  std::cout << "current state: " << static_cast<int>(m_CurrentState)
+            << std::endl;
+
   for (auto &gem : m_Gems) {
     m_Root.RemoveChild(gem);
   }

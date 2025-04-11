@@ -156,6 +156,17 @@ bool App::GetGemCollectionStatus() {
 void App::GamePlay() {
   LOG_TRACE("Game Play");
 
+  int mouseX, mouseY;
+  Uint32 mouseState = SDL_GetMouseState(&mouseX, &mouseY);
+  glm::vec2 gameCoords = ConvertToGameCoordinates(mouseX, mouseY);
+
+  // 暫停功能
+  if (mouseState & SDL_BUTTON(SDL_BUTTON_LEFT)) {
+    if (m_pauseButton->HandleClick(gameCoords.x, gameCoords.y)) {
+      m_CurrentState = State::GAME_OVER;
+    }
+  }
+
   if (!m_IsGridLoaded) {
     if (!LoadLevelGrid(m_CurrentLevel)) {
       LOG_ERROR("Failed to load level {}", m_CurrentLevel);

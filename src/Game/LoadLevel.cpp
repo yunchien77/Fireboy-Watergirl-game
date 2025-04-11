@@ -146,7 +146,6 @@ bool App::LoadLevelGrid(int levelNumber) {
       auto waterTrap =
           std::make_shared<LiquidTrap>(CellType::WATER, SizeType::LARGE);
       glm::vec2 pos = m_GridSystem.CellToGamePosition(row, col);
-      // waterTrap->SetZIndex(15);
       waterTrap->SetPosition(pos);
       m_Traps.push_back(waterTrap);
       m_Root.AddChild(waterTrap);
@@ -159,7 +158,6 @@ bool App::LoadLevelGrid(int levelNumber) {
       auto lavaTrap =
           std::make_shared<LiquidTrap>(CellType::LAVA, SizeType::LARGE);
       glm::vec2 pos = m_GridSystem.CellToGamePosition(row, col);
-      // lavaTrap->SetZIndex(15);
       lavaTrap->SetPosition(pos);
       m_Traps.push_back(lavaTrap);
       m_Root.AddChild(lavaTrap);
@@ -172,7 +170,6 @@ bool App::LoadLevelGrid(int levelNumber) {
       auto poisionTrap =
           std::make_shared<LiquidTrap>(CellType::POISON, SizeType::LARGE);
       glm::vec2 pos = m_GridSystem.CellToGamePosition(row, col);
-      poisionTrap->SetZIndex(15);
       poisionTrap->SetPosition(pos);
       m_Traps.push_back(poisionTrap);
       m_Root.AddChild(poisionTrap);
@@ -186,8 +183,6 @@ bool App::LoadLevelGrid(int levelNumber) {
     for (const auto &[row, col] : fireGemCoords) {
       auto gem = std::make_shared<Gem>(GemType::FIRE);
       glm::vec2 pos = m_GridSystem.CellToGamePosition(row, col);
-      // pos.y += 13.0f;
-      gem->SetZIndex(10);
       gem->SetPosition(pos);
       gem->SetInitialPosition(pos);
       m_Gems.push_back(gem);
@@ -202,7 +197,6 @@ bool App::LoadLevelGrid(int levelNumber) {
     for (const auto &[row, col] : waterGemCoords) {
       auto gem = std::make_shared<Gem>(GemType::WATER);
       glm::vec2 pos = m_GridSystem.CellToGamePosition(row, col);
-      gem->SetZIndex(10);
       gem->SetPosition(pos);
       gem->SetInitialPosition(pos);
       m_Gems.push_back(gem);

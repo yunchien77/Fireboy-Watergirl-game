@@ -60,26 +60,68 @@ const SDL_Rect &Gate::getRect() const {
   return m_Rect;
 }
 
+// void Gate::UpdateAnimation(float deltaTime) {
+//   if (!m_IsAnimating)
+//     return;
+
+//   float speed = 150.0f; // pixel/sec，門滑動速度
+//   float maxOffsetY = 100.0f;
+//   glm::vec2 pos = m_Transform.translation;
+
+//   if (m_ShouldOpen) {
+//     // 門往下滑
+//     pos.y += speed * deltaTime;
+//     if (pos.y >= m_InitialPosition.y + maxOffsetY) {
+//       pos.y = m_InitialPosition.y + maxOffsetY;
+//       m_IsAnimating = false;
+//     }
+//   } else {
+//     // 門往上升
+//     pos.y -= speed * deltaTime;
+//     if (pos.y <= m_InitialPosition.y) {
+//       pos.y = m_InitialPosition.y;
+//       m_IsAnimating = false;
+//     }
+//   }
+
+//   SetPosition(pos);
+// }
+
+void Gate::SetScale(const glm::vec2 &scale) { m_Transform.scale = scale; }
+
 void Gate::UpdateAnimation(float deltaTime) {
   if (!m_IsAnimating)
     return;
 
-  float speed = 150.0f; // pixel/sec，門滑動速度
-  float maxOffsetY = 100.0f;
+  float speed = 100.0f;
+  float scaleSpeed = 2.0f; // 每秒縮放變化率
+  float maxOffsetY = 50.0f;
+
   glm::vec2 pos = m_Transform.translation;
+  float currentScale = m_Transform.scale.y;
 
   if (m_ShouldOpen) {
     // 門往下滑
     pos.y += speed * deltaTime;
-    if (pos.y >= m_InitialPosition.y + maxOffsetY) {
+    // 同時縮小
+    float newScale = std::max(0.0f, currentScale - scaleSpeed * deltaTime);
+    SetScale({1.0f, newScale});
+
+    if (pos.y >= m_InitialPosition.y + maxOffsetY || newScale <= 0.1f) {
       pos.y = m_InitialPosition.y + maxOffsetY;
+      SetScale({1.0f, 0.0f}); // 完全縮小
       m_IsAnimating = false;
     }
   } else {
     // 門往上升
     pos.y -= speed * deltaTime;
+    // 同時放大
+    float newScale = std::min(1.0f, currentScale + scaleSpeed * deltaTime);
+    SetScale({1.0f, newScale});
+
     if (pos.y <= m_InitialPosition.y) {
       pos.y = m_InitialPosition.y;
+      SetScale({1.0f, 1.0f}); // 恢復原始大小
       m_IsAnimating = false;
     }
   }

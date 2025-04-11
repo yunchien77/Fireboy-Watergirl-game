@@ -82,6 +82,7 @@ bool App::LoadLevelGrid(int levelNumber) {
       m_Root.AddChild(waterTrap);
     }
 
+    // 岩漿座標列表
     std::vector<std::pair<int, int>> lavaTrapCoords = {
         {19, 19}, {14, 19}, {9, 19}, {28, 22}};
 
@@ -96,7 +97,7 @@ bool App::LoadLevelGrid(int levelNumber) {
 
     // 火寶石座標列表
     std::vector<std::pair<int, int>> fireGemCoords = {
-        {24, 5}, {19, 5}, {14, 5}, {3, 10}};
+        {24, 6}, {19, 6}, {14, 6}, {3, 10}};
 
     for (const auto &[row, col] : fireGemCoords) {
       auto fireGem = std::make_shared<Gem>(GemType::FIRE);
@@ -109,7 +110,7 @@ bool App::LoadLevelGrid(int levelNumber) {
 
     // 水寶石座標列表
     std::vector<std::pair<int, int>> waterGemCoords = {
-        {11, 17}, {16, 17}, {21, 17}, {34, 22}};
+        {11, 18}, {16, 18}, {21, 18}, {34, 22}};
 
     for (const auto &[row, col] : waterGemCoords) {
       auto waterGem = std::make_shared<Gem>(GemType::WATER);

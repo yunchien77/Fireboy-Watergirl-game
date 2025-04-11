@@ -18,6 +18,16 @@ bool App::LoadLevelGrid(int levelNumber) {
   }
   m_Gems.clear();
 
+  for (auto &gate : m_Triggers) {
+    m_Root.RemoveChild(gate);
+  }
+  m_Triggers.clear();
+
+  for (auto &button : m_Buttons) {
+    m_Root.RemoveChild(button);
+  }
+  m_Buttons.clear();
+
   std::string gridFilePath =
       RESOURCE_DIR "/map/level" + std::to_string(levelNumber) + "_grid.txt";
 
@@ -182,7 +192,7 @@ bool App::LoadLevelGrid(int levelNumber) {
     // 火寶石座標 (row, col)
     std::vector<std::pair<int, int>> fireGemCoords = {
         {8, 27},  {12, 27}, {24, 24}, {28, 24},
-        {28, 18}, {15, 18}, {18, 13}, {17, 3}};
+        {28, 17}, {15, 17}, {18, 13}, {17, 3}};
 
     for (const auto &[row, col] : fireGemCoords) {
       auto gem = std::make_shared<Gem>(GemType::FIRE);
@@ -196,7 +206,7 @@ bool App::LoadLevelGrid(int levelNumber) {
     // 水寶石座標 (row, col)
     std::vector<std::pair<int, int>> waterGemCoords = {
         {8, 24},  {12, 24}, {24, 27}, {28, 27},
-        {24, 18}, {10, 18}, {21, 13}, {20, 3}};
+        {24, 17}, {10, 17}, {21, 13}, {20, 3}};
 
     for (const auto &[row, col] : waterGemCoords) {
       auto gem = std::make_shared<Gem>(GemType::WATER);
@@ -228,6 +238,23 @@ bool App::LoadLevelGrid(int levelNumber) {
 
   } break;
   case 3:
+    // 初始化角色 Fireboy
+      if (!m_Fireboy) {
+        m_Fireboy = std::make_shared<Fireboy>();
+        glm::vec2 fireboyInitPos = m_GridSystem.CellToGamePosition(35, 5);
+        m_Fireboy->SetPosition(fireboyInitPos);
+        m_Fireboy->SetSpawnPoint(fireboyInitPos);
+        m_Root.AddChild(m_Fireboy);
+      }
+
+    // 初始化角色 Watergirl
+    if (!m_Watergirl) {
+      m_Watergirl = std::make_shared<Watergirl>();
+      glm::vec2 watergirlInitPos = m_GridSystem.CellToGamePosition(3, 17);
+      m_Watergirl->SetPosition(watergirlInitPos);
+      m_Watergirl->SetSpawnPoint(watergirlInitPos);
+      m_Root.AddChild(m_Watergirl);
+    }
   case 4:
   case 5:
     break;

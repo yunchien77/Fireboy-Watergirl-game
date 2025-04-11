@@ -12,28 +12,28 @@ int main(int, char **) {
 
   while (!context->GetExit()) {
     switch (app.GetCurrentState()) {
-      case App::State::START:
-        app.Start();
+    case App::State::START:
+      app.Start();
       break;
 
-      case App::State::LEVEL_SELECT:
-        app.LevelSelect();
+    case App::State::LEVEL_SELECT:
+      app.LevelSelect();
       break;
 
-      case App::State::GAME_PLAY:
-        app.GamePlay();
+    case App::State::GAME_PLAY:
+      app.GamePlay();
       break;
 
-      case App::State::GAME_OVER:
-        app.GameOver();
+    case App::State::GAME_PAUSE:
+      app.GameOver();
       break;
 
-      case App::State::GAME_WIN:
-        app.GameWin();
+    case App::State::GAME_WIN:
+      app.GameWin();
       break;
 
-      case App::State::END:
-        app.End();
+    case App::State::END:
+      app.End();
       context->SetExit(true);
       break;
     }

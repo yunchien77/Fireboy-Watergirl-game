@@ -79,7 +79,7 @@ App::App() {
   m_Level3Button = std::make_shared<Option>(
       RESOURCE_DIR "/material/background/button/unlevel.png", glm::vec2(0, 16));
   m_Level3Button->SetVisible(false);
-  // m_Level3Button->SetInteractable(false); // 第三關不可互動
+  m_Level3Button->SetInteractable(false); // 第三關不可互動
 
   // 設置按鈕點擊事件回調
   m_Level3Button->SetOnClickCallback([this]() {
@@ -189,6 +189,11 @@ App::App() {
   m_Root.AddChild(m_Level2Background);
 
   // 第三關背景
+  m_Level3Background = std::make_shared<BackgroundImage>(
+      RESOURCE_DIR "/material/background/rlevel3.png");
+  m_Level3Background->SetVisible(false);
+  m_Root.AddChild(m_Level3Background);
+
   // 第四關背景
   // 第五關背景
 
@@ -296,6 +301,7 @@ App::App() {
 
     m_Level1Background->SetVisible(false);
     m_Level2Background->SetVisible(false);
+    m_Level3Background->SetVisible(false);
   });
 
   // 重新開始按鈕

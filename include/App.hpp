@@ -25,7 +25,7 @@ public:
     LEVEL_SELECT, // 關卡選擇
     GAME_PLAY,    // 遊戲開始
     GAME_WIN,     // 遊戲贏
-    GAME_OVER,    // 遊戲輸
+    GAME_PAUSE,   // 遊戲暫停
     END,
   };
 

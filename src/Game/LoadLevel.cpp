@@ -206,7 +206,6 @@ bool App::LoadLevelGrid(int levelNumber) {
     // 初始化 Gate
     glm::ivec2 gateCell = {20, 17};
     glm::vec2 gatePos = m_GridSystem.CellToGamePosition(gateCell.x, gateCell.y);
-    gatePos.y -= 13.0f;
     auto gate = std::make_shared<Gate>(GateColor::WHITE, gatePos);
     m_Triggers.push_back(gate);
     m_Root.AddChild(gate);
@@ -215,7 +214,6 @@ bool App::LoadLevelGrid(int levelNumber) {
     std::vector<glm::ivec2> buttonCells = {{6, 20}, {33, 20}};
     for (const auto &cell : buttonCells) {
       glm::vec2 pos = m_GridSystem.CellToGamePosition(cell.x, cell.y);
-      pos.y += 20;
       auto button = std::make_shared<Button>(ButtonColor::WHITE, pos);
       button->linkTrigger(gate.get());
       m_Buttons.push_back(button);

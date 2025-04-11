@@ -25,7 +25,7 @@ int main(int, char **) {
       break;
 
     case App::State::GAME_PAUSE:
-      app.GameOver();
+      app.GamePause();
       break;
 
     case App::State::GAME_WIN:

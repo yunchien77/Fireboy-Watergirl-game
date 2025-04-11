@@ -7,8 +7,8 @@
 #include <SDL.h>
 #include <memory>
 
-void App::GameOver() {
-  LOG_TRACE("Game Over");
+void App::GamePause() {
+  LOG_TRACE("Game Paused");
 
   int mouseX, mouseY;
   Uint32 mouseState = SDL_GetMouseState(&mouseX, &mouseY);

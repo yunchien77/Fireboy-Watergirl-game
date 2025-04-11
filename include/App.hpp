@@ -39,7 +39,7 @@ public:
 
   void GamePlay();
 
-  void GameOver();
+  void GamePause();
 
   void GameWin();
 

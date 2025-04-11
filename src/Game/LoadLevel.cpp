@@ -178,7 +178,7 @@ bool App::LoadLevelGrid(int levelNumber) {
     // 火寶石座標 (row, col)
     std::vector<std::pair<int, int>> fireGemCoords = {
         {8, 27},  {12, 27}, {24, 24}, {28, 24},
-        {28, 18}, {15, 18}, {18, 13}, {17, 3}};
+        {28, 17}, {15, 17}, {18, 13}, {17, 3}};
 
     for (const auto &[row, col] : fireGemCoords) {
       auto gem = std::make_shared<Gem>(GemType::FIRE);
@@ -192,7 +192,7 @@ bool App::LoadLevelGrid(int levelNumber) {
     // 水寶石座標 (row, col)
     std::vector<std::pair<int, int>> waterGemCoords = {
         {8, 24},  {12, 24}, {24, 27}, {28, 27},
-        {24, 18}, {10, 18}, {21, 13}, {20, 3}};
+        {24, 17}, {10, 17}, {21, 13}, {20, 3}};
 
     for (const auto &[row, col] : waterGemCoords) {
       auto gem = std::make_shared<Gem>(GemType::WATER);

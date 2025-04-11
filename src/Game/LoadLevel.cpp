@@ -14,6 +14,16 @@ bool App::LoadLevelGrid(int levelNumber) {
   }
   m_Gems.clear();
 
+  for (auto &gate : m_Triggers) {
+    m_Root.RemoveChild(gate);
+  }
+  m_Triggers.clear();
+
+  for (auto &button : m_Buttons) {
+    m_Root.RemoveChild(button);
+  }
+  m_Buttons.clear();
+
   std::string gridFilePath =
       RESOURCE_DIR "/map/level" + std::to_string(levelNumber) + "_grid.txt";
 

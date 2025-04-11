@@ -44,4 +44,12 @@ void App::ResetGame() {
   for (auto &gem : m_Gems) {
     gem->SetVisible(false);
   }
+
+  for (auto &gate : m_Triggers) {
+    gate -> SetVisible(false);
+  }
+
+  for (auto &button : m_Buttons) {
+    button -> SetVisible(false);
+  }
 }

@@ -55,39 +55,29 @@ bool App::LoadLevelGrid(int levelNumber) {
     m_Watergirl_Door->SetOpen(false);
     m_Watergirl_Door->SetVisible(true);
 
-    // 水池座標
-    std::vector<std::pair<glm::ivec2, float>> waterTraps = {
-        {{27, 7}, 5.0f},
-        {{22, 7}, 5.0f},
-        {{17, 7}, 5.0f},
-        {{19, 12}, 5.0f},
-    };
+    // 水池座標列表
+    std::vector<std::pair<int, int>> waterTrapCoords = {
+        {27, 7}, {22, 7}, {17, 7}, {19, 12}};
 
-    for (const auto &[cell, offsetY] : waterTraps) {
-      auto trap =
+    for (const auto &[row, col] : waterTrapCoords) {
+      auto waterTrap =
           std::make_shared<LiquidTrap>(CellType::WATER, SizeType::SMALL);
-      glm::vec2 pos = m_GridSystem.CellToGamePosition(cell.x, cell.y);
-      pos.y -= 0.3f;
-      trap->SetPosition(pos);
-      m_Traps.push_back(trap);
-      m_Root.AddChild(trap);
+      glm::vec2 pos = m_GridSystem.CellToGamePosition(row, col);
+      waterTrap->SetPosition(pos);
+      m_Traps.push_back(waterTrap);
+      m_Root.AddChild(waterTrap);
     }
 
-    // 岩漿座標
-    std::vector<std::pair<glm::ivec2, float>> lavaTraps = {
-        {{19, 19}, 3.0f},
-        {{14, 19}, 3.0f},
-        {{9, 19}, 3.0f},
-        {{28, 22}, 6.0f},
-    };
+    std::vector<std::pair<int, int>> lavaTrapCoords = {
+        {19, 19}, {14, 19}, {9, 19}, {28, 22}};
 
-    for (const auto &[cell, offsetY] : lavaTraps) {
-      auto trap = std::make_shared<LiquidTrap>(CellType::LAVA, SizeType::SMALL);
-      glm::vec2 pos = m_GridSystem.CellToGamePosition(cell.x, cell.y);
-      pos.y -= 0.3f;
-      trap->SetPosition(pos);
-      m_Traps.push_back(trap);
-      m_Root.AddChild(trap);
+    for (const auto &[row, col] : lavaTrapCoords) {
+      auto lavaTrap =
+          std::make_shared<LiquidTrap>(CellType::LAVA, SizeType::SMALL);
+      glm::vec2 pos = m_GridSystem.CellToGamePosition(row, col);
+      lavaTrap->SetPosition(pos);
+      m_Traps.push_back(lavaTrap);
+      m_Root.AddChild(lavaTrap);
     }
 
     // 火寶石座標列表
@@ -156,7 +146,7 @@ bool App::LoadLevelGrid(int levelNumber) {
       auto waterTrap =
           std::make_shared<LiquidTrap>(CellType::WATER, SizeType::LARGE);
       glm::vec2 pos = m_GridSystem.CellToGamePosition(row, col);
-      waterTrap->SetZIndex(15);
+      // waterTrap->SetZIndex(15);
       waterTrap->SetPosition(pos);
       m_Traps.push_back(waterTrap);
       m_Root.AddChild(waterTrap);
@@ -169,7 +159,7 @@ bool App::LoadLevelGrid(int levelNumber) {
       auto lavaTrap =
           std::make_shared<LiquidTrap>(CellType::LAVA, SizeType::LARGE);
       glm::vec2 pos = m_GridSystem.CellToGamePosition(row, col);
-      lavaTrap->SetZIndex(15);
+      // lavaTrap->SetZIndex(15);
       lavaTrap->SetPosition(pos);
       m_Traps.push_back(lavaTrap);
       m_Root.AddChild(lavaTrap);

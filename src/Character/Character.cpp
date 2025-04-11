@@ -168,7 +168,7 @@ void Character::Move(int deltaX, bool upKeyPressed, const GridSystem &grid,
 
 void Character::UpdateJump(const GridSystem &grid) {
   if (m_IsJumping) {
-    std::cout << "Jumping..." << std::endl;
+    // std::cout << "Jumping..." << std::endl;
 
     glm::vec2 pos = GetPosition();
     float fallSpeed = 5.0f; // 下落速度
@@ -178,7 +178,7 @@ void Character::UpdateJump(const GridSystem &grid) {
 
     // 上升階段
     if (m_JumpHeight < m_JumpMaxHeight) {
-      std::cout << "Jumping up..." << std::endl;
+      // std::cout << "Jumping up..." << std::endl;
 
       nextPos.y += jumpSpeed; // 嘗試向上跳
 
@@ -199,7 +199,7 @@ void Character::UpdateJump(const GridSystem &grid) {
         CellType aboveCell = grid.GetCell(gridPosTop.x, gridPosTop.y);
 
         if (aboveCell != CellType::EMPTY) {
-          std::cout << "topCollision" << std::endl;
+          // std::cout << "topCollision" << std::endl;
           topCollision = true;
           break;
         }
@@ -215,7 +215,7 @@ void Character::UpdateJump(const GridSystem &grid) {
     }
     // 下降階段
     else {
-      std::cout << "Jumping down..." << std::endl;
+      // std::cout << "Jumping down..." << std::endl;
 
       nextPos.y -= fallSpeed; // 嘗試下降
 
@@ -319,12 +319,12 @@ void Character::ApplyGravity(const GridSystem &grid) {
           grid.GameToCellPosition(glm::vec2(checkX, bottom));
       CellType belowCell = grid.GetCell(gridPosBottom.x, gridPosBottom.y);
 
-      if (IsFireboy())
-        std::cout << "Fireboy: ";
-      else
-        std::cout << "Watergirl: ";
-      std::cout << "i=" << i << ", Checking cell: " << gridPosBottom.x << ","
-                << gridPosBottom.y << std::endl;
+      // if (IsFireboy())
+      //   std::cout << "Fireboy: ";
+      // else
+      //   std::cout << "Watergirl: ";
+      // std::cout << "i=" << i << ", Checking cell: " << gridPosBottom.x << ","
+      //           << gridPosBottom.y << std::endl;
 
       if (grid.CanStandOn(belowCell, this->IsFireboy())) {
         standablePoints[gridPosBottom]++;

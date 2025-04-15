@@ -11,8 +11,6 @@ void App::GameWin() {
   LOG_TRACE("Game Win");
 
   bool gemsCollected = GetGemCollectionStatus();
-  // std::cout << "Gems collected: " << (gemsCollected ? "true" : "false") <<
-  // std::endl;
 
   // Create and initialize the game win background if it doesn't exist
   if (!m_GameWinBackground) {
@@ -106,17 +104,21 @@ void App::GameWin() {
   if (mouseState & SDL_BUTTON(SDL_BUTTON_LEFT)) {
     if (m_ContinueButton->HandleClick(gameCoords.x, gameCoords.y)) {
       if (m_CurrentLevel == 1) {
-        unlockedLevel = 2;
-        m_Level2Button->SetImage(
-            RESOURCE_DIR "/material/background/button/current-level.png");
-        m_Level2Button->SetInteractable(true);
+        if (unlockedLevel == 1) {
+          unlockedLevel = 2;
+          m_Level2Button->SetImage(
+              RESOURCE_DIR "/material/background/button/current-level.png");
+          m_Level2Button->SetInteractable(true);
+        }
       }
       if (m_CurrentLevel == 2) {
-        m_Level2Background->SetVisible(false);
-        unlockedLevel = 3;
-        m_Level3Button->SetImage(
-            RESOURCE_DIR "/material/background/button/current-level.png");
-        m_Level3Button->SetInteractable(true);
+        if (unlockedLevel == 2) {
+          m_Level2Background->SetVisible(false);
+          unlockedLevel = 3;
+          m_Level3Button->SetImage(
+              RESOURCE_DIR "/material/background/button/current-level.png");
+          m_Level3Button->SetInteractable(true);
+        }
       }
     }
   }

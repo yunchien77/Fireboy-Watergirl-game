@@ -25,7 +25,7 @@ public:
     LEVEL_SELECT, // 關卡選擇
     GAME_PLAY,    // 遊戲開始
     GAME_WIN,     // 遊戲贏
-    GAME_OVER,    // 遊戲輸
+    GAME_PAUSE,   // 遊戲暫停
     END,
   };
 
@@ -39,7 +39,7 @@ public:
 
   void GamePlay();
 
-  void GameOver();
+  void GamePause();
 
   void GameWin();
 
@@ -107,15 +107,15 @@ private:
   std::vector<std::shared_ptr<Button>> m_Buttons;
   std::vector<std::shared_ptr<Gate>> m_Triggers;
 
-
   std::shared_ptr<BackgroundImage> m_GameWinBackground;
-  std::shared_ptr<BackgroundImage> m_GameOverBackground;
+  std::shared_ptr<BackgroundImage> m_GamePausedBackground;
 
-  // std::shared_ptr<Option> m_EndButton;      // 結束按鈕
-  // std::shared_ptr<Option> m_MenuButton;     // 返回主選單按鈕
-  // std::shared_ptr<Option> m_RetryButton;    // 重新開始按鈕
-  // std::shared_ptr<Option> m_ResumeButton;   // 繼續按鈕
-  std::shared_ptr<Option> m_ContinueButton; // 切換道關卡選擇按鈕
+  std::shared_ptr<Option> m_pauseButton;  // 暫停按鈕
+  std::shared_ptr<Option> m_EndButton;    // 結束按鈕
+  std::shared_ptr<Option> m_RetryButton;  // 重新開始按鈕
+  std::shared_ptr<Option> m_ResumeButton; // 繼續按鈕
+
+  std::shared_ptr<Option> m_ContinueButton; // 切換到關卡選擇按鈕
 
   std::shared_ptr<BackgroundImage> m_LevelResult;
   std::shared_ptr<BackgroundImage> m_GemCollectedIndicator;

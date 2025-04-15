@@ -57,9 +57,10 @@ void HandleCollision(Character &player, App &app, bool isFireboy) {
   // 檢查碰撞
   // deltaX=0 -> 檢查當前位置是否有碰撞
   if (app.CheckCharacterCollision(pos, size, isFireboy, 0)) {
+    std::cout << "Collision detected!" << std::endl;
     // 如果發生碰撞，嘗試找一個安全的位置
     GridSystem &grid = app.GetGridSystem();
-    float adjustment = grid.GetCellSize() / 4.0f;
+    float adjustment = grid.GetCellSize() / 5.0f;
 
     // 嘗試幾個方向的調整
     glm::vec2 testPositions[] = {
@@ -155,6 +156,17 @@ bool App::GetGemCollectionStatus() {
 void App::GamePlay() {
   LOG_TRACE("Game Play");
 
+  int mouseX, mouseY;
+  Uint32 mouseState = SDL_GetMouseState(&mouseX, &mouseY);
+  glm::vec2 gameCoords = ConvertToGameCoordinates(mouseX, mouseY);
+
+  // 暫停功能
+  if (mouseState & SDL_BUTTON(SDL_BUTTON_LEFT)) {
+    if (m_pauseButton->HandleClick(gameCoords.x, gameCoords.y)) {
+      m_CurrentState = State::GAME_PAUSE;
+    }
+  }
+
   if (!m_IsGridLoaded) {
     if (!LoadLevelGrid(m_CurrentLevel)) {
       LOG_ERROR("Failed to load level {}", m_CurrentLevel);
@@ -165,15 +177,21 @@ void App::GamePlay() {
   // 控制輸入判斷區
   int fireboyMoveX = 0;
   bool fireboyUpKeyPressed = false;
-  if (Util::Input::IsKeyPressed(Util::Keycode::LEFT)) fireboyMoveX = -5;
-  if (Util::Input::IsKeyPressed(Util::Keycode::RIGHT)) fireboyMoveX = 5;
-  if (Util::Input::IsKeyPressed(Util::Keycode::UP)) fireboyUpKeyPressed = true;
+  if (Util::Input::IsKeyPressed(Util::Keycode::LEFT))
+    fireboyMoveX = -5;
+  if (Util::Input::IsKeyPressed(Util::Keycode::RIGHT))
+    fireboyMoveX = 5;
+  if (Util::Input::IsKeyPressed(Util::Keycode::UP))
+    fireboyUpKeyPressed = true;
 
   int watergirlMoveX = 0;
   bool watergirlUpKeyPressed = false;
-  if (Util::Input::IsKeyPressed(Util::Keycode::A)) watergirlMoveX = -5;
-  if (Util::Input::IsKeyPressed(Util::Keycode::D)) watergirlMoveX = 5;
-  if (Util::Input::IsKeyPressed(Util::Keycode::W)) watergirlUpKeyPressed = true;
+  if (Util::Input::IsKeyPressed(Util::Keycode::A))
+    watergirlMoveX = -5;
+  if (Util::Input::IsKeyPressed(Util::Keycode::D))
+    watergirlMoveX = 5;
+  if (Util::Input::IsKeyPressed(Util::Keycode::W))
+    watergirlUpKeyPressed = true;
 
   // 記錄上一次位置（給門阻擋使用）
   m_Fireboy->SetPreviousPosition();
@@ -189,7 +207,7 @@ void App::GamePlay() {
   m_Watergirl->ApplyGravity(m_GridSystem);
 
   // Gate 阻擋判斷
-  for (const auto& gate : m_Triggers) {
+  for (const auto &gate : m_Triggers) {
     if (gate->IsBlocking()) {
       if (SDL_HasIntersection(&gate->getRect(), &m_Fireboy->getRect())) {
         m_Fireboy->UndoMovement();
@@ -207,7 +225,7 @@ void App::GamePlay() {
   HandleCollision(*m_Watergirl, *this, false);
 
   // 處理寶石收集
-  for (auto& gem : m_Gems) {
+  for (auto &gem : m_Gems) {
     if (SDL_HasIntersection(&gem->getRect(), &m_Fireboy->getRect())) {
       gem->OnCharacterEnter(m_Fireboy.get());
     }
@@ -217,16 +235,23 @@ void App::GamePlay() {
   }
 
   // 處理液體陷阱觸發
-  glm::ivec2 fireboyCell = m_GridSystem.GameToCellPosition(m_Fireboy->GetPosition());
+  glm::ivec2 fireboyCell =
+      m_GridSystem.GameToCellPosition(m_Fireboy->GetPosition());
   CellType cellTypeFireboy = m_GridSystem.GetCell(fireboyCell.x, fireboyCell.y);
-  if (cellTypeFireboy == CellType::WATER || cellTypeFireboy == CellType::POISON) {
-    for (auto& trap : m_Traps) trap->OnCharacterEnter(m_Fireboy.get());
+  if (cellTypeFireboy == CellType::WATER ||
+      cellTypeFireboy == CellType::POISON) {
+    for (auto &trap : m_Traps)
+      trap->OnCharacterEnter(m_Fireboy.get());
   }
 
-  glm::ivec2 watergirlCell = m_GridSystem.GameToCellPosition(m_Watergirl->GetPosition());
-  CellType cellTypeWatergirl = m_GridSystem.GetCell(watergirlCell.x, watergirlCell.y);
-  if (cellTypeWatergirl == CellType::LAVA || cellTypeWatergirl == CellType::POISON) {
-    for (auto& trap : m_Traps) trap->OnCharacterEnter(m_Watergirl.get());
+  glm::ivec2 watergirlCell =
+      m_GridSystem.GameToCellPosition(m_Watergirl->GetPosition());
+  CellType cellTypeWatergirl =
+      m_GridSystem.GetCell(watergirlCell.x, watergirlCell.y);
+  if (cellTypeWatergirl == CellType::LAVA ||
+      cellTypeWatergirl == CellType::POISON) {
+    for (auto &trap : m_Traps)
+      trap->OnCharacterEnter(m_Watergirl.get());
   }
 
   // 門動畫更新 & 勝利判斷
@@ -246,15 +271,14 @@ void App::GamePlay() {
   }
 
   // 按鈕更新（踩到的邏輯）
-  for (auto& b : m_Buttons) {
+  for (auto &b : m_Buttons) {
     b->update(m_Fireboy.get(), m_Watergirl.get());
   }
 
   float deltaTime = 1.0f / 60.0f;
-  for (auto& g : m_Triggers) {
+  for (auto &g : m_Triggers) {
     g->UpdateAnimation(deltaTime);
   }
 
   m_Root.Update();
 }
-

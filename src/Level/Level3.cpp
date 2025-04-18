@@ -40,5 +40,67 @@ bool Level3::Initialize() {
   m_Watergirl_Door->SetOpen(false);
   m_Watergirl_Door->SetVisible(true);
 
+  std::vector<std::pair<int, int>> waterTrapCoords = {{28, 28}};
+
+  for (const auto &[row, col] : waterTrapCoords) {
+    auto waterTrap =
+        std::make_shared<LiquidTrap>(CellType::WATER, SizeType::SMALL);
+    glm::vec2 pos = m_GridSystem.CellToGamePosition(row, col);
+    waterTrap->SetPosition(pos);
+    m_Traps.push_back(waterTrap);
+    m_Root.AddChild(waterTrap);
+  }
+
+  // 岩漿座標列表
+  std::vector<std::pair<int, int>> lavaTrapCoords = {{20, 28}};
+
+  for (const auto &[row, col] : lavaTrapCoords) {
+    auto lavaTrap =
+        std::make_shared<LiquidTrap>(CellType::LAVA, SizeType::SMALL);
+    glm::vec2 pos = m_GridSystem.CellToGamePosition(row, col);
+    lavaTrap->SetPosition(pos);
+    m_Traps.push_back(lavaTrap);
+    m_Root.AddChild(lavaTrap);
+  }
+
+  // 毒池座標列表
+  std::vector<std::pair<int, int>> poisionTrapCoords = {{26, 22}};
+
+  for (const auto &[row, col] : poisionTrapCoords) {
+    auto poisionTrap =
+        std::make_shared<LiquidTrap>(CellType::POISON, SizeType::SMALL);
+    glm::vec2 pos = m_GridSystem.CellToGamePosition(row, col);
+    poisionTrap->SetPosition(pos);
+    m_Traps.push_back(poisionTrap);
+    m_Root.AddChild(poisionTrap);
+  }
+
+  // 火寶石座標 (row, col)
+  std::vector<std::pair<int, int>> fireGemCoords = {
+    {20, 26}, {7, 14}, {12, 3}};
+
+  for (const auto &[row, col] : fireGemCoords) {
+    auto gem = std::make_shared<Gem>(GemType::FIRE);
+    glm::vec2 pos = m_GridSystem.CellToGamePosition(row, col);
+    gem->SetPosition(pos);
+    gem->SetInitialPosition(pos);
+    m_Gems.push_back(gem);
+    m_Root.AddChild(gem);
+  }
+
+  // 水寶石座標 (row, col)
+  std::vector<std::pair<int, int>> waterGemCoords = {
+    {28, 26}, {23, 15}, {2, 5}};
+
+  for (const auto &[row, col] : waterGemCoords) {
+    auto gem = std::make_shared<Gem>(GemType::WATER);
+    glm::vec2 pos = m_GridSystem.CellToGamePosition(row, col);
+    gem->SetPosition(pos);
+    gem->SetInitialPosition(pos);
+    m_Gems.push_back(gem);
+    m_Root.AddChild(gem);
+  }
+
+
   return true;
 }

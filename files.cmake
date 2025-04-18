@@ -7,7 +7,12 @@ set(SRC_FILES
         Game/AppGameWin.cpp
         Game/AppGameOver.cpp
         Game/AppReset.cpp
-        Game/LoadLevel.cpp
+        Level/LoadLevel.cpp
+        Level/Level.cpp
+        Level/Level1.cpp
+        Level/Level2.cpp
+        Level/Level3.cpp
+        Level/LevelFactory.cpp
         Character/Character.cpp
         Character/Fireboy.cpp
         Character/Watergirl.cpp
@@ -34,6 +39,11 @@ set(INCLUDE_FILES
         Mechanism/Gem.hpp
         Mechanism/Gate.hpp
         Mechanism/Button.hpp
+        Level/Level.hpp
+        Level/Level1.hpp
+        Level/Level2.hpp
+        Level/Level3.hpp
+        Level/LevelFactory.hpp
 )
 
 set(TEST_FILES

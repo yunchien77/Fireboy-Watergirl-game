@@ -17,6 +17,8 @@
 
 #include "Mechanism/Button.hpp"
 #include "Mechanism/Gate.hpp"
+#include "Mechanism/Lever.hpp"
+#include "Mechanism/Platform.hpp"
 
 class App {
 public:
@@ -106,6 +108,8 @@ private:
   std::vector<std::shared_ptr<IGem>> m_Gems;
   std::vector<std::shared_ptr<Button>> m_Buttons;
   std::vector<std::shared_ptr<Gate>> m_Triggers;
+  std::vector<std::shared_ptr<Platform>>m_Platforms;
+  std::vector<std::shared_ptr<Lever>>m_Levers;
 
   std::shared_ptr<BackgroundImage> m_GameWinBackground;
   std::shared_ptr<BackgroundImage> m_GamePausedBackground;

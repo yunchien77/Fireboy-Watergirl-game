@@ -10,8 +10,11 @@ public:
               std::vector<std::shared_ptr<Gate>> &triggers,
               std::vector<std::shared_ptr<Button>> &buttons,
               std::vector<std::shared_ptr<ITrap>> &traps,
+              std::vector<std::shared_ptr<Lever>> &levers,
+              std::vector<std::shared_ptr<Platform>> &platforms,
               std::shared_ptr<Character> &fireboy,
               std::shared_ptr<Character> &watergirl,
               std::shared_ptr<Door> &fireboyDoor,
-              std::shared_ptr<Door> &watergirlDoor);
+              std::shared_ptr<Door> &watergirlDoor
+              );
 };

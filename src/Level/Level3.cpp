@@ -1,4 +1,4 @@
-// Level2.cpp
+// Level3.cpp
 #include "Level/Level3.hpp"
 #include "Character/Fireboy.hpp"
 #include "Character/Watergirl.hpp"
@@ -7,7 +7,9 @@
 #include "Mechanism/Door.hpp"
 #include "Mechanism/Gate.hpp"
 #include "Mechanism/Gem.hpp"
+#include "Mechanism/Lever.hpp"
 #include "Mechanism/LiquidTrap.hpp"
+#include "Mechanism/Platform.hpp"
 
 bool Level3::Initialize() {
   //   初始化角色 Fireboy
@@ -101,6 +103,30 @@ bool Level3::Initialize() {
     m_Root.AddChild(gem);
   }
 
+  std::vector<std::pair<int, int>> leverCoords = {
+    {6, 20}, {12, 12}, {25, 8}
+  };
+
+  for (const auto &[row, col] : leverCoords) {
+    auto lever = std::make_shared<Lever>(LeverColor::GREEN, m_GridSystem.CellToGamePosition(row, col));
+    m_Levers.push_back(lever);
+    m_Root.AddChild(lever);
+  }
+
+  std::vector<std::tuple<int, int, int, int>> platformInfos = {
+    {15, 10, 0, -100},  // row, col, dx, dy
+    {20, 5,  0, -80}
+  };
+
+  for (const auto &[row, col, dx, dy] : platformInfos) {
+    auto platform = std::make_shared<Platform>(
+        PlatformColor::GREEN,
+        m_GridSystem.CellToGamePosition(row, col),
+        glm::vec2(dx, dy)
+    );
+    m_Platforms.push_back(platform);
+    m_Root.AddChild(platform);
+  }
 
   return true;
 }

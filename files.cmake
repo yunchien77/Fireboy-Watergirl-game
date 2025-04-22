@@ -21,6 +21,8 @@ set(SRC_FILES
         Mechanism/Gem.cpp
         Mechanism/Gate.cpp
         Mechanism/Button.cpp
+        Mechanism/Platform.cpp
+        Mechanism/Lever.cpp
 )
 
 set(INCLUDE_FILES
@@ -39,6 +41,8 @@ set(INCLUDE_FILES
         Mechanism/Gem.hpp
         Mechanism/Gate.hpp
         Mechanism/Button.hpp
+        Mechanism/Platform.hpp
+        Mechanism/Lever.hpp
         Level/Level.hpp
         Level/Level1.hpp
         Level/Level2.hpp

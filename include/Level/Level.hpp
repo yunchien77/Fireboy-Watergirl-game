@@ -11,6 +11,8 @@ class ITrap;
 class Gate;
 class Character;
 class Door;
+class Lever;
+class Platform;
 
 class Level {
 protected:
@@ -20,6 +22,8 @@ protected:
   std::vector<std::shared_ptr<Gate>> &m_Triggers;
   std::vector<std::shared_ptr<Button>> &m_Buttons;
   std::vector<std::shared_ptr<ITrap>> &m_Traps;
+  std::vector<std::shared_ptr<Lever>> &m_Levers;
+  std::vector<std::shared_ptr<Platform>> &m_Platforms;
   std::shared_ptr<Character> &m_Fireboy;
   std::shared_ptr<Character> &m_Watergirl;
   std::shared_ptr<Door> &m_Fireboy_Door;
@@ -31,6 +35,8 @@ public:
         std::vector<std::shared_ptr<Gate>> &triggers,
         std::vector<std::shared_ptr<Button>> &buttons,
         std::vector<std::shared_ptr<ITrap>> &traps,
+        std::vector<std::shared_ptr<Lever>> &levers,
+        std::vector<std::shared_ptr<Platform>> &platforms,
         std::shared_ptr<Character> &fireboy,
         std::shared_ptr<Character> &watergirl,
         std::shared_ptr<Door> &fireboyDoor,

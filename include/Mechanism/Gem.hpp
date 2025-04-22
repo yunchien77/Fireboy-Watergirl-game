@@ -1,7 +1,5 @@
 #ifndef GEM_HPP
 #define GEM_HPP
-
-#include "Character/Character.hpp"
 #include "Interface/IGem.hpp"
 
 enum class GemType { FIRE, WATER, GREEN };

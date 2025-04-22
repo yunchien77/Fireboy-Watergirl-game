@@ -79,7 +79,7 @@ App::App() {
   m_Level3Button = std::make_shared<Option>(
       RESOURCE_DIR "/material/background/button/unlevel.png", glm::vec2(0, 16));
   m_Level3Button->SetVisible(false);
-  m_Level3Button->SetInteractable(false); // 第三關不可互動
+  m_Level3Button->SetInteractable(true); // 第三關不可互動
 
   // 設置按鈕點擊事件回調
   m_Level3Button->SetOnClickCallback([this]() {

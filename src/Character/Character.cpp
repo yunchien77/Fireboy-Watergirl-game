@@ -93,6 +93,7 @@ void Character::Update(float deltaTime) {
     if (platform->IsCharacterOn(this)) {
       // 找到了角色站立的平台
       m_IsStandingOnPlatform = true;
+      m_IsOnGround = true;
       m_CurrentPlatform = platform;
 
       // 只有首次接觸平台時才調整位置
@@ -119,10 +120,11 @@ void Character::Update(float deltaTime) {
 }
 
 void Character::UpdateJump(const GridSystem &grid) {
-  if (m_IsStandingOnPlatform) {
+  // 只有當角色已經在跳躍中且站在平台上時才重置跳躍狀態
+  if (m_IsJumping && m_IsStandingOnPlatform && m_JumpHeight > 0) {
     m_IsJumping = false;
     m_Velocity.y = 0;
-    return; // 如果站在平台上，就不要再掉下去
+    return; // 已經著陸在平台上，重置跳躍狀態
   }
 
   if (m_IsJumping) {

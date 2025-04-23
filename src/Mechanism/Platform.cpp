@@ -100,8 +100,8 @@ bool Platform::IsCharacterOn(Character *character) const {
   float charBottom = charPos.y + 13.5f;
 
   // 角色左右邊界
-  float charLeft = charPos.x - (charSize.x / 2);
-  float charRight = charPos.x + (charSize.x / 2);
+  float charLeft = charPos.x - 5.0f;
+  float charRight = charPos.x + 5.0f;
 
   // 平台邊界
   float platTop = platPos.y + 11.5f;
@@ -110,11 +110,11 @@ bool Platform::IsCharacterOn(Character *character) const {
 
   // 檢查角色腳底是否在平台上方
   bool verticalMatch =
-      (charBottom >= platTop - 2.0f) && (charBottom <= platTop + 5.0f);
+      (charBottom >= platTop - 2.0f) && (charBottom <= platTop + 2.0f);
 
   // 檢查水平方向是否有足夠重疊
   bool horizontalOverlap =
-      (charRight > platLeft + 5.0f) && (charLeft < platRight - 5.0f);
+      (charRight > platLeft + 2.0f) && (charLeft < platRight - 2.0f);
 
   return verticalMatch && horizontalOverlap;
 }

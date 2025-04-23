@@ -280,5 +280,30 @@ void App::GamePlay() {
     g->UpdateAnimation(deltaTime);
   }
 
+  // 這兩行一定要加在平台更新前
+  m_Fireboy->SetStandingOnPlatform(false);
+  m_Watergirl->SetStandingOnPlatform(false);
+
+  for (auto &platform : m_Platforms) {
+    glm::vec2 delta = platform->GetDeltaMovement();
+
+    if (platform->IsCharacterOn(m_Fireboy.get())) {
+      m_Fireboy->Translate(delta);
+      m_Fireboy->SetStandingOnPlatform(true);
+    }
+
+    if (platform->IsCharacterOn(m_Watergirl.get())) {
+      m_Watergirl->Translate(delta);
+      m_Watergirl->SetStandingOnPlatform(true);
+    }
+
+    platform->UpdateAnimation(deltaTime);
+  }
+
+
+  for (auto &lever : m_Levers) {
+    lever->update(m_Fireboy.get(), m_Watergirl.get());
+  }
+
   m_Root.Update();
 }

@@ -48,6 +48,7 @@ bool Level3::Initialize() {
     auto waterTrap =
         std::make_shared<LiquidTrap>(CellType::WATER, SizeType::SMALL);
     glm::vec2 pos = m_GridSystem.CellToGamePosition(row, col);
+    pos.y -= 5.0f;
     waterTrap->SetPosition(pos);
     m_Traps.push_back(waterTrap);
     m_Root.AddChild(waterTrap);
@@ -60,6 +61,7 @@ bool Level3::Initialize() {
     auto lavaTrap =
         std::make_shared<LiquidTrap>(CellType::LAVA, SizeType::SMALL);
     glm::vec2 pos = m_GridSystem.CellToGamePosition(row, col);
+    pos.y -= 5.0f;
     lavaTrap->SetPosition(pos);
     m_Traps.push_back(lavaTrap);
     m_Root.AddChild(lavaTrap);
@@ -72,6 +74,7 @@ bool Level3::Initialize() {
     auto poisionTrap =
         std::make_shared<LiquidTrap>(CellType::POISON, SizeType::SMALL);
     glm::vec2 pos = m_GridSystem.CellToGamePosition(row, col);
+    pos.y -= 3.0f;
     poisionTrap->SetPosition(pos);
     m_Traps.push_back(poisionTrap);
     m_Root.AddChild(poisionTrap);
@@ -103,29 +106,54 @@ bool Level3::Initialize() {
     m_Root.AddChild(gem);
   }
 
-  std::vector<std::pair<int, int>> leverCoords = {
-    {6, 20}, {12, 12}, {25, 8}
+  // lever
+  auto greenLever = std::make_shared<Lever>(
+      LeverColor::GREEN,
+      m_GridSystem.CellToGamePosition(10, 19)
+  );
+  m_Levers.push_back(greenLever);
+  m_Root.AddChild(greenLever);
+
+  // platform
+  std::vector<std::tuple<int, int, int, int, PlatformColor>> platformInfos = {
+    {2, 15, 0, -100, PlatformColor::GREEN},  // lever 控制
+    {35, 12, 0, -80, PlatformColor::PINK}    // button 控制
   };
 
-  for (const auto &[row, col] : leverCoords) {
-    auto lever = std::make_shared<Lever>(LeverColor::GREEN, m_GridSystem.CellToGamePosition(row, col));
-    m_Levers.push_back(lever);
-    m_Root.AddChild(lever);
-  }
+  std::vector<std::shared_ptr<Platform>> linkedPlatforms;  // 暫存 platform 指標供後續連接
 
-  std::vector<std::tuple<int, int, int, int>> platformInfos = {
-    {15, 10, 0, -100},  // row, col, dx, dy
-    {20, 5,  0, -80}
-  };
+  for (const auto &[row, col, dx, dy, color] : platformInfos) {
+    glm::vec2 pos = m_GridSystem.CellToGamePosition(row, col);
+    pos.x += 12.0f;
 
-  for (const auto &[row, col, dx, dy] : platformInfos) {
     auto platform = std::make_shared<Platform>(
-        PlatformColor::GREEN,
-        m_GridSystem.CellToGamePosition(row, col),
+        color,
+        pos,
         glm::vec2(dx, dy)
     );
+
+    platform->SetPosition(pos);
     m_Platforms.push_back(platform);
     m_Root.AddChild(platform);
+    linkedPlatforms.push_back(platform);  // 存起來給 lever/button 用
+  }
+
+  m_Fireboy->SetPlatforms(m_Platforms);
+  m_Watergirl->SetPlatforms(m_Platforms);
+
+  // green lever
+  greenLever->linkTrigger(linkedPlatforms[0].get());
+
+  // button
+  std::vector<glm::ivec2> buttonCells = {{10, 15}, {31, 11}};
+  for (const auto &cell : buttonCells) {
+    glm::vec2 pos = m_GridSystem.CellToGamePosition(cell.x, cell.y);
+    pos.y += 20;
+
+    auto button = std::make_shared<Button>(ButtonColor::PINK, pos);
+    button->linkTrigger(linkedPlatforms[1].get());  // 控 platform 1 (PINK)
+    m_Buttons.push_back(button);
+    m_Root.AddChild(button);
   }
 
   return true;

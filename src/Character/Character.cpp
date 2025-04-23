@@ -114,6 +114,34 @@ void Character::Move(int deltaX, bool upKeyPressed, const GridSystem &grid,
   UpdateAnimation();
 }
 
+void Character::Update(float deltaTime, const GridSystem &grid) {
+  m_IsStandingOnPlatform = false;
+  m_CurrentPlatform = nullptr;
+
+  for (const auto &platform : m_Platforms) {
+    SDL_Rect characterRect = getRect();
+    SDL_Rect platformRect = platform->getRect();
+
+    bool standingOnPlatform =
+        characterRect.y + characterRect.h >= platformRect.y - 5 &&
+        characterRect.y + characterRect.h <= platformRect.y + 10 &&
+        characterRect.x + characterRect.w > platformRect.x + 5 &&
+        characterRect.x < platformRect.x + platformRect.w - 5;
+
+    if (standingOnPlatform) {
+      m_IsStandingOnPlatform = true;
+      m_CurrentPlatform = platform;
+      break;
+    }
+  }
+
+  // 如果正在站在平台上，就跟著平台移動
+  if (m_IsStandingOnPlatform && m_CurrentPlatform) {
+    Translate(m_CurrentPlatform->GetDeltaMovement());
+  }
+}
+
+
 // void Character::UpdateJump(const GridSystem &grid) {
 //   if (m_IsJumping) {
 //     glm::vec2 pos = GetPosition();
@@ -167,6 +195,12 @@ void Character::Move(int deltaX, bool upKeyPressed, const GridSystem &grid,
 // }
 
 void Character::UpdateJump(const GridSystem &grid) {
+  if (m_IsStandingOnPlatform) {
+    m_IsJumping = false;
+    m_Velocity.y = 0;
+    return;  // 如果站在平台上，就不要再掉下去
+  }
+
   if (m_IsJumping) {
     // std::cout << "Jumping..." << std::endl;
 
@@ -423,3 +457,16 @@ void Character::SetPreviousPosition() {
 }
 
 void Character::UndoMovement() { m_Transform.translation = m_LastPosition; }
+
+void Character::Translate(const glm::vec2 &offset) {
+  m_Transform.translation += offset;
+}
+
+void Character::SetStandingOnPlatform(bool value) {
+  m_IsStandingOnPlatform = value;
+}
+
+void Character::SetPlatforms(const std::vector<std::shared_ptr<Platform>> &platforms) {
+  m_Platforms = platforms;
+}
+

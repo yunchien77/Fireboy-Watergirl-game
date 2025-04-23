@@ -5,6 +5,8 @@
 #include "Interface/ITriggerable.hpp"
 #include <glm/glm.hpp>
 
+class Character;
+
 enum class PlatformColor { BLUE, GREEN, ORANGE, PINK, WHITE, YELLOW };
 
 class Platform : public Util::GameObject, public ITriggerable {
@@ -17,6 +19,9 @@ public:
     void SetPosition(const glm::vec2 &position);
 
     PlatformColor GetColor() const;
+    glm::vec2 GetDeltaMovement() const;
+    bool IsCharacterOn(Character* character) const;
+    const SDL_Rect &getRect() const;
 
 private:
     glm::vec2 m_InitialPosition;
@@ -24,7 +29,9 @@ private:
     glm::vec2 m_TargetPosition;
     bool m_ShouldMove = false;
     bool m_IsAnimating = false;
+    mutable SDL_Rect m_Rect{};
     PlatformColor m_Color;
+    glm::vec2 m_LastDeltaMovement = {0.0f, 0.0f};      // 記錄上一幀的移動距離
 
     std::string GetImagePath(PlatformColor color) const;
 };

@@ -67,12 +67,16 @@ LeverColor Lever::GetColor() const { return m_Color; }
 const SDL_Rect &Lever::getRect() const {
     glm::vec2 pos = m_Transform.translation;
     glm::vec2 size = GetScaledSize();
-    m_Rect.x = static_cast<int>(pos.x - size.x / 2);
-    m_Rect.y = static_cast<int>(pos.y - size.y / 2);
-    m_Rect.w = static_cast<int>(size.x);
+
+    int shrink = 10;
+    m_Rect.x = static_cast<int>(pos.x) + shrink;
+    m_Rect.y = static_cast<int>(pos.y);
+    m_Rect.w = static_cast<int>(size.x) - 2 * shrink;
     m_Rect.h = static_cast<int>(size.y);
     return m_Rect;
 }
+
+
 
 void Lever::SetPosition(const glm::vec2 &position) {
     m_Transform.translation = position;

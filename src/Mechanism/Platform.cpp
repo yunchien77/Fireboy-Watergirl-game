@@ -1,4 +1,6 @@
 #include "Mechanism/Platform.hpp"
+
+#include "Character/Character.hpp"
 #include "Util/Image.hpp"
 
 Platform::Platform(PlatformColor color, const glm::vec2 &pos, const glm::vec2 &moveOffset)
@@ -36,17 +38,25 @@ void Platform::OnReleased() {
 }
 
 void Platform::UpdateAnimation(float deltaTime) {
-    if (!m_IsAnimating) return;
+    if (!m_IsAnimating) {
+        m_LastDeltaMovement = {0.0f, 0.0f};  // 沒動就清空
+        return;
+    }
 
     glm::vec2 currentPos = m_Transform.translation;
     glm::vec2 direction = m_TargetPosition - currentPos;
 
-    float speed = 100.0f;
-    if (glm::length(direction) < 1.0f) {
+    float speed = 80.0f;
+    glm::vec2 movement = glm::normalize(direction) * speed * deltaTime;
+
+    // 記錄這一幀平台的實際移動量
+    if (glm::length(direction) < glm::length(movement)) {
+        m_LastDeltaMovement = direction;  // 最後一步直接補上剩餘距離
         SetPosition(m_TargetPosition);
         m_IsAnimating = false;
     } else {
-        SetPosition(currentPos + glm::normalize(direction) * speed * deltaTime);
+        m_LastDeltaMovement = movement;  // 正常移動
+        SetPosition(currentPos + movement);
     }
 }
 
@@ -57,3 +67,29 @@ void Platform::SetPosition(const glm::vec2 &position) {
 PlatformColor Platform::GetColor() const {
     return m_Color;
 }
+
+glm::vec2 Platform::GetDeltaMovement() const {
+    return m_LastDeltaMovement;
+}
+
+bool Platform::IsCharacterOn(Character* character) const {
+    SDL_Rect charRect = character->getRect();
+    SDL_Rect platRect = getRect();
+
+    // 只偵測腳底碰觸平台頂部
+    return SDL_HasIntersection(&charRect, &platRect) &&
+           charRect.y + charRect.h - 5 <= platRect.y;
+}
+
+
+const SDL_Rect &Platform::getRect() const {
+    glm::vec2 pos = m_Transform.translation;
+    glm::vec2 size = GetScaledSize();
+
+    m_Rect.x = static_cast<int>(pos.x);
+    m_Rect.y = static_cast<int>(pos.y);
+    m_Rect.w = static_cast<int>(size.x);
+    m_Rect.h = static_cast<int>(size.y);
+    return m_Rect;
+}
+

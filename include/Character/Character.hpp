@@ -9,6 +9,8 @@
 #include <memory>
 #include <string>
 
+#include "Mechanism/Platform.hpp"
+
 class Character : public Util::GameObject {
 public:
   explicit Character(const std::string &imagePath, const float zindex);
@@ -63,6 +65,12 @@ public:
   void SetPreviousPosition();
   void UndoMovement();
 
+  void Translate(const glm::vec2 &offset);
+  void Update(float deltaTime, const GridSystem &grid);
+  void SetPlatforms(const std::vector<std::shared_ptr<Platform>> &platforms);
+  void SetStandingOnPlatform(bool value);
+  static constexpr float GRAVITY_SPEED = 10.0f;
+
 protected:
   // 應用水平翻轉
   void ApplyFlip();
@@ -80,6 +88,13 @@ protected:
   bool m_IsDead = false;
   glm::vec2 m_SpawnPoint;
   glm::vec2 m_LastPosition;
+
+  std::vector<std::shared_ptr<Platform>> m_Platforms;
+  std::shared_ptr<Platform> m_CurrentPlatform;
+
+  bool m_IsStandingOnPlatform = false;
+  glm::vec2 m_Velocity = glm::vec2(0.0f);
+
 };
 
 #endif // CHARACTER_HPP

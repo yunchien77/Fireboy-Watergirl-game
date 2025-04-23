@@ -39,41 +39,6 @@ void Character::SetPosition(const glm::vec2 &position) {
 
 glm::vec2 Character::GetSize() const { return m_Size; }
 
-// void Character::Move(int deltaX, bool upKeyPressed, const GridSystem &grid,
-//                      bool isFireboy) {
-//   isMoving = (deltaX != 0);
-
-//   if (deltaX < 0) {
-//     m_FacingRight = false;
-//   } else if (deltaX > 0) {
-//     m_FacingRight = true;
-//   }
-
-//   ApplyFlip();
-
-//   // 嘗試水平移動
-//   glm::vec2 newPos = GetPosition();
-//   newPos.x += deltaX;
-
-//   // 只有當新位置不會碰撞時，才進行移動
-//   if (!grid.CheckCollision(newPos, m_Size, isFireboy, deltaX)) {
-//     SetPosition(newPos);
-//   }
-
-//   // 處理跳躍
-//   // 只有當上鍵是新按下的(之前沒有按下)並且角色在地面上時才跳躍
-//   if (upKeyPressed && !m_UpKeyWasPressed && m_IsOnGround) {
-//     m_IsJumping = true;
-//     m_IsOnGround = false;
-//     m_JumpHeight = 0;
-//   }
-
-//   // 更新上一次按鍵狀態
-//   m_UpKeyWasPressed = upKeyPressed;
-
-//   UpdateAnimation();
-// }
-
 void Character::Move(int deltaX, bool upKeyPressed, const GridSystem &grid,
                      bool isFireboy) {
   isMoving = (deltaX != 0);
@@ -114,96 +79,53 @@ void Character::Move(int deltaX, bool upKeyPressed, const GridSystem &grid,
   UpdateAnimation();
 }
 
-void Character::Update(float deltaTime, const GridSystem &grid) {
+void Character::Update(float deltaTime) {
+  // 記錄之前的平台狀態
+  bool wasOnPlatform = m_IsStandingOnPlatform;
+  std::shared_ptr<Platform> previousPlatform = m_CurrentPlatform;
+
+  // 重置平台相關狀態
   m_IsStandingOnPlatform = false;
   m_CurrentPlatform = nullptr;
 
+  // 檢查角色是否站在任何平台上
   for (const auto &platform : m_Platforms) {
-    SDL_Rect characterRect = getRect();
-    SDL_Rect platformRect = platform->getRect();
-
-    bool standingOnPlatform =
-        characterRect.y + characterRect.h >= platformRect.y - 5 &&
-        characterRect.y + characterRect.h <= platformRect.y + 10 &&
-        characterRect.x + characterRect.w > platformRect.x + 5 &&
-        characterRect.x < platformRect.x + platformRect.w - 5;
-
-    if (standingOnPlatform) {
+    if (platform->IsCharacterOn(this)) {
+      // 找到了角色站立的平台
       m_IsStandingOnPlatform = true;
       m_CurrentPlatform = platform;
+
+      // 只有首次接觸平台時才調整位置
+      if (!wasOnPlatform || previousPlatform != platform) {
+        glm::vec2 pos = GetPosition();
+        glm::vec2 platPos = platform->GetPosition();
+        // 使用準確的偏移量，將角色底部對齊平台頂部
+        pos.y = platPos.y + 11.5f - 13.5f; // platTop - charBottomOffset
+        SetPosition(pos);
+      }
+
       break;
     }
   }
 
-  // 如果正在站在平台上，就跟著平台移動
+  // 如果角色站在平台上，應用平台的移動
   if (m_IsStandingOnPlatform && m_CurrentPlatform) {
-    Translate(m_CurrentPlatform->GetDeltaMovement());
+    // 直接使用平台提供的移動量
+    glm::vec2 platMove = m_CurrentPlatform->GetDeltaMovement();
+    if (glm::length(platMove) > 0.01f) { // 若有實際移動才應用
+      Translate(platMove);
+    }
   }
 }
-
-
-// void Character::UpdateJump(const GridSystem &grid) {
-//   if (m_IsJumping) {
-//     glm::vec2 pos = GetPosition();
-//     float fallSpeed = 5.0f; // 下落速度
-//     float jumpSpeed = 7.0f; // 跳躍速度
-
-//     // 上升階段
-//     if (m_JumpHeight < m_JumpMaxHeight) {
-//       glm::vec2 nextPos = pos;
-//       nextPos.y += jumpSpeed; // 嘗試向上跳
-
-//       // 檢查跳躍後頭部會到達的格子
-//       glm::ivec2 gridPosTop =
-//           grid.GameToCellPosition(glm::vec2(pos.x, pos.y + (m_Size.y
-//           + 13.5f)));
-//       CellType aboveCell = grid.GetCell(gridPosTop.x, gridPosTop.y);
-
-//       // 如果即將碰到任何非空的地形，則停止上升
-//       if (aboveCell != CellType::EMPTY) {
-//         m_JumpHeight += isMoving ? (jumpSpeed / 1.5f) : m_JumpMaxHeight;
-//       } else {
-//         pos = nextPos;
-//         m_JumpHeight += jumpSpeed;
-//       }
-//     }
-//     // 下降階段
-//     else {
-//       glm::vec2 nextPos = pos;
-//       nextPos.y -= fallSpeed; // 嘗試下降
-
-//       glm::ivec2 gridPosBelow = grid.GameToCellPosition(nextPos);
-//       CellType belowCell = grid.GetCell(gridPosBelow.x, gridPosBelow.y);
-
-//       // 如果腳底碰到非空的地形，則停止下降
-//       if (belowCell != CellType::EMPTY) {
-//         m_IsJumping = false;
-//         m_IsOnGround = true;
-//         m_JumpHeight = 0;
-
-//         // 修正 Y 軸位置，讓角色貼合地板
-//         float cellBottomY =
-//             grid.CellToGamePosition(gridPosBelow.x, gridPosBelow.y).y;
-//         pos.y = cellBottomY + (grid.GetCellSize() / 2.0f - 13.5f);
-//       } else {
-//         pos = nextPos;
-//       }
-//     }
-
-//     SetPosition(pos);
-//   }
-// }
 
 void Character::UpdateJump(const GridSystem &grid) {
   if (m_IsStandingOnPlatform) {
     m_IsJumping = false;
     m_Velocity.y = 0;
-    return;  // 如果站在平台上，就不要再掉下去
+    return; // 如果站在平台上，就不要再掉下去
   }
 
   if (m_IsJumping) {
-    // std::cout << "Jumping..." << std::endl;
-
     glm::vec2 pos = GetPosition();
     float fallSpeed = 5.0f; // 下落速度
     float jumpSpeed = 7.0f; // 跳躍速度
@@ -212,7 +134,6 @@ void Character::UpdateJump(const GridSystem &grid) {
 
     // 上升階段
     if (m_JumpHeight < m_JumpMaxHeight) {
-      // std::cout << "Jumping up..." << std::endl;
 
       nextPos.y += jumpSpeed; // 嘗試向上跳
 
@@ -233,7 +154,6 @@ void Character::UpdateJump(const GridSystem &grid) {
         CellType aboveCell = grid.GetCell(gridPosTop.x, gridPosTop.y);
 
         if (aboveCell != CellType::EMPTY) {
-          // std::cout << "topCollision" << std::endl;
           topCollision = true;
           break;
         }
@@ -249,7 +169,6 @@ void Character::UpdateJump(const GridSystem &grid) {
     }
     // 下降階段
     else {
-      // std::cout << "Jumping down..." << std::endl;
 
       nextPos.y -= fallSpeed; // 嘗試下降
 
@@ -294,29 +213,6 @@ void Character::UpdateJump(const GridSystem &grid) {
   }
 }
 
-// void Character::ApplyGravity(const GridSystem &grid) {
-//   if (!m_IsJumping) {
-//     glm::vec2 pos = GetPosition();
-//     glm::vec2 nextPos = pos;
-//     float fallSpeed = 5.0f;
-//     nextPos.y -= fallSpeed;
-
-//     glm::ivec2 gridPos = grid.GameToCellPosition(nextPos);
-//     CellType belowCell = grid.GetCell(gridPos.x, gridPos.y);
-
-//     if (grid.CanStandOn(belowCell, this->IsFireboy())) {
-//       m_IsOnGround = true;
-//       float cellBottomY = grid.CellToGamePosition(gridPos.x, gridPos.y).y;
-//       pos.y = cellBottomY + (grid.GetCellSize() / 2.0f - 13.5f);
-//     } else {
-//       m_IsOnGround = false;
-//       pos = nextPos;
-//     }
-
-//     SetPosition(pos);
-//   }
-// }
-
 struct CellComparator {
   bool operator()(const glm::ivec2 &a, const glm::ivec2 &b) const {
     if (a.x != b.x)
@@ -326,6 +222,10 @@ struct CellComparator {
 };
 
 void Character::ApplyGravity(const GridSystem &grid) {
+  if (m_IsStandingOnPlatform) {
+    return; // 如果站在平台上，跳過重力處理
+  }
+
   if (!m_IsJumping) {
     glm::vec2 pos = GetPosition();
     glm::vec2 nextPos = pos;
@@ -353,13 +253,6 @@ void Character::ApplyGravity(const GridSystem &grid) {
           grid.GameToCellPosition(glm::vec2(checkX, bottom));
       CellType belowCell = grid.GetCell(gridPosBottom.x, gridPosBottom.y);
 
-      // if (IsFireboy())
-      //   std::cout << "Fireboy: ";
-      // else
-      //   std::cout << "Watergirl: ";
-      // std::cout << "i=" << i << ", Checking cell: " << gridPosBottom.x << ","
-      //           << gridPosBottom.y << std::endl;
-
       if (grid.CanStandOn(belowCell, this->IsFireboy())) {
         standablePoints[gridPosBottom]++;
       }
@@ -382,12 +275,6 @@ void Character::ApplyGravity(const GridSystem &grid) {
       float cellBottomY = grid.CellToGamePosition(bestGrid.x, bestGrid.y).y;
       pos.y = cellBottomY + (grid.GetCellSize() / 2.0f) - 13.5f;
 
-      // // 將角色X位置調整到最適合的網格中心
-      // float cellCenterX = grid.CellToGamePosition(bestGrid.x,
-      // bestGrid.y).x;
-      // // 微調X位置，使其稍微靠近網格中心，但保持平滑移動
-      // float adjustFactor = 0.05f; // 調整因子，值越大越接近網格中心
-      // pos.x = pos.x + (cellCenterX - pos.x) * adjustFactor;
     } else {
       // 沒有找到可站立的網格，下落
       m_IsOnGround = false;
@@ -466,7 +353,7 @@ void Character::SetStandingOnPlatform(bool value) {
   m_IsStandingOnPlatform = value;
 }
 
-void Character::SetPlatforms(const std::vector<std::shared_ptr<Platform>> &platforms) {
+void Character::SetPlatforms(
+    const std::vector<std::shared_ptr<Platform>> &platforms) {
   m_Platforms = platforms;
 }
-

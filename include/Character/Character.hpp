@@ -66,7 +66,7 @@ public:
   void UndoMovement();
 
   void Translate(const glm::vec2 &offset);
-  void Update(float deltaTime, const GridSystem &grid);
+  void Update(float deltaTime);
   void SetPlatforms(const std::vector<std::shared_ptr<Platform>> &platforms);
   void SetStandingOnPlatform(bool value);
   static constexpr float GRAVITY_SPEED = 10.0f;
@@ -94,7 +94,7 @@ protected:
 
   bool m_IsStandingOnPlatform = false;
   glm::vec2 m_Velocity = glm::vec2(0.0f);
-
+  std::shared_ptr<Platform> m_PreviousPlatform;
 };
 
 #endif // CHARACTER_HPP

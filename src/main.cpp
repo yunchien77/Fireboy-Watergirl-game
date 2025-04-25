@@ -32,6 +32,10 @@ int main(int, char **) {
       app.GameWin();
       break;
 
+    case App::State::LOADING:
+      app.Loading(0.016f); // 16毫秒（~60FPS）
+      break;
+
     case App::State::END:
       app.End();
       context->SetExit(true);

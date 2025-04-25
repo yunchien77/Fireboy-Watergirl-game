@@ -28,6 +28,7 @@ public:
     GAME_PLAY,    // 遊戲開始
     GAME_WIN,     // 遊戲贏
     GAME_PAUSE,   // 遊戲暫停
+    LOADING,      // 載入中
     END,
   };
 
@@ -73,8 +74,7 @@ public:
   // 檢查角色與門的互動
   void CheckCharacterDoorInteraction();
 
-private:
-  void ValidTask();
+  void Loading(float deltaTime);
 
 private:
   State m_CurrentState = State::START;
@@ -108,8 +108,8 @@ private:
   std::vector<std::shared_ptr<IGem>> m_Gems;
   std::vector<std::shared_ptr<Button>> m_Buttons;
   std::vector<std::shared_ptr<Gate>> m_Triggers;
-  std::vector<std::shared_ptr<Platform>>m_Platforms;
-  std::vector<std::shared_ptr<Lever>>m_Levers;
+  std::vector<std::shared_ptr<Platform>> m_Platforms;
+  std::vector<std::shared_ptr<Lever>> m_Levers;
 
   std::shared_ptr<BackgroundImage> m_GameWinBackground;
   std::shared_ptr<BackgroundImage> m_GamePausedBackground;
@@ -141,6 +141,16 @@ private:
                      (windowHeight / 2) - screenY // 中心化並翻轉Y座標
     );
   }
+
+  void ValidTask();
+
+  // Loading animation assets
+  std::shared_ptr<BackgroundImage> m_LoadingBackground1;
+  std::shared_ptr<BackgroundImage> m_LoadingBackground2;
+  std::shared_ptr<BackgroundImage> m_LoadingBackground3;
+  int m_LoadingFrameIndex = 0;
+  float m_LoadingAnimationTimer = 0.0f;
+  float m_LoadingFrameDuration = 0.5f; // 0.5 seconds per frame
 };
 
 #endif

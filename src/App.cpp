@@ -238,20 +238,15 @@ App::App() {
     m_LevelResult->SetVisible(false);
     m_pauseButton->SetVisible(false);
 
-    m_CurrentState = State::LEVEL_SELECT;
-    m_LevelSelectBackground->SetVisible(true);
-    m_Level1Button->SetVisible(true);
-    m_Level2Button->SetVisible(true);
-    m_Level3Button->SetVisible(true);
-    m_Level4Button->SetVisible(true);
-    m_Level5Button->SetVisible(true);
-    m_BackButton->SetVisible(true);
+    m_CurrentState = State::LOADING;
+
+    // Reset loading animation
+    m_LoadingFrameIndex = 0;
+    m_LoadingAnimationTimer = 0.0f;
 
     m_Level1Background->SetVisible(false);
     m_Level2Background->SetVisible(false);
     m_Level3Background->SetVisible(false);
-    // m_Level4Background->SetVisible(false);
-    // m_Level5Background->SetVisible(false);
   });
   m_Root.AddChild(m_ContinueButton);
 
@@ -290,14 +285,12 @@ App::App() {
     m_ResumeButton->SetVisible(false);
     m_pauseButton->SetVisible(false);
 
-    m_CurrentState = State::LEVEL_SELECT;
+    m_CurrentState = State::LOADING;
+    // Reset loading animation
+    m_LoadingFrameIndex = 0;
+    m_LoadingAnimationTimer = 0.0f;
+
     m_LevelSelectBackground->SetVisible(true);
-    m_Level1Button->SetVisible(true);
-    m_Level2Button->SetVisible(true);
-    m_Level3Button->SetVisible(true);
-    m_Level4Button->SetVisible(true);
-    m_Level5Button->SetVisible(true);
-    m_BackButton->SetVisible(true);
 
     m_Level1Background->SetVisible(false);
     m_Level2Background->SetVisible(false);

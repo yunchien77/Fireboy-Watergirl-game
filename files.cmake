@@ -6,6 +6,7 @@ set(SRC_FILES
         Game/AppGamePlay.cpp
         Game/AppGameWin.cpp
         Game/AppGamePause.cpp
+        Game/AppLoading.cpp
         Game/AppReset.cpp
         Level/LoadLevel.cpp
         Level/Level.cpp

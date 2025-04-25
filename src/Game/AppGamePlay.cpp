@@ -298,8 +298,8 @@ void App::GamePlay() {
   }
 
   // 更新角色位置
-  m_Fireboy->Update(deltaTime);
-  m_Watergirl->Update(deltaTime);
+  m_Fireboy->Update();
+  m_Watergirl->Update();
 
   for (auto &lever : m_Levers) {
     lever->update(m_Fireboy.get(), m_Watergirl.get());

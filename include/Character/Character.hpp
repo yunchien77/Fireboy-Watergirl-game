@@ -66,7 +66,7 @@ public:
   void UndoMovement();
 
   void Translate(const glm::vec2 &offset);
-  void Update(float deltaTime);
+  void Update();
   void SetPlatforms(const std::vector<std::shared_ptr<Platform>> &platforms);
   void SetStandingOnPlatform(bool value);
   static constexpr float GRAVITY_SPEED = 10.0f;

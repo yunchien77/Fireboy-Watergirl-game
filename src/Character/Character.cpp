@@ -79,7 +79,7 @@ void Character::Move(int deltaX, bool upKeyPressed, const GridSystem &grid,
   UpdateAnimation();
 }
 
-void Character::Update(float deltaTime) {
+void Character::Update() {
   // 記錄之前的平台狀態
   bool wasOnPlatform = m_IsStandingOnPlatform;
   std::shared_ptr<Platform> previousPlatform = m_CurrentPlatform;
@@ -120,35 +120,36 @@ void Character::Update(float deltaTime) {
 }
 
 void Character::UpdateJump(const GridSystem &grid) {
-  // 只有當角色已經在跳躍中且站在平台上時才重置跳躍狀態
+  // Only reset jump state when character is jumping, standing on platform, and
+  // jump height > 0
   if (m_IsJumping && m_IsStandingOnPlatform && m_JumpHeight > 0) {
     m_IsJumping = false;
     m_Velocity.y = 0;
-    return; // 已經著陸在平台上，重置跳躍狀態
+    return; // Already landed on platform, reset jump state
   }
 
   if (m_IsJumping) {
     glm::vec2 pos = GetPosition();
-    float fallSpeed = 5.0f; // 下落速度
-    float jumpSpeed = 7.0f; // 跳躍速度
+    float fallSpeed = 5.0f; // Fall speed
+    float jumpSpeed = 7.0f; // Jump speed
 
     glm::vec2 nextPos = pos;
 
-    // 上升階段
+    // Rising phase
     if (m_JumpHeight < m_JumpMaxHeight) {
+      nextPos.y += jumpSpeed; // Try to jump up
 
-      nextPos.y += jumpSpeed; // 嘗試向上跳
-
-      // 定義角色框框的四個角落點（上升後的位置）
-      float left = nextPos.x - (m_Size.x / 2) + 2.5f;
-      float right = nextPos.x + (m_Size.x / 2) - 2.5f;
+      // Define the four corners of the character box (after rising)
+      float tolerance = 0.5f; // Small tolerance to avoid false collisions
+      float left = nextPos.x - (m_Size.x / 2) + tolerance;
+      float right = nextPos.x + (m_Size.x / 2) - tolerance;
       float top = nextPos.y + m_Size.y;
+      float middle =
+          nextPos.y + (m_Size.y / 2); // Middle height for side collision
 
-      // 檢查整個頂部邊緣的碰撞
+      // Check collision along the top edge
       bool topCollision = false;
-
-      // 將頂部邊緣分成多個檢查點
-      int checkPoints = 10; // 檢查點數量
+      int checkPoints = 10; // Number of check points for top
       for (int i = 0; i <= checkPoints; i++) {
         float checkX =
             left + (right - left) * (static_cast<float>(i) / checkPoints);
@@ -161,7 +162,70 @@ void Character::UpdateJump(const GridSystem &grid) {
         }
       }
 
+      // Using collision threshold for sides
+      int leftCollisionCount = 0;
+      int rightCollisionCount = 0;
+      int collisionThreshold =
+          2; // Need at least this many collision points to count as a collision
+
+      // Check collision along the left side
+      checkPoints = 20; // Reduced number of check points for sides
+      glm::ivec2 leftCollisionCell(0, 0);
+
+      for (int i = 0; i <= checkPoints; i++) {
+        float checkY =
+            middle + ((m_Size.y / 2) * (static_cast<float>(i) / checkPoints) -
+                      m_Size.y / 4);
+        glm::ivec2 gridPosLeft =
+            grid.GameToCellPosition(glm::vec2(left, checkY));
+        CellType leftCell = grid.GetCell(gridPosLeft.x, gridPosLeft.y);
+
+        if (!topCollision && leftCell != CellType::EMPTY) {
+          leftCollisionCount++;
+          leftCollisionCell = gridPosLeft; // Save for position correction
+        }
+      }
+
+      // Check collision along the right side
+      glm::ivec2 rightCollisionCell(0, 0);
+
+      for (int i = 0; i <= checkPoints; i++) {
+        float checkY =
+            middle + ((m_Size.y / 2) * (static_cast<float>(i) / checkPoints) -
+                      m_Size.y / 4);
+        glm::ivec2 gridPosRight =
+            grid.GameToCellPosition(glm::vec2(right, checkY));
+        CellType rightCell = grid.GetCell(gridPosRight.x, gridPosRight.y);
+
+        if (!topCollision && rightCell != CellType::EMPTY) {
+          rightCollisionCount++;
+          rightCollisionCell = gridPosRight; // Save for position correction
+        }
+      }
+
+      // Apply side collision corrections if threshold is met
+      if (leftCollisionCount >= collisionThreshold) {
+        std::cout << "Rising - left collision detected (" << leftCollisionCount
+                  << " points)" << std::endl;
+        // Adjust position to avoid penetrating the wall
+        float cellRightEdge =
+            grid.CellToGamePosition(leftCollisionCell.x, leftCollisionCell.y)
+                .x +
+            (grid.GetCellSize() / 2.0f);
+        nextPos.x = cellRightEdge + (m_Size.x / 2) - tolerance / 2;
+      } else if (rightCollisionCount >= collisionThreshold) {
+        std::cout << "Rising - right collision detected ("
+                  << rightCollisionCount << " points)" << std::endl;
+        // Adjust position to avoid penetrating the wall
+        float cellLeftEdge =
+            grid.CellToGamePosition(rightCollisionCell.x, rightCollisionCell.y)
+                .x -
+            (grid.GetCellSize() / 2.0f);
+        nextPos.x = cellLeftEdge - (m_Size.x / 2) + tolerance / 2;
+      }
+
       if (topCollision) {
+        // Hit ceiling - start falling
         m_JumpHeight += isMoving ? (jumpSpeed / 1.5f) : m_JumpMaxHeight;
         return;
       }
@@ -169,21 +233,21 @@ void Character::UpdateJump(const GridSystem &grid) {
       pos = nextPos;
       m_JumpHeight += jumpSpeed;
     }
-    // 下降階段
+    // Falling phase
     else {
+      nextPos.y -= fallSpeed; // Try to descend
 
-      nextPos.y -= fallSpeed; // 嘗試下降
-
-      // 定義角色框框的四個角落點（下降後的位置）
-      float left = nextPos.x - (m_Size.x / 2);
-      float right = nextPos.x + (m_Size.x / 2);
+      // Define the character box corners (after descending)
+      float tolerance = 0.5f; // Small tolerance to avoid false collisions
+      float left = nextPos.x - (m_Size.x / 2) + tolerance;
+      float right = nextPos.x + (m_Size.x / 2) - tolerance;
       float bottom = nextPos.y + 13.5f;
+      float middle =
+          nextPos.y + (m_Size.y / 2); // Middle height for side collision
 
-      // 檢查整個底部邊緣的碰撞
+      // Check collision along the bottom edge
       bool bottomCollision = false;
-
-      // 將底部邊緣分成多個檢查點
-      int checkPoints = 15; // 檢查點數量
+      int checkPoints = 10; // Number of check points for bottom
       for (int i = 0; i <= checkPoints; i++) {
         float checkX =
             left + (right - left) * (static_cast<float>(i) / checkPoints);
@@ -194,7 +258,7 @@ void Character::UpdateJump(const GridSystem &grid) {
         if (belowCell != CellType::EMPTY) {
           bottomCollision = true;
 
-          // 修正 Y 軸位置，讓角色貼合地板
+          // Adjust Y position to snap to the floor
           float cellBottomY =
               grid.CellToGamePosition(gridPosBottom.x, gridPosBottom.y).y;
           pos.y = cellBottomY + (grid.GetCellSize() / 2.0f) - 13.5f;
@@ -204,6 +268,69 @@ void Character::UpdateJump(const GridSystem &grid) {
           SetPosition(pos);
           return;
         }
+      }
+
+      // Using collision threshold for sides during falling
+      int leftCollisionCount = 0;
+      int rightCollisionCount = 0;
+      int collisionThreshold =
+          2; // Need at least this many collision points to count as a collision
+
+      // Check collision along the left side while falling
+      checkPoints = 10; // Reduced number of check points for sides
+      glm::ivec2 leftCollisionCell(0, 0);
+
+      for (int i = 0; i <= checkPoints; i++) {
+        float checkY =
+            middle + ((m_Size.y / 2) * (static_cast<float>(i) / checkPoints) -
+                      m_Size.y / 4);
+        glm::ivec2 gridPosLeft =
+            grid.GameToCellPosition(glm::vec2(left, checkY));
+        CellType leftCell = grid.GetCell(gridPosLeft.x, gridPosLeft.y);
+
+        if (!bottomCollision && leftCell != CellType::EMPTY) {
+          leftCollisionCount++;
+          leftCollisionCell = gridPosLeft; // Save for position correction
+        }
+      }
+
+      // Check collision along the right side while falling
+      checkPoints = 20;
+      glm::ivec2 rightCollisionCell(0, 0);
+
+      for (int i = 0; i <= checkPoints; i++) {
+        float checkY =
+            middle + ((m_Size.y / 2) * (static_cast<float>(i) / checkPoints) -
+                      m_Size.y / 4);
+        glm::ivec2 gridPosRight =
+            grid.GameToCellPosition(glm::vec2(right, checkY));
+        CellType rightCell = grid.GetCell(gridPosRight.x, gridPosRight.y);
+
+        if (!bottomCollision && rightCell != CellType::EMPTY) {
+          rightCollisionCount++;
+          rightCollisionCell = gridPosRight; // Save for position correction
+        }
+      }
+
+      // Apply side collision corrections if threshold is met
+      if (leftCollisionCount >= collisionThreshold) {
+        std::cout << "Falling - left collision detected (" << leftCollisionCount
+                  << " points)" << std::endl;
+        // Adjust position to avoid penetrating the wall
+        float cellRightEdge =
+            grid.CellToGamePosition(leftCollisionCell.x, leftCollisionCell.y)
+                .x +
+            (grid.GetCellSize() / 2.0f);
+        nextPos.x = cellRightEdge + (m_Size.x / 2) - tolerance / 2;
+      } else if (rightCollisionCount >= collisionThreshold) {
+        std::cout << "Falling - right collision detected ("
+                  << rightCollisionCount << " points)" << std::endl;
+        // Adjust position to avoid penetrating the wall
+        float cellLeftEdge =
+            grid.CellToGamePosition(rightCollisionCell.x, rightCollisionCell.y)
+                .x -
+            (grid.GetCellSize() / 2.0f);
+        nextPos.x = cellLeftEdge - (m_Size.x / 2) + tolerance / 2;
       }
 
       if (!bottomCollision) {

@@ -5,7 +5,7 @@ set(SRC_FILES
         Game/AppLevelSelect.cpp
         Game/AppGamePlay.cpp
         Game/AppGameWin.cpp
-        Game/AppGameOver.cpp
+        Game/AppGamePause.cpp
         Game/AppReset.cpp
         Level/LoadLevel.cpp
         Level/Level.cpp

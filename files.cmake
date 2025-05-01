@@ -24,6 +24,7 @@ set(SRC_FILES
         Mechanism/Button.cpp
         Mechanism/Platform.cpp
         Mechanism/Lever.cpp
+        Mechanism/Box.cpp
 )
 
 set(INCLUDE_FILES
@@ -45,6 +46,7 @@ set(INCLUDE_FILES
         Mechanism/Button.hpp
         Mechanism/Platform.hpp
         Mechanism/Lever.hpp
+        Mechanism/Box.hpp
         Level/Level.hpp
         Level/Level1.hpp
         Level/Level2.hpp

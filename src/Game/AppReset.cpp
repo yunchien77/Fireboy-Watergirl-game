@@ -63,4 +63,16 @@ void App::ResetGame() {
     m_Root.RemoveChild(button);
   }
   m_Buttons.clear(); // 完全清除按鈕列表
+
+  for (auto &lever : m_Levers) {
+    lever->SetVisible(false);
+    m_Root.RemoveChild(lever);
+  }
+  m_Levers.clear();
+
+  for (auto &platform : m_Platforms) {
+    platform->SetVisible(false);
+    m_Root.RemoveChild(platform);
+  }
+  m_Levers.clear();
 }

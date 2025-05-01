@@ -9,6 +9,7 @@
 #include <memory>
 #include <string>
 
+#include "Mechanism/Box.hpp"
 #include "Mechanism/Platform.hpp"
 
 class Character : public Util::GameObject {
@@ -71,6 +72,11 @@ public:
   void SetStandingOnPlatform(bool value);
   static constexpr float GRAVITY_SPEED = 10.0f;
 
+  bool IsMoving() const;
+  bool IsFacingRight() const;
+  void SetBoxes(const std::vector<std::shared_ptr<Box>>& boxes);
+
+
 protected:
   // 應用水平翻轉
   void ApplyFlip();
@@ -91,6 +97,7 @@ protected:
 
   std::vector<std::shared_ptr<Platform>> m_Platforms;
   std::shared_ptr<Platform> m_CurrentPlatform;
+  std::vector<std::shared_ptr<Box>> m_Boxes;
 
   bool m_IsStandingOnPlatform = false;
   glm::vec2 m_Velocity = glm::vec2(0.0f);

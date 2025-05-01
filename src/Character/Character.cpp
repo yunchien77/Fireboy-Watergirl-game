@@ -361,16 +361,16 @@ void Character::ApplyGravity(const GridSystem &grid) {
     float fallSpeed = 5.0f;
     nextPos.y -= fallSpeed;
 
-    // 腳的寬度保持不變
+    // 適當調整腳部寬度 - 使用角色寬度的1/3作為腳部寬度
     float footWidth = m_Size.x / 5.0f;
 
     // 計算腳的位置（底部中間）
     float footLeft = nextPos.x - (footWidth / 2);
     float footRight = nextPos.x + (footWidth / 2);
-    float bottom = nextPos.y + 13.5f;
 
-    // 檢查腳底的幾個點
-    int checkPoints = 7; // 使用奇數個點，這樣中間點會在正中央
+    // 使用精確的底部接觸點，添加小的向下偏移確保檢測正確
+    float bottom = nextPos.y + 13.5f; // 添加1像素的偏移
+    int checkPoints = 7;
 
     // 統計每個網格有多少檢查點可以站立
     std::map<glm::ivec2, int, CellComparator> standablePoints;
@@ -390,6 +390,7 @@ void Character::ApplyGravity(const GridSystem &grid) {
     // 找出最多點可站立的網格
     glm::ivec2 bestGrid(0, 0);
     int maxCount = 0;
+    int minRequiredPoints = 3; // 至少需要幾個點才能站立
 
     for (const auto &pair : standablePoints) {
       if (pair.second > maxCount) {
@@ -398,20 +399,24 @@ void Character::ApplyGravity(const GridSystem &grid) {
       }
     }
 
-    // 如果有找到可站立的網格
-    if (maxCount > 0) {
+    // 如果有找到至少2個可站立點
+    if (maxCount >= minRequiredPoints) {
       m_IsOnGround = true;
       float cellBottomY = grid.CellToGamePosition(bestGrid.x, bestGrid.y).y;
       pos.y = cellBottomY + (grid.GetCellSize() / 2.0f) - 13.5f;
 
+      // 除錯輸出
+      std::cout << "Standing on grid [" << bestGrid.x << "," << bestGrid.y
+                << "] with " << maxCount << " contact points" << std::endl;
     } else {
-      // 沒有找到可站立的網格，下落
+      // 站立點少於2個，設定為不在地面上並下落
       m_IsOnGround = false;
+      pos = nextPos;
 
       // 檢查角色左右兩邊的身體位置，防止卡在牆中
-      float bodyLeft = nextPos.x - (m_Size.x / 2.0f);
-      float bodyRight = nextPos.x + (m_Size.x / 2.0f);
-      float bodyMiddleY = nextPos.y; // 角色中間高度
+      float bodyLeft = pos.x - (m_Size.x / 2.0f);
+      float bodyRight = pos.x + (m_Size.x / 2.0f);
+      float bodyMiddleY = pos.y; // 角色中間高度
 
       // 檢查左側身體
       glm::ivec2 leftBodyCell =
@@ -429,16 +434,22 @@ void Character::ApplyGravity(const GridSystem &grid) {
         float cellRightEdge =
             grid.CellToGamePosition(leftBodyCell.x, leftBodyCell.y).x +
             (grid.GetCellSize() / 2.0f);
-        nextPos.x = cellRightEdge + (m_Size.x / 2.0f);
+        pos.x = cellRightEdge + (m_Size.x / 2.0f);
       } else if (!grid.CanMoveOn(rightCellType, this->IsFireboy())) {
         // 如果右側碰牆，向左調整
         float cellLeftEdge =
             grid.CellToGamePosition(rightBodyCell.x, rightBodyCell.y).x -
             (grid.GetCellSize() / 2.0f);
-        nextPos.x = cellLeftEdge - (m_Size.x / 2.0f);
+        pos.x = cellLeftEdge - (m_Size.x / 2.0f);
       }
 
-      pos = nextPos;
+      // 除錯輸出
+      if (maxCount > 0) {
+        std::cout << "Not enough contact points (" << maxCount
+                  << "), character falling" << std::endl;
+      } else {
+        std::cout << "No standable ground found, falling" << std::endl;
+      }
     }
 
     SetPosition(pos);

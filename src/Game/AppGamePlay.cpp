@@ -8,6 +8,7 @@
 #include "config.hpp"
 #include <Mechanism/Gem.hpp>
 #include <Mechanism/LiquidTrap.hpp>
+#include "Mechanism/Box.hpp"
 #include <iostream>
 #include <memory>
 
@@ -305,5 +306,10 @@ void App::GamePlay() {
     lever->update(m_Fireboy.get(), m_Watergirl.get());
   }
 
+  for (auto& box : m_Boxes) {
+    box->OnCollisionWithCharacter(m_Fireboy);
+    box->OnCollisionWithCharacter(m_Watergirl);
+  }
+  
   m_Root.Update();
 }

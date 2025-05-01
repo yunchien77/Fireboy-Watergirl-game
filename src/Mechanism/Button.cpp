@@ -59,13 +59,6 @@ void Button::update(Character *fb, Character *wg) {
 }
 
 void Button::linkTrigger(ITriggerable *target) {
-if (auto* platform = dynamic_cast<Platform*>(target)) {
-    std::cout << "[LinkDebug] Button(" << static_cast<int>(m_Color)
-              << ") @" << this
-              << " linked to Platform(" << static_cast<int>(platform->GetColor())
-              << ") @" << platform << std::endl;
-  }
-
   m_Triggers.push_back(target);
 }
 

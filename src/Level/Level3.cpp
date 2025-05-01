@@ -5,11 +5,11 @@
 #include "Interface/IGem.hpp"
 #include "Mechanism/Button.hpp"
 #include "Mechanism/Door.hpp"
-#include "Mechanism/Gate.hpp"
 #include "Mechanism/Gem.hpp"
 #include "Mechanism/Lever.hpp"
 #include "Mechanism/LiquidTrap.hpp"
 #include "Mechanism/Platform.hpp"
+#include "Mechanism/Box.hpp"
 
 bool Level3::Initialize() {
   //   初始化角色 Fireboy
@@ -167,6 +167,26 @@ bool Level3::Initialize() {
     m_Buttons.push_back(button2);
     m_Root.AddChild(button2);
   }
+
+  // Box
+  std::vector<std::pair<int, int>> boxCoords = {
+    {24, 8}
+  };
+
+  std::vector<std::shared_ptr<Box>> boxes;
+
+  for (const auto &[row, col] : boxCoords) {
+    auto box = std::make_shared<Box>();
+    glm::vec2 pos = m_GridSystem.CellToGamePosition(row, col);
+    pos.y -= 12.0f;
+    box->SetPosition(pos.x, pos.y);
+    boxes.push_back(box);
+    m_Root.AddChild(box);
+  }
+
+  m_Fireboy->SetBoxes(boxes);
+  m_Watergirl->SetBoxes(boxes);
+
 
   return true;
 }

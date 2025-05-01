@@ -117,6 +117,20 @@ void Character::Update() {
       Translate(platMove);
     }
   }
+
+  // 檢查角色是否站在任何 Box 上
+  for (const auto& box : m_Boxes) {
+    if (box->IsCharacterOn(this)) {
+      m_IsStandingOnPlatform = true;
+      m_IsOnGround = true;
+
+      glm::vec2 pos = GetPosition();
+      glm::vec2 boxPos = box->GetPosition();
+      pos.y = boxPos.y + 11.5f - 13.5f; // 對齊 box 頂部
+      SetPosition(pos);
+      break;
+    }
+  }
 }
 
 void Character::UpdateJump(const GridSystem &grid) {
@@ -496,4 +510,16 @@ void Character::SetStandingOnPlatform(bool value) {
 void Character::SetPlatforms(
     const std::vector<std::shared_ptr<Platform>> &platforms) {
   m_Platforms = platforms;
+}
+
+bool Character::IsMoving() const {
+  return isMoving;
+}
+
+bool Character::IsFacingRight() const {
+  return m_FacingRight;
+}
+
+void Character::SetBoxes(const std::vector<std::shared_ptr<Box>>& boxes) {
+  m_Boxes = boxes;
 }

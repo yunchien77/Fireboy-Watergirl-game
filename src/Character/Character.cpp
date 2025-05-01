@@ -119,7 +119,7 @@ void Character::Update() {
   }
 
   // 檢查角色是否站在任何 Box 上
-  for (const auto& box : m_Boxes) {
+  for (const auto &box : m_Boxes) {
     if (box->IsCharacterOn(this)) {
       m_IsStandingOnPlatform = true;
       m_IsOnGround = true;
@@ -154,7 +154,7 @@ void Character::UpdateJump(const GridSystem &grid) {
       nextPos.y += jumpSpeed; // Try to jump up
 
       // Define the four corners of the character box (after rising)
-      float tolerance = 0.5f; // Small tolerance to avoid false collisions
+      float tolerance = 0.3f; // Small tolerance to avoid false collisions
       float left = nextPos.x - (m_Size.x / 2) + tolerance;
       float right = nextPos.x + (m_Size.x / 2) - tolerance;
       float top = nextPos.y + m_Size.y;
@@ -252,7 +252,7 @@ void Character::UpdateJump(const GridSystem &grid) {
       nextPos.y -= fallSpeed; // Try to descend
 
       // Define the character box corners (after descending)
-      float tolerance = 0.5f; // Small tolerance to avoid false collisions
+      float tolerance = 0.3f; // Small tolerance to avoid false collisions
       float left = nextPos.x - (m_Size.x / 2) + tolerance;
       float right = nextPos.x + (m_Size.x / 2) - tolerance;
       float bottom = nextPos.y + 13.5f;
@@ -413,17 +413,16 @@ void Character::ApplyGravity(const GridSystem &grid) {
       }
     }
 
-    // 如果有找到至少2個可站立點
+    // 如果有找到至少3個可站立點
     if (maxCount >= minRequiredPoints) {
       m_IsOnGround = true;
       float cellBottomY = grid.CellToGamePosition(bestGrid.x, bestGrid.y).y;
       pos.y = cellBottomY + (grid.GetCellSize() / 2.0f) - 13.5f;
 
-      // 除錯輸出
-      std::cout << "Standing on grid [" << bestGrid.x << "," << bestGrid.y
-                << "] with " << maxCount << " contact points" << std::endl;
+      // std::cout << "Standing on grid [" << bestGrid.x << "," << bestGrid.y
+      //           << "] with " << maxCount << " contact points" << std::endl;
     } else {
-      // 站立點少於2個，設定為不在地面上並下落
+      // 站立點少於3個，設定為不在地面上並下落
       m_IsOnGround = false;
       pos = nextPos;
 
@@ -457,13 +456,12 @@ void Character::ApplyGravity(const GridSystem &grid) {
         pos.x = cellLeftEdge - (m_Size.x / 2.0f);
       }
 
-      // 除錯輸出
-      if (maxCount > 0) {
-        std::cout << "Not enough contact points (" << maxCount
-                  << "), character falling" << std::endl;
-      } else {
-        std::cout << "No standable ground found, falling" << std::endl;
-      }
+      // if (maxCount > 0) {
+      //   std::cout << "Not enough contact points (" << maxCount
+      //             << "), character falling" << std::endl;
+      // } else {
+      //   std::cout << "No standable ground found, falling" << std::endl;
+      // }
     }
 
     SetPosition(pos);
@@ -512,14 +510,10 @@ void Character::SetPlatforms(
   m_Platforms = platforms;
 }
 
-bool Character::IsMoving() const {
-  return isMoving;
-}
+bool Character::IsMoving() const { return isMoving; }
 
-bool Character::IsFacingRight() const {
-  return m_FacingRight;
-}
+bool Character::IsFacingRight() const { return m_FacingRight; }
 
-void Character::SetBoxes(const std::vector<std::shared_ptr<Box>>& boxes) {
+void Character::SetBoxes(const std::vector<std::shared_ptr<Box>> &boxes) {
   m_Boxes = boxes;
 }

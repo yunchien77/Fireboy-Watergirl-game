@@ -3,13 +3,13 @@
 #include "Character/Fireboy.hpp"
 #include "Character/Watergirl.hpp"
 #include "Interface/IGem.hpp"
+#include "Mechanism/Box.hpp"
 #include "Mechanism/Button.hpp"
 #include "Mechanism/Door.hpp"
 #include "Mechanism/Gem.hpp"
 #include "Mechanism/Lever.hpp"
 #include "Mechanism/LiquidTrap.hpp"
 #include "Mechanism/Platform.hpp"
-#include "Mechanism/Box.hpp"
 
 bool Level3::Initialize() {
   //   初始化角色 Fireboy
@@ -81,8 +81,7 @@ bool Level3::Initialize() {
   }
 
   // 火寶石座標 (row, col)
-  std::vector<std::pair<int, int>> fireGemCoords = {
-    {20, 26}, {7, 14}, {12, 3}};
+  std::vector<std::pair<int, int>> fireGemCoords = {{20, 26}, {7, 14}, {12, 3}};
 
   for (const auto &[row, col] : fireGemCoords) {
     auto gem = std::make_shared<Gem>(GemType::FIRE);
@@ -95,7 +94,7 @@ bool Level3::Initialize() {
 
   // 水寶石座標 (row, col)
   std::vector<std::pair<int, int>> waterGemCoords = {
-    {28, 26}, {23, 15}, {2, 5}};
+      {28, 26}, {23, 15}, {2, 5}};
 
   for (const auto &[row, col] : waterGemCoords) {
     auto gem = std::make_shared<Gem>(GemType::WATER);
@@ -106,37 +105,31 @@ bool Level3::Initialize() {
     m_Root.AddChild(gem);
   }
 
-
   // lever
   auto greenLever = std::make_shared<Lever>(
-      LeverColor::GREEN,
-      m_GridSystem.CellToGamePosition(10, 19)
-  );
+      LeverColor::GREEN, m_GridSystem.CellToGamePosition(10, 19));
   m_Levers.push_back(greenLever);
   m_Root.AddChild(greenLever);
 
   // platform
   std::vector<std::tuple<int, int, int, int, PlatformColor>> platformInfos = {
-    {2, 15, 0, -100, PlatformColor::GREEN},  // lever 控制
-    {35, 12, 0, -80, PlatformColor::PINK}    // button 控制
+      {2, 15, 0, -80, PlatformColor::GREEN}, // lever 控制
+      {35, 12, 0, -80, PlatformColor::PINK}  // button 控制
   };
 
-  std::vector<std::shared_ptr<Platform>> linkedPlatforms;  // 暫存 platform 指標供後續連接
+  std::vector<std::shared_ptr<Platform>>
+      linkedPlatforms; // 暫存 platform 指標供後續連接
 
   for (const auto &[row, col, dx, dy, color] : platformInfos) {
     glm::vec2 pos = m_GridSystem.CellToGamePosition(row, col);
     pos.x += 12.0f;
 
-    auto platform = std::make_shared<Platform>(
-        color,
-        pos,
-        glm::vec2(dx, dy)
-    );
+    auto platform = std::make_shared<Platform>(color, pos, glm::vec2(dx, dy));
 
     platform->SetPosition(pos);
     m_Platforms.push_back(platform);
     m_Root.AddChild(platform);
-    linkedPlatforms.push_back(platform);  // 存起來給 lever/button 用
+    linkedPlatforms.push_back(platform); // 存起來給 lever/button 用
   }
 
   m_Fireboy->SetPlatforms(m_Platforms);
@@ -152,7 +145,7 @@ bool Level3::Initialize() {
     pos.y += 20;
 
     auto button1 = std::make_shared<Button>(ButtonColor::PINK, pos);
-    button1->linkTrigger(linkedPlatforms[1].get());  // 正確綁 pink platform
+    button1->linkTrigger(linkedPlatforms[1].get()); // 正確綁 pink platform
     m_Buttons.push_back(button1);
     m_Root.AddChild(button1);
   }
@@ -163,15 +156,13 @@ bool Level3::Initialize() {
     pos.y += 20;
 
     auto button2 = std::make_shared<Button>(ButtonColor::PINK, pos);
-    button2->linkTrigger(linkedPlatforms[1].get());  // 同樣綁 pink platform
+    button2->linkTrigger(linkedPlatforms[1].get()); // 同樣綁 pink platform
     m_Buttons.push_back(button2);
     m_Root.AddChild(button2);
   }
 
   // Box
-  std::vector<std::pair<int, int>> boxCoords = {
-    {24, 8}
-  };
+  std::vector<std::pair<int, int>> boxCoords = {{24, 8}};
 
   std::vector<std::shared_ptr<Box>> boxes;
 
@@ -186,7 +177,6 @@ bool Level3::Initialize() {
 
   m_Fireboy->SetBoxes(boxes);
   m_Watergirl->SetBoxes(boxes);
-
 
   return true;
 }

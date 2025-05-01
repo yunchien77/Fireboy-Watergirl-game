@@ -1,6 +1,7 @@
 #include "App.hpp"
 #include "Character/Fireboy.hpp"
 #include "Character/Watergirl.hpp"
+#include "Mechanism/Box.hpp"
 #include "Object/GridSystem.hpp"
 #include "Util/Input.hpp"
 #include "Util/Keycode.hpp"
@@ -8,9 +9,9 @@
 #include "config.hpp"
 #include <Mechanism/Gem.hpp>
 #include <Mechanism/LiquidTrap.hpp>
-#include "Mechanism/Box.hpp"
 #include <iostream>
 #include <memory>
+
 
 bool App::CheckCharacterCollision(const glm::vec2 &position, glm::vec2 size,
                                   bool isFireboy, int deltaX) {
@@ -306,10 +307,10 @@ void App::GamePlay() {
     lever->update(m_Fireboy.get(), m_Watergirl.get());
   }
 
-  for (auto& box : m_Boxes) {
-    box->OnCollisionWithCharacter(m_Fireboy);
-    box->OnCollisionWithCharacter(m_Watergirl);
-  }
-  
+  // for (auto& box : m_Boxes) {
+  //   box->OnCollisionWithCharacter(m_Fireboy);
+  //   box->OnCollisionWithCharacter(m_Watergirl);
+  // }
+
   m_Root.Update();
 }

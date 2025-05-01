@@ -219,8 +219,9 @@ void Character::UpdateJump(const GridSystem &grid) {
 
       // Apply side collision corrections if threshold is met
       if (leftCollisionCount >= collisionThreshold) {
-        std::cout << "Rising - left collision detected (" << leftCollisionCount
-                  << " points)" << std::endl;
+        // std::cout << "Rising - left collision detected (" <<
+        // leftCollisionCount
+        //           << " points)" << std::endl;
         // Adjust position to avoid penetrating the wall
         float cellRightEdge =
             grid.CellToGamePosition(leftCollisionCell.x, leftCollisionCell.y)
@@ -228,8 +229,8 @@ void Character::UpdateJump(const GridSystem &grid) {
             (grid.GetCellSize() / 2.0f);
         nextPos.x = cellRightEdge + (m_Size.x / 2) - tolerance / 2;
       } else if (rightCollisionCount >= collisionThreshold) {
-        std::cout << "Rising - right collision detected ("
-                  << rightCollisionCount << " points)" << std::endl;
+        // std::cout << "Rising - right collision detected ("
+        //           << rightCollisionCount << " points)" << std::endl;
         // Adjust position to avoid penetrating the wall
         float cellLeftEdge =
             grid.CellToGamePosition(rightCollisionCell.x, rightCollisionCell.y)
@@ -328,8 +329,9 @@ void Character::UpdateJump(const GridSystem &grid) {
 
       // Apply side collision corrections if threshold is met
       if (leftCollisionCount >= collisionThreshold) {
-        std::cout << "Falling - left collision detected (" << leftCollisionCount
-                  << " points)" << std::endl;
+        // std::cout << "Falling - left collision detected (" <<
+        // leftCollisionCount
+        //           << " points)" << std::endl;
         // Adjust position to avoid penetrating the wall
         float cellRightEdge =
             grid.CellToGamePosition(leftCollisionCell.x, leftCollisionCell.y)
@@ -337,8 +339,8 @@ void Character::UpdateJump(const GridSystem &grid) {
             (grid.GetCellSize() / 2.0f);
         nextPos.x = cellRightEdge + (m_Size.x / 2) - tolerance / 2;
       } else if (rightCollisionCount >= collisionThreshold) {
-        std::cout << "Falling - right collision detected ("
-                  << rightCollisionCount << " points)" << std::endl;
+        // std::cout << "Falling - right collision detected ("
+        //           << rightCollisionCount << " points)" << std::endl;
         // Adjust position to avoid penetrating the wall
         float cellLeftEdge =
             grid.CellToGamePosition(rightCollisionCell.x, rightCollisionCell.y)

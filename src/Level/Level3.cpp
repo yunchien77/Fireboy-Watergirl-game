@@ -106,6 +106,7 @@ bool Level3::Initialize() {
     m_Root.AddChild(gem);
   }
 
+
   // lever
   auto greenLever = std::make_shared<Lever>(
       LeverColor::GREEN,
@@ -145,15 +146,26 @@ bool Level3::Initialize() {
   greenLever->linkTrigger(linkedPlatforms[0].get());
 
   // button
-  std::vector<glm::ivec2> buttonCells = {{10, 15}, {31, 11}};
-  for (const auto &cell : buttonCells) {
-    glm::vec2 pos = m_GridSystem.CellToGamePosition(cell.x, cell.y);
+  // Pink Button 1（左下）
+  {
+    glm::vec2 pos = m_GridSystem.CellToGamePosition(15, 15);
     pos.y += 20;
 
-    auto button = std::make_shared<Button>(ButtonColor::PINK, pos);
-    button->linkTrigger(linkedPlatforms[1].get());  // 控 platform 1 (PINK)
-    m_Buttons.push_back(button);
-    m_Root.AddChild(button);
+    auto button1 = std::make_shared<Button>(ButtonColor::PINK, pos);
+    button1->linkTrigger(linkedPlatforms[1].get());  // 正確綁 pink platform
+    m_Buttons.push_back(button1);
+    m_Root.AddChild(button1);
+  }
+
+  // Pink Button 2（右上）
+  {
+    glm::vec2 pos = m_GridSystem.CellToGamePosition(31, 11);
+    pos.y += 20;
+
+    auto button2 = std::make_shared<Button>(ButtonColor::PINK, pos);
+    button2->linkTrigger(linkedPlatforms[1].get());  // 同樣綁 pink platform
+    m_Buttons.push_back(button2);
+    m_Root.AddChild(button2);
   }
 
   return true;

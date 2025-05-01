@@ -3,12 +3,12 @@
 
 #include "Interface/ITriggerable.hpp"
 #include "Util/GameObject.hpp"
+#include "Object/Color.hpp"
 #include <glm/glm.hpp>
 
+using PlatformColor = Color;
 
 class Character;
-
-enum class PlatformColor { BLUE, GREEN, ORANGE, PINK, WHITE, YELLOW };
 
 class Platform : public Util::GameObject, public ITriggerable {
 public:

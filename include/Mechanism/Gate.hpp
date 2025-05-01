@@ -3,11 +3,11 @@
 
 #include "Interface/ITriggerable.hpp"
 #include "Util/GameObject.hpp"
+#include "Object/Color.hpp"
 #include <glm/glm.hpp>
 #include <string>
 
-
-enum class GateColor { BLUE, GREEN, ORANGE, PINK, WHITE, YELLOW };
+using GateColor = Color;
 
 class Gate : public Util::GameObject, public ITriggerable {
 public:

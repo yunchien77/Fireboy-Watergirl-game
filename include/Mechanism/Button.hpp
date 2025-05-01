@@ -3,16 +3,10 @@
 
 #include "Util/GameObject.hpp"
 #include "Interface/ITriggerable.hpp"
+#include "Object/Color.hpp"
 #include <vector>
 
-enum class ButtonColor {
-    BLUE,
-    GREEN,
-    ORANGE,
-    PINK,
-    WHITE,
-    YELLOW
-  };
+using ButtonColor = Color;
 
 class Character;
 

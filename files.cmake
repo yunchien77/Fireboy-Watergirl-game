@@ -30,6 +30,7 @@ set(INCLUDE_FILES
         App.hpp
         Object/BackgroundImage.hpp
         Object/Option.hpp
+        Object/Color.hpp
         Character/Character.hpp
         Character/Fireboy.hpp
         Character/Watergirl.hpp

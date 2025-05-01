@@ -1,5 +1,9 @@
 #include "Mechanism/Button.hpp"
+
+#include <iostream>
+
 #include "Character/Character.hpp"
+#include "Mechanism/Gate.hpp"
 #include "Util/Image.hpp"
 
 Button::Button(ButtonColor color, const glm::vec2 &pos) : m_Color(color) {
@@ -36,17 +40,34 @@ void Button::update(Character *fb, Character *wg) {
   if (nowPressed && !m_IsPressed) {
     m_IsPressed = true;
     for (auto *t : m_Triggers) {
-      t->OnTriggered();
+      if (auto *gate = dynamic_cast<Gate*>(t)) {
+        if (gate->GetColor() == m_Color) gate->OnTriggered();
+      } else if (auto *platform = dynamic_cast<Platform*>(t)) {
+        if (platform->GetColor() == m_Color) platform->OnTriggered();
+      }
     }
   } else if (!nowPressed && m_IsPressed) {
     m_IsPressed = false;
     for (auto *t : m_Triggers) {
-      t->OnReleased();
+      if (auto *gate = dynamic_cast<Gate*>(t)) {
+        if (gate->GetColor() == m_Color) gate->OnReleased();
+      } else if (auto *platform = dynamic_cast<Platform*>(t)) {
+        if (platform->GetColor() == m_Color) platform->OnReleased();
+      }
     }
   }
 }
 
-void Button::linkTrigger(ITriggerable *target) { m_Triggers.push_back(target); }
+void Button::linkTrigger(ITriggerable *target) {
+if (auto* platform = dynamic_cast<Platform*>(target)) {
+    std::cout << "[LinkDebug] Button(" << static_cast<int>(m_Color)
+              << ") @" << this
+              << " linked to Platform(" << static_cast<int>(platform->GetColor())
+              << ") @" << platform << std::endl;
+  }
+
+  m_Triggers.push_back(target);
+}
 
 const SDL_Rect &Button::getRect() const {
   glm::vec2 pos = m_Transform.translation;

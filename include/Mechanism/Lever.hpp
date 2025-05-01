@@ -4,9 +4,10 @@
 #include "Util/GameObject.hpp"
 #include "Character/Character.hpp"
 #include "Interface/ITriggerable.hpp"
+#include "Object/Color.hpp"
 #include <vector>
 
-enum class LeverColor { BLUE, GREEN, ORANGE, PINK, WHITE, YELLOW };
+using LeverColor = Color;
 
 class Lever : public Util::GameObject {
 public:

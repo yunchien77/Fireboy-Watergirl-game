@@ -23,6 +23,8 @@ public:
   const SDL_Rect &getRect() const;
   void UpdateAnimation(float deltaTime);
   void SetScale(const glm::vec2 &scale);
+  void SetInitialState(const glm::vec2& pos, bool isOpen);
+  void Respawn();
 
 private:
   GateColor m_Color;
@@ -31,6 +33,7 @@ private:
   mutable SDL_Rect m_Rect;
   bool m_IsAnimating = false;
   bool m_ShouldOpen = false;
+  bool m_InitialIsOpen = false;
 
   std::string GetImagePath(GateColor color);
 };

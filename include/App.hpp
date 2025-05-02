@@ -107,9 +107,10 @@ private:
   std::vector<std::shared_ptr<ITrap>> m_Traps;
   std::vector<std::shared_ptr<IGem>> m_Gems;
   std::vector<std::shared_ptr<Button>> m_Buttons;
-  std::vector<std::shared_ptr<Gate>> m_Triggers;
+  std::vector<std::shared_ptr<Gate>> m_Gates;
   std::vector<std::shared_ptr<Platform>> m_Platforms;
   std::vector<std::shared_ptr<Lever>> m_Levers;
+  std::vector<std::shared_ptr<Box>> m_Boxes;
 
   std::shared_ptr<BackgroundImage> m_GameWinBackground;
   std::shared_ptr<BackgroundImage> m_GamePausedBackground;

@@ -12,6 +12,7 @@ public:
               std::vector<std::shared_ptr<ITrap>> &traps,
               std::vector<std::shared_ptr<Lever>> &levers,
               std::vector<std::shared_ptr<Platform>> &platforms,
+              std::vector<std::shared_ptr<Box>> &boxes,
               std::shared_ptr<Character> &fireboy,
               std::shared_ptr<Character> &watergirl,
               std::shared_ptr<Door> &fireboyDoor,

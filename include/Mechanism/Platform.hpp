@@ -29,6 +29,9 @@ public:
   bool IsCharacterOn(Character *character) const;
   const SDL_Rect &getRect() const;
 
+  void SetInitialPosition(const glm::vec2& pos);
+  void Respawn();
+
 private:
   glm::vec2 m_InitialPosition;
   glm::vec2 m_MoveOffset;

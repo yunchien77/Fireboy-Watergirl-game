@@ -77,3 +77,11 @@ ButtonColor Button::GetColor() const { return m_Color; }
 void Button::SetPosition(const glm::vec2 &position) {
   m_Transform.translation = position;
 }
+
+void Button::SetInitialState(const glm::vec2& pos) {
+  m_InitialPosition = pos;
+}
+
+void Button::Respawn() {
+  SetPosition(m_InitialPosition);
+}

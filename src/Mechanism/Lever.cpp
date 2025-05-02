@@ -100,8 +100,21 @@ const SDL_Rect &Lever::getRect() const {
     return m_Rect;
 }
 
-
-
 void Lever::SetPosition(const glm::vec2 &position) {
     m_Transform.translation = position;
+}
+
+void Lever::SetInitialState(const glm::vec2& pos, bool isOn) {
+    m_InitialPosition = pos;
+    m_InitialIsOn = isOn;
+}
+
+void Lever::Respawn() {
+    SetPosition(m_InitialPosition);
+    m_IsOn = m_InitialIsOn;
+    SetDrawable(std::make_shared<Util::Image>(GetImagePath(m_Color, m_IsOn)));
+    for (auto* t : m_Triggers) {
+        if (m_IsOn) t->OnTriggered();
+        else t->OnReleased();
+    }
 }

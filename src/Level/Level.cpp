@@ -7,6 +7,7 @@
 #include "Mechanism/Button.hpp"
 #include "Mechanism/Door.hpp"
 #include "Mechanism/Gate.hpp"
+#include "Mechanism/Box.hpp"
 #include "Mechanism/Gem.hpp"
 #include "Mechanism/LiquidTrap.hpp"
 #include "Util/Logger.hpp"
@@ -15,19 +16,20 @@
 Level::Level(GridSystem &gridSystem,
              Util::Renderer &root, // 使用Renderer
              std::vector<std::shared_ptr<IGem>> &gems,
-             std::vector<std::shared_ptr<Gate>> &triggers,
+             std::vector<std::shared_ptr<Gate>> &gates,
              std::vector<std::shared_ptr<Button>> &buttons,
              std::vector<std::shared_ptr<ITrap>> &traps,
              std::vector<std::shared_ptr<Lever>> &levers,
-            std::vector<std::shared_ptr<Platform>> &platforms,
+             std::vector<std::shared_ptr<Platform>> &platforms,
+             std::vector<std::shared_ptr<Box>> &boxes,
              std::shared_ptr<Character> &fireboy,
              std::shared_ptr<Character> &watergirl,
              std::shared_ptr<Door> &fireboyDoor,
              std::shared_ptr<Door> &watergirlDoor
              )
     : m_GridSystem(gridSystem), m_Root(root), m_Gems(gems),
-      m_Triggers(triggers), m_Buttons(buttons), m_Traps(traps),
-      m_Levers(levers), m_Platforms(platforms),
+      m_Triggers(gates), m_Buttons(buttons), m_Traps(traps),
+      m_Levers(levers), m_Platforms(platforms), m_Boxes(boxes),
       m_Fireboy(fireboy), m_Watergirl(watergirl), m_Fireboy_Door(fireboyDoor),
       m_Watergirl_Door(watergirlDoor) {}
 

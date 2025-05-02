@@ -22,7 +22,7 @@ bool App::LoadLevelGrid(int levelNumber) {
 
   // 創建並初始化關卡
   auto level = LevelFactory::CreateLevel(
-      levelNumber, m_GridSystem, m_Root, m_Gems, m_Triggers, m_Buttons, m_Traps, m_Levers, m_Platforms,
+      levelNumber, m_GridSystem, m_Root, m_Gems, m_Gates, m_Buttons, m_Traps, m_Levers, m_Platforms, m_Boxes,
       m_Fireboy, m_Watergirl, m_Fireboy_Door, m_Watergirl_Door);
 
   if (!level) {

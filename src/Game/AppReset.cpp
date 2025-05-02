@@ -52,11 +52,11 @@ void App::ResetGame() {
   }
   m_Gems.clear(); // 完全清除寶石列表
 
-  for (auto &gate : m_Triggers) {
+  for (auto &gate : m_Gates) {
     gate->SetVisible(false);
     m_Root.RemoveChild(gate);
   }
-  m_Triggers.clear(); // 完全清除機關列表
+  m_Gates.clear(); // 完全清除機關列表
 
   for (auto &button : m_Buttons) {
     button->SetVisible(false);
@@ -68,11 +68,17 @@ void App::ResetGame() {
     lever->SetVisible(false);
     m_Root.RemoveChild(lever);
   }
-  m_Levers.clear();
+  m_Levers.clear(); // 完全清除拉桿列表
 
   for (auto &platform : m_Platforms) {
     platform->SetVisible(false);
     m_Root.RemoveChild(platform);
   }
-  m_Levers.clear();
+  m_Levers.clear(); // 完全清除平台列表
+
+  for (auto &box : m_Boxes) {
+    box->SetVisible(false);
+    m_Root.RemoveChild(box);
+  }
+  m_Boxes.clear(); // 完全清除箱子列表
 }

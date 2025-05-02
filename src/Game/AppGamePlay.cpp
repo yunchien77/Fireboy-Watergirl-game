@@ -94,6 +94,26 @@ void App::ResetGameLevel() {
   for (auto &gem : m_Gems) {
     gem->Respawn();
   }
+
+  for (auto &lever : m_Levers) {
+    lever->Respawn();
+  }
+
+  for (auto &platform : m_Platforms) {
+    platform->Respawn();
+  }
+
+  for (auto &gate : m_Gates) {
+    gate->Respawn();
+  }
+
+  for (auto &button : m_Buttons) {
+    button->Respawn();
+  }
+
+  for (auto &box : m_Boxes) {
+    box->Respawn();
+  }
 }
 
 // 檢查是否達成勝利條件
@@ -209,7 +229,7 @@ void App::GamePlay() {
   m_Watergirl->ApplyGravity(m_GridSystem);
 
   // Gate 阻擋判斷
-  for (const auto &gate : m_Triggers) {
+  for (const auto &gate : m_Gates) {
     if (gate->IsBlocking()) {
       if (SDL_HasIntersection(&gate->getRect(), &m_Fireboy->getRect())) {
         m_Fireboy->UndoMovement();
@@ -278,7 +298,7 @@ void App::GamePlay() {
   }
 
   float deltaTime = 1.0f / 60.0f;
-  for (auto &g : m_Triggers) {
+  for (auto &g : m_Gates) {
     g->UpdateAnimation(deltaTime);
   }
 
@@ -307,10 +327,10 @@ void App::GamePlay() {
     lever->update(m_Fireboy.get(), m_Watergirl.get());
   }
 
-  // for (auto& box : m_Boxes) {
-  //   box->OnCollisionWithCharacter(m_Fireboy);
-  //   box->OnCollisionWithCharacter(m_Watergirl);
-  // }
+  for (auto& box : m_Boxes) {
+    box->OnCollisionWithCharacter(m_Fireboy);
+    box->OnCollisionWithCharacter(m_Watergirl);
+  }
 
   m_Root.Update();
 }

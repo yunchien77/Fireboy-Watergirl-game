@@ -105,10 +105,11 @@ bool Level3::Initialize() {
     m_Root.AddChild(gem);
   }
 
-
   // lever
-  auto greenLever = std::make_shared<Lever>(
-      LeverColor::GREEN, m_GridSystem.CellToGamePosition(10, 19));
+  glm::vec2 pos = m_GridSystem.CellToGamePosition(10, 19);
+  auto greenLever = std::make_shared<Lever>(LeverColor::GREEN, pos);
+  greenLever->SetPosition(pos);
+  greenLever->SetInitialState(pos, false); // false 表示初始狀態為 off
   m_Levers.push_back(greenLever);
   m_Root.AddChild(greenLever);
 
@@ -130,7 +131,7 @@ bool Level3::Initialize() {
     platform->SetPosition(pos);
     m_Platforms.push_back(platform);
     m_Root.AddChild(platform);
-    linkedPlatforms.push_back(platform); // 存起來給 lever/button 用
+    linkedPlatforms.push_back(platform);
   }
 
   m_Fireboy->SetPlatforms(m_Platforms);
@@ -140,23 +141,23 @@ bool Level3::Initialize() {
   greenLever->linkTrigger(linkedPlatforms[0].get());
 
   // button
-  // Pink Button 1（左下）
   {
     glm::vec2 pos = m_GridSystem.CellToGamePosition(15, 15);
     pos.y += 20;
 
     auto button1 = std::make_shared<Button>(ButtonColor::PINK, pos);
+    button1->SetInitialState(pos);
     button1->linkTrigger(linkedPlatforms[1].get()); // 正確綁 pink platform
     m_Buttons.push_back(button1);
     m_Root.AddChild(button1);
   }
 
-  // Pink Button 2（右上）
   {
     glm::vec2 pos = m_GridSystem.CellToGamePosition(31, 11);
     pos.y += 20;
 
     auto button2 = std::make_shared<Button>(ButtonColor::PINK, pos);
+    button2->SetInitialState(pos);
     button2->linkTrigger(linkedPlatforms[1].get()); // 同樣綁 pink platform
     m_Buttons.push_back(button2);
     m_Root.AddChild(button2);
@@ -165,25 +166,23 @@ bool Level3::Initialize() {
   // Box
   std::vector<std::pair<int, int>> boxCoords = {{24, 8}};
 
-  std::vector<std::shared_ptr<Box>> boxes;
-
   for (const auto &[row, col] : boxCoords) {
     auto box = std::make_shared<Box>();
     glm::vec2 pos = m_GridSystem.CellToGamePosition(row, col);
     pos.y -= 12.0f;
-    box->SetPosition(pos.x, pos.y);
-    boxes.push_back(box);
+    box->SetPosition(pos);
+    box->SetInitialPosition(pos);
+    m_Boxes.push_back(box);
     m_Root.AddChild(box);
   }
 
-  m_Fireboy->SetBoxes(boxes);
-  m_Watergirl->SetBoxes(boxes);
+  m_Fireboy->SetBoxes(m_Boxes);
+  m_Watergirl->SetBoxes(m_Boxes);
 
-  for (auto& box : boxes) {
+  for (auto& box : m_Boxes) {
     box->OnCollisionWithCharacter(m_Fireboy);
     box->OnCollisionWithCharacter(m_Watergirl);
   }
-
 
   return true;
 }

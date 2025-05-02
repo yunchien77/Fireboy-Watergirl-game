@@ -128,3 +128,17 @@ void Gate::UpdateAnimation(float deltaTime) {
 
   SetPosition(pos);
 }
+
+void Gate::SetInitialState(const glm::vec2& pos, bool isOpen) {
+  m_InitialPosition = pos;
+  m_InitialIsOpen = isOpen;
+}
+
+void Gate::Respawn() {
+  SetPosition(m_InitialPosition);
+  m_IsOpen = m_InitialIsOpen;
+  m_ShouldOpen = m_InitialIsOpen;
+  m_IsAnimating = true; // 重啟動畫以回復狀態
+
+  SetDrawable(std::make_shared<Util::Image>(GetImagePath(m_Color)));
+}

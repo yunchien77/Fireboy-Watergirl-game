@@ -18,7 +18,8 @@ public:
     void linkTrigger(ITriggerable* target);
     void SetPosition(const glm::vec2 &position);
     const SDL_Rect& getRect() const;
-
+    void SetInitialState(const glm::vec2& pos);
+    void Respawn();
     ButtonColor GetColor() const;
 
 private:
@@ -27,7 +28,7 @@ private:
     bool m_IsPressed = false;
     SDL_Rect m_Box;
     std::vector<ITriggerable*> m_Triggers;
-
+    glm::vec2 m_InitialPosition;
     std::string GetImagePath(ButtonColor color);
 };
 

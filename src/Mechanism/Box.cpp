@@ -15,8 +15,8 @@ Box::Box() {
     grounded = false;
 }
 
-void Box::SetPosition(float x, float y) {
-    m_Transform.translation = {x, y};
+void Box::SetPosition(const glm::vec2 &position) {
+    m_Transform.translation = position;
 }
 
 glm::vec2 Box::GetPosition() const {
@@ -79,4 +79,13 @@ bool Box::IsCharacterOn(Character* character) const {
 
 void Box::Draw() {
     GameObject::Draw();
+}
+
+void Box::Respawn() {
+    SetPosition(m_InitialPosition);
+    SetVisible(true);
+}
+
+void Box::SetInitialPosition(const glm::vec2 &pos) {
+    m_InitialPosition = pos;
 }

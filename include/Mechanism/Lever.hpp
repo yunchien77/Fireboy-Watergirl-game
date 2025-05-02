@@ -17,11 +17,16 @@ public:
     LeverColor GetColor() const;
     const SDL_Rect& getRect() const;
     void SetPosition(const glm::vec2 &position);
+    void SetInitialPosition(const glm::vec2 &pos);
+    void Respawn();
+    void SetInitialState(const glm::vec2& pos, bool isOn);
 
 private:
     bool m_IsOn = false;
     LeverColor m_Color;
     mutable SDL_Rect m_Rect{};
+    glm::vec2 m_InitialPosition;
+    bool m_InitialIsOn = false;
     std::vector<ITriggerable *> m_Triggers;
     bool m_WasInteracting = false;
 

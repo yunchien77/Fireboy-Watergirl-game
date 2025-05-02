@@ -19,16 +19,15 @@ Level::Level(GridSystem &gridSystem,
              std::vector<std::shared_ptr<Button>> &buttons,
              std::vector<std::shared_ptr<ITrap>> &traps,
              std::vector<std::shared_ptr<Lever>> &levers,
-            std::vector<std::shared_ptr<Platform>> &platforms,
+             std::vector<std::shared_ptr<Platform>> &platforms,
              std::shared_ptr<Character> &fireboy,
              std::shared_ptr<Character> &watergirl,
              std::shared_ptr<Door> &fireboyDoor,
-             std::shared_ptr<Door> &watergirlDoor
-             )
+             std::shared_ptr<Door> &watergirlDoor)
     : m_GridSystem(gridSystem), m_Root(root), m_Gems(gems),
       m_Triggers(triggers), m_Buttons(buttons), m_Traps(traps),
-      m_Levers(levers), m_Platforms(platforms),
-      m_Fireboy(fireboy), m_Watergirl(watergirl), m_Fireboy_Door(fireboyDoor),
+      m_Levers(levers), m_Platforms(platforms), m_Fireboy(fireboy),
+      m_Watergirl(watergirl), m_Fireboy_Door(fireboyDoor),
       m_Watergirl_Door(watergirlDoor) {}
 
 void Level::Cleanup() {
@@ -47,14 +46,14 @@ void Level::Cleanup() {
   }
   m_Buttons.clear();
 
-  for (auto &lever : m_Levers) {
-    //m_Root.RemoveChild(lever);
-  }
+  // for (auto &lever : m_Levers) {
+  //   //m_Root.RemoveChild(lever);
+  // }
   m_Levers.clear();
 
-  for (auto &platform : m_Platforms) {
-    //m_Root.RemoveChild(platform);
-  }
+  // for (auto &platform : m_Platforms) {
+  //   //m_Root.RemoveChild(platform);
+  // }
   m_Platforms.clear();
 }
 

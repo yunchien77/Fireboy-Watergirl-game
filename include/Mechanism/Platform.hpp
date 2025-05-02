@@ -2,8 +2,8 @@
 #define PLATFORM_HPP
 
 #include "Interface/ITriggerable.hpp"
-#include "Util/GameObject.hpp"
 #include "Object/Color.hpp"
+#include "Util/GameObject.hpp"
 #include <glm/glm.hpp>
 
 using PlatformColor = Color;
@@ -27,6 +27,7 @@ public:
   PlatformColor GetColor() const;
   glm::vec2 GetDeltaMovement() const;
   bool IsCharacterOn(Character *character) const;
+  bool CheckCollision(Character *character, int moveDirection) const;
   const SDL_Rect &getRect() const;
 
 private:

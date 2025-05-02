@@ -149,6 +149,8 @@ private:
   std::shared_ptr<BackgroundImage> m_LoadingBackground1;
   std::shared_ptr<BackgroundImage> m_LoadingBackground2;
   std::shared_ptr<BackgroundImage> m_LoadingBackground3;
+  std::shared_ptr<BackgroundImage> m_LoadingBackground5;
+
   int m_LoadingFrameIndex = 0;
   float m_LoadingAnimationTimer = 0.0f;
   float m_LoadingFrameDuration = 0.5f; // 0.5 seconds per frame

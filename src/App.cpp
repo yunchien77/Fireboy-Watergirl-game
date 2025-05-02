@@ -133,7 +133,7 @@ App::App() {
       RESOURCE_DIR "/material/background/button/unlevel.png",
       glm::vec2(0, 252));
   m_Level5Button->SetVisible(false);
-  m_Level5Button->SetInteractable(false); // 第五關不可互動
+  // m_Level5Button->SetInteractable(false); // 第五關不可互動
 
   // 設置按鈕點擊事件回調
   m_Level5Button->SetOnClickCallback([this]() {
@@ -195,7 +195,12 @@ App::App() {
   m_Root.AddChild(m_Level3Background);
 
   // 第四關背景
+
   // 第五關背景
+  m_Level5Background = std::make_shared<BackgroundImage>(
+      RESOURCE_DIR "/material/background/rlevel5.png");
+  m_Level5Background->SetVisible(false);
+  m_Root.AddChild(m_Level5Background);
 
   // Door
   if (!m_Fireboy_Door) {
@@ -247,6 +252,7 @@ App::App() {
     m_Level1Background->SetVisible(false);
     m_Level2Background->SetVisible(false);
     m_Level3Background->SetVisible(false);
+    m_Level5Background->SetVisible(false);
   });
   m_Root.AddChild(m_ContinueButton);
 
@@ -295,6 +301,7 @@ App::App() {
     m_Level1Background->SetVisible(false);
     m_Level2Background->SetVisible(false);
     m_Level3Background->SetVisible(false);
+    m_Level5Background->SetVisible(false);
   });
 
   // 重新開始按鈕

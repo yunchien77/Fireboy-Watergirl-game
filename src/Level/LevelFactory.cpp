@@ -3,6 +3,7 @@
 #include "Level/Level1.hpp"
 #include "Level/Level2.hpp"
 #include "Level/Level3.hpp"
+#include "Level/Level5.hpp"
 
 std::unique_ptr<Level> LevelFactory::CreateLevel(
     int levelNumber, GridSystem &gridSystem, Util::Renderer &root,
@@ -17,18 +18,23 @@ std::unique_ptr<Level> LevelFactory::CreateLevel(
     std::shared_ptr<Door> &fireboyDoor, std::shared_ptr<Door> &watergirlDoor) {
 
   switch (levelNumber) {
-    case 1:
-      return std::make_unique<Level1>(gridSystem, root, gems, triggers, buttons,
-                                      traps, levers, platforms, boxes, fireboy, watergirl,
-                                      fireboyDoor, watergirlDoor);
-    case 2:
-      return std::make_unique<Level2>(gridSystem, root, gems, triggers, buttons,
-                                      traps, levers, platforms, boxes, fireboy, watergirl,
-                                      fireboyDoor, watergirlDoor);
-    case 3:
-      return std::make_unique<Level3>(gridSystem, root, gems, triggers, buttons,
-                                      traps, levers, platforms, boxes, fireboy, watergirl,
-                                      fireboyDoor, watergirlDoor);
+  case 1:
+    return std::make_unique<Level1>(gridSystem, root, gems, triggers, buttons,
+                                    traps, levers, platforms, boxes, fireboy,
+                                    watergirl, fireboyDoor, watergirlDoor);
+  case 2:
+    return std::make_unique<Level2>(gridSystem, root, gems, triggers, buttons,
+                                    traps, levers, platforms, boxes, fireboy,
+                                    watergirl, fireboyDoor, watergirlDoor);
+  case 3:
+    return std::make_unique<Level3>(gridSystem, root, gems, triggers, buttons,
+                                    traps, levers, platforms, boxes, fireboy,
+                                    watergirl, fireboyDoor, watergirlDoor);
+
+  case 5:
+    return std::make_unique<Level5>(gridSystem, root, gems, triggers, buttons,
+                                    traps, levers, platforms, boxes, fireboy,
+                                    watergirl, fireboyDoor, watergirlDoor);
   default:
     return nullptr;
   }

@@ -2,6 +2,7 @@
 #define BOX_HPP
 
 #include "Util/GameObject.hpp"
+#include "Object/GridSystem.hpp"
 #include <memory>
 
 class Character;
@@ -23,6 +24,7 @@ public:
 
     void SetInitialPosition(const glm::vec2 &pos);
     void Respawn();
+    void SetGridSystem(GridSystem* grid) { m_GridSystem = grid; }
 
 private:
     float velocityY;
@@ -31,6 +33,7 @@ private:
     bool grounded;
     mutable SDL_Rect m_Rect;
     glm::vec2 m_InitialPosition;
+    GridSystem* m_GridSystem = nullptr;
 };
 
 #endif // BOX_HPP

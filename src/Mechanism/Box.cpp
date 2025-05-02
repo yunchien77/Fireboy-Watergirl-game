@@ -37,7 +37,18 @@ void Box::ApplyGravity() {
 }
 
 bool Box::IsGrounded() {
-    return grounded;
+    if (!m_GridSystem) return false;
+
+    glm::vec2 pos = m_Transform.translation;
+    glm::vec2 size = GetScaledSize();
+    float bottomY = pos.y + size.y / 2;
+
+    // 算出 box 底部所在格子
+    int row = static_cast<int>((bottomY + 1.0f) / m_GridSystem->GetCellSize());
+    int col = static_cast<int>(pos.x / m_GridSystem->GetCellSize());
+
+    CellType cell = m_GridSystem->GetCell(row, col);
+    return (cell == CellType::FLOOR);
 }
 
 void Box::OnCollisionWithCharacter(std::shared_ptr<Character> character) {
@@ -46,15 +57,12 @@ void Box::OnCollisionWithCharacter(std::shared_ptr<Character> character) {
     float boxX = m_Transform.translation.x;
     float boxY = m_Transform.translation.y;
 
-    if (std::abs(charX - boxX) < 30.0f && std::abs(charY - boxY) < 40.0f) {
-        std::cout << "Pushing box!" << std::endl;
-        m_Transform.translation.x += moveSpeed;  // 固定往右推測試用
-    }
+    float dx = std::abs(charX - boxX);
+    float dy = std::abs(charY - boxY);
 
-    if (character->IsMoving() && character->IsFacingRight() && charX < boxX && std::abs(charY - boxY) < 16.0f) {
+    if (dx < 30.0f && dy < 40.0f) {
+        std::cout << "PUSH DETECTED! dx=" << dx << ", dy=" << dy << std::endl;
         m_Transform.translation.x += moveSpeed;
-    } else if (character->IsMoving() && !character->IsFacingRight() && charX > boxX && std::abs(charY - boxY) < 16.0f) {
-        m_Transform.translation.x -= moveSpeed;
     }
 }
 

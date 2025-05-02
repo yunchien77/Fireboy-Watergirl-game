@@ -172,17 +172,13 @@ bool Level3::Initialize() {
     pos.y -= 12.0f;
     box->SetPosition(pos);
     box->SetInitialPosition(pos);
+    box->SetGridSystem(&m_GridSystem);
     m_Boxes.push_back(box);
     m_Root.AddChild(box);
   }
 
   m_Fireboy->SetBoxes(m_Boxes);
   m_Watergirl->SetBoxes(m_Boxes);
-
-  for (auto& box : m_Boxes) {
-    box->OnCollisionWithCharacter(m_Fireboy);
-    box->OnCollisionWithCharacter(m_Watergirl);
-  }
 
   return true;
 }

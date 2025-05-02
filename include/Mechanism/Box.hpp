@@ -25,6 +25,7 @@ public:
     void SetInitialPosition(const glm::vec2 &pos);
     void Respawn();
     void SetGridSystem(GridSystem* grid) { m_GridSystem = grid; }
+    bool m_JustSpawned = true;
 
 private:
     float velocityY;

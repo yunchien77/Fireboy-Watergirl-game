@@ -28,9 +28,12 @@ void Box::Update() {
 }
 
 void Box::ApplyGravity() {
+    if (!m_GridSystem) return;
+
     if (!IsGrounded()) {
         velocityY += gravity;
-        m_Transform.translation.y += velocityY;
+        velocityY = std::min(velocityY, 12.0f);  // 防止加速過快
+        //m_Transform.translation.y += velocityY; //加這個他會浮起來
     } else {
         velocityY = 0.0f;
     }
@@ -41,14 +44,17 @@ bool Box::IsGrounded() {
 
     glm::vec2 pos = m_Transform.translation;
     glm::vec2 size = GetScaledSize();
-    float bottomY = pos.y + size.y / 2;
 
-    // 算出 box 底部所在格子
-    int row = static_cast<int>((bottomY + 1.0f) / m_GridSystem->GetCellSize());
-    int col = static_cast<int>(pos.x / m_GridSystem->GetCellSize());
+    glm::vec2 bottomLeft = {pos.x - size.x / 2.0f + 1.0f, pos.y + 1.0f};
+    glm::vec2 bottomRight = {pos.x + size.x / 2.0f - 1.0f, pos.y + 1.0f};
 
-    CellType cell = m_GridSystem->GetCell(row, col);
-    return (cell == CellType::FLOOR);
+    glm::ivec2 cellL = m_GridSystem->GameToCellPosition(bottomLeft);
+    glm::ivec2 cellR = m_GridSystem->GameToCellPosition(bottomRight);
+
+    CellType typeL = m_GridSystem->GetCell(cellL.x, cellL.y);
+    CellType typeR = m_GridSystem->GetCell(cellR.x, cellR.y);
+
+    return m_GridSystem->CanStandOn(typeL, true) || m_GridSystem->CanStandOn(typeR, true);
 }
 
 void Box::OnCollisionWithCharacter(std::shared_ptr<Character> character) {
@@ -57,12 +63,13 @@ void Box::OnCollisionWithCharacter(std::shared_ptr<Character> character) {
     float boxX = m_Transform.translation.x;
     float boxY = m_Transform.translation.y;
 
-    float dx = std::abs(charX - boxX);
-    float dy = std::abs(charY - boxY);
+    float dx = charX - boxX;
+    //float dy = std::abs(charY - boxY);
 
-    if (dx < 30.0f && dy < 40.0f) {
-        std::cout << "PUSH DETECTED! dx=" << dx << ", dy=" << dy << std::endl;
-        m_Transform.translation.x += moveSpeed;
+    if (dx > 0 && dx < 30.0f && !character->IsFacingRight()) {
+        m_Transform.translation.x = character->GetPosition().x - 30.0f;
+    } else if (dx < 0 && dx > -30.0f && character->IsFacingRight()) {
+        m_Transform.translation.x = character->GetPosition().x + 30.0f;
     }
 }
 

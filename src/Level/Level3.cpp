@@ -1,5 +1,8 @@
 // Level3.cpp
 #include "Level/Level3.hpp"
+
+#include <iostream>
+
 #include "Character/Fireboy.hpp"
 #include "Character/Watergirl.hpp"
 #include "Interface/IGem.hpp"
@@ -15,7 +18,7 @@ bool Level3::Initialize() {
   //   初始化角色 Fireboy
   if (!m_Fireboy) {
     m_Fireboy = std::make_shared<Fireboy>();
-    glm::vec2 fireboyInitPos = m_GridSystem.CellToGamePosition(3, 28);
+    glm::vec2 fireboyInitPos = m_GridSystem.CellToGamePosition(26, 7); //3 28
     m_Fireboy->SetPosition(fireboyInitPos);
     m_Fireboy->SetSpawnPoint(fireboyInitPos);
     m_Root.AddChild(m_Fireboy);
@@ -24,7 +27,7 @@ bool Level3::Initialize() {
   // 初始化角色 Watergirl
   if (!m_Watergirl) {
     m_Watergirl = std::make_shared<Watergirl>();
-    glm::vec2 watergirlInitPos = m_GridSystem.CellToGamePosition(3, 24);
+    glm::vec2 watergirlInitPos = m_GridSystem.CellToGamePosition(20, 8); //3 24
     m_Watergirl->SetPosition(watergirlInitPos);
     m_Watergirl->SetSpawnPoint(watergirlInitPos);
     m_Root.AddChild(m_Watergirl);
@@ -169,7 +172,7 @@ bool Level3::Initialize() {
   for (const auto &[row, col] : boxCoords) {
     auto box = std::make_shared<Box>();
     glm::vec2 pos = m_GridSystem.CellToGamePosition(row, col);
-    pos.y -= 12.0f;
+    pos.y -= 14.0f;
     box->SetPosition(pos);
     box->SetInitialPosition(pos);
     box->SetGridSystem(&m_GridSystem);
@@ -179,6 +182,11 @@ bool Level3::Initialize() {
 
   m_Fireboy->SetBoxes(m_Boxes);
   m_Watergirl->SetBoxes(m_Boxes);
+
+  auto cellBelowLeft = m_GridSystem.GameToCellPosition(glm::vec2(pos.x - 10.0f, pos.y + 12.0f));
+  auto cellBelowRight = m_GridSystem.GameToCellPosition(glm::vec2(pos.x + 10.0f, pos.y + 12.0f));
+  auto typeL = m_GridSystem.GetCell(cellBelowLeft.x, cellBelowLeft.y);
+  auto typeR = m_GridSystem.GetCell(cellBelowRight.x, cellBelowRight.y);
 
   return true;
 }

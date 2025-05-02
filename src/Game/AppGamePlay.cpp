@@ -323,13 +323,14 @@ void App::GamePlay() {
   m_Fireboy->Update();
   m_Watergirl->Update();
 
-  for (auto &lever : m_Levers) {
-    lever->update(m_Fireboy.get(), m_Watergirl.get());
-  }
-
   for (auto& box : m_Boxes) {
+    box->Update();
     box->OnCollisionWithCharacter(m_Fireboy);
     box->OnCollisionWithCharacter(m_Watergirl);
+  }
+
+  for (auto &lever : m_Levers) {
+    lever->update(m_Fireboy.get(), m_Watergirl.get());
   }
 
   m_Root.Update();

@@ -494,7 +494,6 @@ void Character::ApplyFlip() {
 void Character::Die() {
   m_IsDead = true;
   SetPosition(m_SpawnPoint);
-  // TODO：加入動畫、暫停輸入等效果
 }
 
 bool Character::IsDead() const { return m_IsDead; }

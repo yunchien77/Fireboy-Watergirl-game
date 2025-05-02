@@ -27,6 +27,9 @@ private:
 
     void Toggle();
     std::string GetImagePath(LeverColor color, bool isOn) const;
+    glm::vec2 m_LastFireboyPos;
+    glm::vec2 m_LastWatergirlPos;
+
 };
 
 #endif

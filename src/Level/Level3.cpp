@@ -105,6 +105,7 @@ bool Level3::Initialize() {
     m_Root.AddChild(gem);
   }
 
+
   // lever
   auto greenLever = std::make_shared<Lever>(
       LeverColor::GREEN, m_GridSystem.CellToGamePosition(10, 19));
@@ -177,6 +178,12 @@ bool Level3::Initialize() {
 
   m_Fireboy->SetBoxes(boxes);
   m_Watergirl->SetBoxes(boxes);
+
+  for (auto& box : boxes) {
+    box->OnCollisionWithCharacter(m_Fireboy);
+    box->OnCollisionWithCharacter(m_Watergirl);
+  }
+
 
   return true;
 }

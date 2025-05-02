@@ -36,17 +36,43 @@ std::string Lever::GetImagePath(LeverColor color, bool isOn) const {
 
 void Lever::update(Character *fb, Character *wg) {
     auto rect = getRect();
-    bool fbOn = SDL_HasIntersection(&fb->getRect(), &rect);
-    bool wgOn = SDL_HasIntersection(&wg->getRect(), &rect);
-    bool isInteracting = fbOn || wgOn;
+    glm::vec2 fbPos = fb->GetPosition();
+    glm::vec2 wgPos = wg->GetPosition();
 
-    // 當角色第一次靠近時觸發切換（避免重複觸發）
-    if (isInteracting && !m_WasInteracting) {
-        Toggle();
+    bool triggered = false;
+
+    // Fireboy 判斷進入方向
+    if (SDL_HasIntersection(&fb->getRect(), &rect)) {
+        float deltaX = fbPos.x - m_LastFireboyPos.x;
+
+        if (deltaX < -1.0f && !m_IsOn) {
+            // 從右到左，lever 是 off，觸發
+            Toggle();
+            triggered = true;
+        } else if (deltaX > 1.0f && m_IsOn) {
+            // 從左到右，lever 是 on，觸發
+            Toggle();
+            triggered = true;
+        }
     }
 
-    m_WasInteracting = isInteracting;
+    // Watergirl 判斷進入方向
+    if (!triggered && SDL_HasIntersection(&wg->getRect(), &rect)) {
+        float deltaX = wgPos.x - m_LastWatergirlPos.x;
+
+        if (deltaX < -1.0f && !m_IsOn) {
+            Toggle();
+            triggered = true;
+        } else if (deltaX > 1.0f && m_IsOn) {
+            Toggle();
+            triggered = true;
+        }
+    }
+
+    m_LastFireboyPos = fbPos;
+    m_LastWatergirlPos = wgPos;
 }
+
 
 void Lever::Toggle() {
     m_IsOn = !m_IsOn;

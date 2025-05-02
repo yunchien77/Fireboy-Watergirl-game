@@ -5,7 +5,7 @@
 
 Platform::Platform(PlatformColor color, const glm::vec2 &pos,
                    const glm::vec2 &moveOffset)
-    : m_Color(color), m_InitialPosition(pos), m_MoveOffset(moveOffset) {
+    : m_InitialPosition(pos), m_MoveOffset(moveOffset), m_Color(color) {
   SetDrawable(std::make_shared<Util::Image>(GetImagePath(color)));
   SetPosition(pos);
   SetPivot({0.0f, 0.0f});
@@ -92,7 +92,7 @@ glm::vec2 Platform::GetDeltaMovement() const { return m_LastDeltaMovement; }
 bool Platform::IsCharacterOn(Character *character) const {
   // 獲取角色和平台的位置與尺寸
   glm::vec2 charPos = character->GetPosition();
-  glm::vec2 charSize = character->GetSize();
+  // glm::vec2 charSize = character->GetSize();
   glm::vec2 platPos = m_Transform.translation;
   glm::vec2 platSize = GetScaledSize();
 

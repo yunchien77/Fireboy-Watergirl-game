@@ -174,11 +174,8 @@ const SDL_Rect &Platform::getRect() const {
   return m_Rect;
 }
 
-void Platform::SetInitialPosition(const glm::vec2& pos) {
+void Platform::SetInitialPosition(const glm::vec2 &pos) {
   m_InitialPosition = pos;
 }
 
-void Platform::Respawn() {
-  SetPosition(m_InitialPosition);
-}
-
+void Platform::Respawn() { SetPosition(m_InitialPosition); }

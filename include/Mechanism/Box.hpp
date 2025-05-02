@@ -1,40 +1,40 @@
 #ifndef BOX_HPP
 #define BOX_HPP
 
-#include "Util/GameObject.hpp"
 #include "Object/GridSystem.hpp"
+#include "Util/GameObject.hpp"
 #include <memory>
 
 class Character;
 
 class Box : public Util::GameObject {
 public:
-    Box();
+  Box();
 
-    void Update();
-    void Draw();
+  void Update();
+  void Draw();
 
-    void SetPosition(const glm::vec2 &position);
-    void OnCollisionWithCharacter(std::shared_ptr<Character> character);
-    bool IsCharacterOn(Character* character) const;
-    glm::vec2 GetPosition() const;
+  void SetPosition(const glm::vec2 &position);
+  void OnCollisionWithCharacter(std::shared_ptr<Character> character);
+  bool IsCharacterOn(Character *character) const;
+  glm::vec2 GetPosition() const;
 
-    void ApplyGravity();
-    bool IsGrounded();
+  void ApplyGravity();
+  bool IsGrounded();
 
-    void SetInitialPosition(const glm::vec2 &pos);
-    void Respawn();
-    void SetGridSystem(GridSystem* grid) { m_GridSystem = grid; }
-    bool m_JustSpawned = true;
+  void SetInitialPosition(const glm::vec2 &pos);
+  void Respawn();
+  void SetGridSystem(GridSystem *grid) { m_GridSystem = grid; }
+  bool m_JustSpawned = true;
 
 private:
-    float velocityY;
-    float gravity;
-    float moveSpeed;
-    bool grounded;
-    mutable SDL_Rect m_Rect;
-    glm::vec2 m_InitialPosition;
-    GridSystem* m_GridSystem = nullptr;
+  float velocityY;
+  float gravity;
+  float moveSpeed;
+  bool grounded;
+  //   mutable SDL_Rect m_Rect;
+  glm::vec2 m_InitialPosition;
+  GridSystem *m_GridSystem = nullptr;
 };
 
 #endif // BOX_HPP

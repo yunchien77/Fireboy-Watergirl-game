@@ -1,11 +1,12 @@
 #ifndef LEVER_HPP
 #define LEVER_HPP
 
-#include "Util/GameObject.hpp"
 #include "Character/Character.hpp"
 #include "Interface/ITriggerable.hpp"
 #include "Object/Color.hpp"
+#include "Util/GameObject.hpp"
 #include <vector>
+
 
 using LeverColor = Color;
 
@@ -30,11 +31,8 @@ private:
     std::vector<ITriggerable *> m_Triggers;
     bool m_WasInteracting = false;
 
-    void Toggle();
-    std::string GetImagePath(LeverColor color, bool isOn) const;
-    glm::vec2 m_LastFireboyPos;
-    glm::vec2 m_LastWatergirlPos;
-
+  void Toggle();
+  std::string GetImagePath(LeverColor color, bool isOn) const;
 };
 
 #endif

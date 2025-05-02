@@ -59,9 +59,22 @@ void Character::Move(int deltaX, bool upKeyPressed, const GridSystem &grid,
     glm::vec2 newPos = GetPosition();
     newPos.x += moveDirection;
 
-    // 檢查新位置是否會碰撞
+    // 檢查新位置是否會與網格碰撞
     if (grid.CheckCollision(newPos, m_Size, isFireboy, moveDirection)) {
       break; // 碰壁了，停止移動
+    }
+
+    // 檢查平台碰撞
+    bool platformCollision = false;
+    for (const auto &platform : m_Platforms) {
+      if (platform->CheckCollision(this, moveDirection)) {
+        platformCollision = true;
+        break;
+      }
+    }
+
+    if (platformCollision) {
+      break; // 碰到平台，停止移動
     }
 
     // 沒碰壁，更新位置

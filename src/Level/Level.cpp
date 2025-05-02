@@ -25,8 +25,7 @@ Level::Level(GridSystem &gridSystem,
              std::shared_ptr<Character> &fireboy,
              std::shared_ptr<Character> &watergirl,
              std::shared_ptr<Door> &fireboyDoor,
-             std::shared_ptr<Door> &watergirlDoor
-             )
+             std::shared_ptr<Door> &watergirlDoor)
     : m_GridSystem(gridSystem), m_Root(root), m_Gems(gems),
       m_Triggers(gates), m_Buttons(buttons), m_Traps(traps),
       m_Levers(levers), m_Platforms(platforms), m_Boxes(boxes),

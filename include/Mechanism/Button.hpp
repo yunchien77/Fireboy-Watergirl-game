@@ -12,7 +12,7 @@ class Character;
 
 class Button : public Util::GameObject {
 public:
-    Button(ButtonColor color, const glm::vec2& pos);
+  Button(ButtonColor color, const glm::vec2 &pos);
 
     void update(Character* fb, Character* wg);
     void linkTrigger(ITriggerable* target);

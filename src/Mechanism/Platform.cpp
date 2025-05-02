@@ -5,7 +5,7 @@
 
 Platform::Platform(PlatformColor color, const glm::vec2 &pos,
                    const glm::vec2 &moveOffset)
-    : m_Color(color), m_InitialPosition(pos), m_MoveOffset(moveOffset) {
+    : m_InitialPosition(pos), m_MoveOffset(moveOffset), m_Color(color) {
   SetDrawable(std::make_shared<Util::Image>(GetImagePath(color)));
   SetPosition(pos);
   SetPivot({0.0f, 0.0f});
@@ -92,7 +92,7 @@ glm::vec2 Platform::GetDeltaMovement() const { return m_LastDeltaMovement; }
 bool Platform::IsCharacterOn(Character *character) const {
   // 獲取角色和平台的位置與尺寸
   glm::vec2 charPos = character->GetPosition();
-  glm::vec2 charSize = character->GetSize();
+  // glm::vec2 charSize = character->GetSize();
   glm::vec2 platPos = m_Transform.translation;
   glm::vec2 platSize = GetScaledSize();
 
@@ -117,6 +117,50 @@ bool Platform::IsCharacterOn(Character *character) const {
       (charRight > platLeft + 2.0f) && (charLeft < platRight - 2.0f);
 
   return verticalMatch && horizontalOverlap;
+}
+
+bool Platform::CheckCollision(Character *character, int moveDirection) const {
+  glm::vec2 charPos = character->GetPosition();
+  glm::vec2 charSize = character->GetSize();
+  glm::vec2 platPos = m_Transform.translation;
+  glm::vec2 platSize = GetScaledSize();
+
+  // 計算角色的邊界
+  float charLeft = charPos.x - (charSize.x / 2);
+  float charRight = charPos.x + (charSize.x / 2);
+  float charTop = charPos.y + charSize.y;
+  float charBottom = charPos.y + 13.5f;
+
+  // 計算平台的邊界
+  float platLeft = platPos.x - (platSize.x / 2);
+  float platRight = platPos.x + (platSize.x / 2);
+  float platTop = platPos.y + 11.5f;
+  float platBottom = platPos.y;
+
+  // 相交區域檢查
+  bool horizontalOverlap = (charRight > platLeft) && (charLeft < platRight);
+  bool verticalOverlap = (charTop > platBottom) && (charBottom < platTop);
+
+  // 檢查是否相交
+  if (horizontalOverlap && verticalOverlap) {
+    // 判斷是哪一側的碰撞
+    if (moveDirection > 0 && charRight >= platLeft &&
+        charRight <= platLeft + 5.0f) {
+      // 從左側碰撞
+      return true;
+    } else if (moveDirection < 0 && charLeft <= platRight &&
+               charLeft >= platRight - 5.0f) {
+      // 從右側碰撞
+      return true;
+    } else if (charBottom <= platTop && charBottom >= platTop - 5.0f) {
+      // 從上方碰撞，這種情況由IsCharacterOn處理，不算碰撞
+      return false;
+    } else if (charTop >= platBottom && charTop <= platBottom + 5.0f) {
+      // 從下方碰撞
+      return true;
+    }
+  }
+  return false;
 }
 
 const SDL_Rect &Platform::getRect() const {

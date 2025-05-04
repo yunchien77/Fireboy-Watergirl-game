@@ -12,7 +12,6 @@
 #include <iostream>
 #include <memory>
 
-
 bool App::CheckCharacterCollision(const glm::vec2 &position, glm::vec2 size,
                                   bool isFireboy, int deltaX) {
   if (!m_IsGridLoaded) {
@@ -323,7 +322,7 @@ void App::GamePlay() {
   m_Fireboy->Update();
   m_Watergirl->Update();
 
-  for (auto& box : m_Boxes) {
+  for (auto &box : m_Boxes) {
     box->Update();
     box->OnCollisionWithCharacter(m_Fireboy);
     box->OnCollisionWithCharacter(m_Watergirl);

@@ -4,14 +4,15 @@
 #include "Character/Watergirl.hpp"
 #include "Interface/IGem.hpp"
 #include "Level/LevelFactory.hpp"
+#include "Mechanism/Box.hpp"
 #include "Mechanism/Button.hpp"
 #include "Mechanism/Door.hpp"
 #include "Mechanism/Gate.hpp"
-#include "Mechanism/Box.hpp"
 #include "Mechanism/Gem.hpp"
 #include "Mechanism/LiquidTrap.hpp"
 #include "Util/Logger.hpp"
 #include <iostream>
+
 
 Level::Level(GridSystem &gridSystem,
              Util::Renderer &root, // 使用Renderer
@@ -26,10 +27,10 @@ Level::Level(GridSystem &gridSystem,
              std::shared_ptr<Character> &watergirl,
              std::shared_ptr<Door> &fireboyDoor,
              std::shared_ptr<Door> &watergirlDoor)
-    : m_GridSystem(gridSystem), m_Root(root), m_Gems(gems),
-      m_Triggers(gates), m_Buttons(buttons), m_Traps(traps),
-      m_Levers(levers), m_Platforms(platforms), m_Boxes(boxes),
-      m_Fireboy(fireboy), m_Watergirl(watergirl), m_Fireboy_Door(fireboyDoor),
+    : m_GridSystem(gridSystem), m_Root(root), m_Gems(gems), m_Triggers(gates),
+      m_Buttons(buttons), m_Traps(traps), m_Levers(levers),
+      m_Platforms(platforms), m_Boxes(boxes), m_Fireboy(fireboy),
+      m_Watergirl(watergirl), m_Fireboy_Door(fireboyDoor),
       m_Watergirl_Door(watergirlDoor) {}
 
 void Level::Cleanup() {
@@ -48,14 +49,14 @@ void Level::Cleanup() {
   }
   m_Buttons.clear();
 
-  for (auto &lever : m_Levers) {
-    //m_Root.RemoveChild(lever);
-  }
-  m_Levers.clear();
+  // for (auto &lever : m_Levers) {
+  //   //m_Root.RemoveChild(lever);
+  // }
+  // m_Levers.clear();
 
-  for (auto &platform : m_Platforms) {
-    //m_Root.RemoveChild(platform);
-  }
+  // for (auto &platform : m_Platforms) {
+  //   //m_Root.RemoveChild(platform);
+  // }
   m_Platforms.clear();
 }
 

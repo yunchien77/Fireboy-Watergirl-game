@@ -342,9 +342,6 @@ void Character::UpdateJump(const GridSystem &grid) {
 
       // Apply side collision corrections if threshold is met
       if (leftCollisionCount >= collisionThreshold) {
-        // std::cout << "Falling - left collision detected (" <<
-        // leftCollisionCount
-        //           << " points)" << std::endl;
         // Adjust position to avoid penetrating the wall
         float cellRightEdge =
             grid.CellToGamePosition(leftCollisionCell.x, leftCollisionCell.y)
@@ -352,8 +349,6 @@ void Character::UpdateJump(const GridSystem &grid) {
             (grid.GetCellSize() / 2.0f);
         nextPos.x = cellRightEdge + (m_Size.x / 2) - tolerance / 2;
       } else if (rightCollisionCount >= collisionThreshold) {
-        // std::cout << "Falling - right collision detected ("
-        //           << rightCollisionCount << " points)" << std::endl;
         // Adjust position to avoid penetrating the wall
         float cellLeftEdge =
             grid.CellToGamePosition(rightCollisionCell.x, rightCollisionCell.y)
@@ -433,9 +428,6 @@ void Character::ApplyGravity(const GridSystem &grid) {
       m_IsOnGround = true;
       float cellBottomY = grid.CellToGamePosition(bestGrid.x, bestGrid.y).y;
       pos.y = cellBottomY + (grid.GetCellSize() / 2.0f) - 13.5f;
-
-      // std::cout << "Standing on grid [" << bestGrid.x << "," << bestGrid.y
-      //           << "] with " << maxCount << " contact points" << std::endl;
     } else {
       // 站立點少於3個，設定為不在地面上並下落
       m_IsOnGround = false;
@@ -470,13 +462,6 @@ void Character::ApplyGravity(const GridSystem &grid) {
             (grid.GetCellSize() / 2.0f);
         pos.x = cellLeftEdge - (m_Size.x / 2.0f);
       }
-
-      // if (maxCount > 0) {
-      //   std::cout << "Not enough contact points (" << maxCount
-      //             << "), character falling" << std::endl;
-      // } else {
-      //   std::cout << "No standable ground found, falling" << std::endl;
-      // }
     }
 
     SetPosition(pos);

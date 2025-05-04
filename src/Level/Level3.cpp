@@ -183,12 +183,5 @@ bool Level3::Initialize() {
   m_Fireboy->SetBoxes(m_Boxes);
   m_Watergirl->SetBoxes(m_Boxes);
 
-  auto cellBelowLeft =
-      m_GridSystem.GameToCellPosition(glm::vec2(pos.x - 10.0f, pos.y + 12.0f));
-  auto cellBelowRight =
-      m_GridSystem.GameToCellPosition(glm::vec2(pos.x + 10.0f, pos.y + 12.0f));
-  auto typeL = m_GridSystem.GetCell(cellBelowLeft.x, cellBelowLeft.y);
-  auto typeR = m_GridSystem.GetCell(cellBelowRight.x, cellBelowRight.y);
-
   return true;
 }

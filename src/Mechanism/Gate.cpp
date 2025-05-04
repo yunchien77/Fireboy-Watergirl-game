@@ -60,33 +60,6 @@ const SDL_Rect &Gate::getRect() const {
   return m_Rect;
 }
 
-// void Gate::UpdateAnimation(float deltaTime) {
-//   if (!m_IsAnimating)
-//     return;
-
-//   float speed = 150.0f; // pixel/sec，門滑動速度
-//   float maxOffsetY = 100.0f;
-//   glm::vec2 pos = m_Transform.translation;
-
-//   if (m_ShouldOpen) {
-//     // 門往下滑
-//     pos.y += speed * deltaTime;
-//     if (pos.y >= m_InitialPosition.y + maxOffsetY) {
-//       pos.y = m_InitialPosition.y + maxOffsetY;
-//       m_IsAnimating = false;
-//     }
-//   } else {
-//     // 門往上升
-//     pos.y -= speed * deltaTime;
-//     if (pos.y <= m_InitialPosition.y) {
-//       pos.y = m_InitialPosition.y;
-//       m_IsAnimating = false;
-//     }
-//   }
-
-//   SetPosition(pos);
-// }
-
 void Gate::SetScale(const glm::vec2 &scale) { m_Transform.scale = scale; }
 
 void Gate::UpdateAnimation(float deltaTime) {
@@ -129,7 +102,7 @@ void Gate::UpdateAnimation(float deltaTime) {
   SetPosition(pos);
 }
 
-void Gate::SetInitialState(const glm::vec2& pos, bool isOpen) {
+void Gate::SetInitialState(const glm::vec2 &pos, bool isOpen) {
   m_InitialPosition = pos;
   m_InitialIsOpen = isOpen;
 }

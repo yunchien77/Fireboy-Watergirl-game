@@ -68,25 +68,58 @@ void Box::OnCollisionWithCharacter(std::shared_ptr<Character> character) {
     return;
   }
 
-  float charX = character->GetPosition().x;
-  float boxX = m_Transform.translation.x;
-  float dx = charX - boxX;
+  // 獲取角色和箱子的位置與尺寸
+  glm::vec2 charPos = character->GetPosition();
+  glm::vec2 boxPos = m_Transform.translation;
+  glm::vec2 charSize = character->GetSize();
 
-  // 決定箱子的推動方向
+  // 計算箱子的碰撞範圍
+  float boxLeft = boxPos.x - (boxSize.x / 2.0f);
+  float boxRight = boxPos.x + (boxSize.x / 2.0f);
+  float boxTop = boxPos.y + boxSize.y;
+  float boxBottom = boxPos.y;
+
+  // 計算角色的碰撞範圍
+  float charLeft = charPos.x - (charSize.x / 2.0f);
+  float charRight = charPos.x + (charSize.x / 2.0f);
+  float charTop = charPos.y + charSize.y;
+  float charBottom = charPos.y + 13.5f; // 角色腳部位置
+
+  // 確定水平方向的重疊區域
+  bool horizontalOverlap = (charRight > boxLeft) && (charLeft < boxRight);
+
+  // 確定垂直方向的重疊區域
+  bool verticalOverlap = (charBottom < boxTop) && (charTop > boxBottom);
+
+  // 如果沒有足夠的身體重疊，不允許推動
+  if (!horizontalOverlap || !verticalOverlap) {
+    return;
+  }
+
+  // 計算角色與箱子中心的水平差距
+  float dx = charPos.x - boxPos.x;
+
+  // 檢查推動條件：方向和碰撞
   int pushDirection = 0;
   float pushDistance = 0.0f;
 
-  // 根據角色的位置和面向來決定箱子推動方向
-  if (dx > 0 && dx < 30.0f && !character->IsFacingRight()) {
-    // 角色在箱子右側，向左推
+  // 垂直重疊已確認，現在檢查水平方向的推動條件
+  if (dx > 0 && !character->IsFacingRight()) {
+    // 角色在箱子右側，面向左側，嘗試向左推動
     pushDirection = -1;
-    pushDistance = charX - 30.0f - boxX;
-  } else if (dx < 0 && dx > -30.0f && character->IsFacingRight()) {
-    // 角色在箱子左側，向右推
+
+    // 水平移動量 - 根據角色的位置進行微調
+    float adjustment = 5.0f; // 微調係數，可以根據需要調整
+    pushDistance = (charLeft - boxRight) - adjustment;
+  } else if (dx < 0 && character->IsFacingRight()) {
+    // 角色在箱子左側，面向右側，嘗試向右推動
     pushDirection = 1;
-    pushDistance = charX + 30.0f - boxX;
+
+    // 水平移動量 - 根據角色的位置進行微調
+    float adjustment = 5.0f; // 微調係數，可以根據需要調整
+    pushDistance = (charRight - boxLeft) + adjustment;
   } else {
-    // 不滿足推動條件
+    // 不滿足推動條件（角色位置或方向不正確）
     return;
   }
 
@@ -100,11 +133,11 @@ void Box::OnCollisionWithCharacter(std::shared_ptr<Character> character) {
     if (pushDirection > 0) {
       // 角色從左側推，將角色放在箱子左側
       character->SetPosition(
-          {m_Transform.translation.x - 30.0f, character->GetPosition().y});
+          {boxLeft - (charSize.x / 2.0f) - 2.0f, character->GetPosition().y});
     } else {
       // 角色從右側推，將角色放在箱子右側
       character->SetPosition(
-          {m_Transform.translation.x + 30.0f, character->GetPosition().y});
+          {boxRight + (charSize.x / 2.0f) + 2.0f, character->GetPosition().y});
     }
     return;
   }

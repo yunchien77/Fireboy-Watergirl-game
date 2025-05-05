@@ -174,6 +174,17 @@ bool App::GetGemCollectionStatus() {
   }
 }
 
+// 檢查角色是否與箱子碰撞
+bool App::CheckBoxCollision(std::shared_ptr<Character> character) {
+  bool hasCollision = false;
+  for (auto &box : m_Boxes) {
+    if (box->CheckCharacterCollision(character)) {
+      hasCollision = true;
+    }
+  }
+  return hasCollision;
+}
+
 void App::GamePlay() {
   LOG_TRACE("Game Play");
 
@@ -217,6 +228,12 @@ void App::GamePlay() {
   // 記錄上一次位置（給門阻擋使用）
   m_Fireboy->SetPreviousPosition();
   m_Watergirl->SetPreviousPosition();
+
+  // 確保角色知道所有箱子和平台
+  m_Fireboy->SetBoxes(m_Boxes);
+  m_Watergirl->SetBoxes(m_Boxes);
+  m_Fireboy->SetPlatforms(m_Platforms);
+  m_Watergirl->SetPlatforms(m_Platforms);
 
   // 執行移動、跳躍、重力
   m_Fireboy->Move(fireboyMoveX, fireboyUpKeyPressed, m_GridSystem, true);
@@ -307,25 +324,22 @@ void App::GamePlay() {
   // 更新平台
   for (auto &platform : m_Platforms) {
     platform->UpdateAnimation(deltaTime);
-
-    // 檢查角色是否站在平台上
-    if (platform->IsCharacterOn(m_Fireboy.get())) {
-      m_Fireboy->SetStandingOnPlatform(true);
-    }
-
-    if (platform->IsCharacterOn(m_Watergirl.get())) {
-      m_Watergirl->SetStandingOnPlatform(true);
-    }
   }
 
   // 更新角色位置
   m_Fireboy->Update();
   m_Watergirl->Update();
 
+  // 檢查箱子
   for (auto &box : m_Boxes) {
     box->Update();
-    box->OnCollisionWithCharacter(m_Fireboy);
-    box->OnCollisionWithCharacter(m_Watergirl);
+    // 僅在不跳躍時檢查碰撞
+    if (!m_Fireboy->IsJumping()) {
+      box->OnCollisionWithCharacter(m_Fireboy);
+    }
+    if (!m_Watergirl->IsJumping()) {
+      box->OnCollisionWithCharacter(m_Watergirl);
+    }
   }
 
   for (auto &lever : m_Levers) {

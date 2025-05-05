@@ -149,18 +149,20 @@ bool Box::IsCharacterOn(Character *character) const {
 
   // 角色底部位置
   float charBottom = charPos.y + 13.5f;
+
   // 腳部位置
   float charLeft = charPos.x - 5.0f;
   float charRight = charPos.x + 5.0f;
 
   // 箱子頂部位置
-  float boxTop = boxPos.y + 48.0f;
+  float boxTop = boxPos.y + boxSize.y;
   float boxLeft = boxPos.x - (boxSize.x / 2);
   float boxRight = boxPos.x + (boxSize.x / 2);
 
   // 垂直方向檢查：腳部是否在箱子頂部附近
   bool verticalMatch =
       (charBottom >= boxTop - 5.0f) && (charBottom <= boxTop + 5.0f);
+
   // 水平方向檢查：角色是否與箱子有足夠的重疊
   bool horizontalOverlap =
       (charRight > boxLeft + 5.0f) && (charLeft < boxRight - 5.0f);
@@ -169,8 +171,6 @@ bool Box::IsCharacterOn(Character *character) const {
   return verticalMatch && horizontalOverlap;
 }
 
-void Box::Draw() { GameObject::Draw(); }
-
 void Box::Respawn() {
   SetPosition(m_InitialPosition);
   SetVisible(true);
@@ -178,7 +178,7 @@ void Box::Respawn() {
 
 void Box::SetInitialPosition(const glm::vec2 &pos) { m_InitialPosition = pos; }
 
-// 新增方法，供Game系統調用，檢查角色是否與箱子碰撞
+// 檢查角色是否與箱子碰撞
 bool Box::CheckCharacterCollision(std::shared_ptr<Character> character) {
   if (!character)
     return false;
@@ -198,6 +198,11 @@ bool Box::CheckCharacterCollision(std::shared_ptr<Character> character) {
   float boxRight = boxPos.x + boxSize.x / 2.0f;
   float boxBottom = boxPos.y;
   float boxTop = boxPos.y + boxSize.y;
+
+  // 檢查角色是否在箱子上方
+  if (IsCharacterOn(character.get())) {
+    return false; // 站在箱子上不觸發碰撞
+  }
 
   // 檢查是否存在水平和垂直重疊
   bool horizontalOverlap = (charRight > boxLeft) && (charLeft < boxRight);

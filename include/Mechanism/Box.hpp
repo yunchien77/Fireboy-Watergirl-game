@@ -14,6 +14,7 @@ public:
 
   void SetPosition(const glm::vec2 &position);
   glm::vec2 GetPosition() const;
+  glm::vec2 GetSize() const { return boxSize; }
 
   void Update();
   void ApplyGravity();
@@ -26,7 +27,6 @@ public:
   // 新增檢查角色碰撞的方法
   bool CheckCharacterCollision(std::shared_ptr<Character> character);
 
-  void Draw();
   void Respawn();
   void SetInitialPosition(const glm::vec2 &pos);
 

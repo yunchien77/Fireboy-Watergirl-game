@@ -93,32 +93,52 @@ void Character::Move(int deltaX, bool upKeyPressed, const GridSystem &grid,
 }
 
 void Character::Update() {
-  // 記錄之前的平台狀態
+  // 紀錄之前的platform狀態
   bool wasOnPlatform = m_IsStandingOnPlatform;
   std::shared_ptr<Platform> previousPlatform = m_CurrentPlatform;
 
-  // 重置平台相關狀態
   m_IsStandingOnPlatform = false;
   m_CurrentPlatform = nullptr;
 
-  // 檢查角色是否站在任何平台上
-  for (const auto &platform : m_Platforms) {
-    if (platform->IsCharacterOn(this)) {
-      // 找到了角色站立的平台
+  // 首先檢查角色是否站在箱子上
+  bool standingOnBox = false;
+  for (const auto &box : m_Boxes) {
+    if (box->IsCharacterOn(this)) {
+      standingOnBox = true;
       m_IsStandingOnPlatform = true;
       m_IsOnGround = true;
-      m_CurrentPlatform = platform;
 
-      // 只有首次接觸平台時才調整位置
-      if (!wasOnPlatform || previousPlatform != platform) {
-        glm::vec2 pos = GetPosition();
-        glm::vec2 platPos = platform->GetPosition();
-        // 使用準確的偏移量，將角色底部對齊平台頂部
-        pos.y = platPos.y + 11.5f - 13.5f; // platTop - charBottomOffset
-        SetPosition(pos);
-      }
-
+      // 調整角色位置以完全站在箱子上
+      glm::vec2 pos = GetPosition();
+      glm::vec2 boxPos = box->GetPosition();
+      glm::vec2 boxSize = box->GetSize();
+      pos.y = boxPos.y + boxSize.y - 13.5f;
+      SetPosition(pos);
       break;
+    }
+  }
+
+  // 如果沒有站在箱子上，再檢查是否站在平台上
+  if (!standingOnBox) {
+    // 檢查角色是否站在任何平台上
+    for (const auto &platform : m_Platforms) {
+      if (platform->IsCharacterOn(this)) {
+        // 找到了角色站立的平台
+        m_IsStandingOnPlatform = true;
+        m_IsOnGround = true;
+        m_CurrentPlatform = platform;
+
+        // 只有首次接觸平台時才調整位置
+        if (!wasOnPlatform || previousPlatform != platform) {
+          glm::vec2 pos = GetPosition();
+          glm::vec2 platPos = platform->GetPosition();
+          // 使用準確的偏移量，將角色底部對齊平台頂部
+          pos.y = platPos.y + 11.5f - 13.5f; // platTop - charBottomOffset
+          SetPosition(pos);
+        }
+
+        break;
+      }
     }
   }
 
@@ -128,20 +148,6 @@ void Character::Update() {
     glm::vec2 platMove = m_CurrentPlatform->GetDeltaMovement();
     if (glm::length(platMove) > 0.01f) { // 若有實際移動才應用
       Translate(platMove);
-    }
-  }
-
-  // 檢查角色是否站在任何 Box 上
-  for (const auto &box : m_Boxes) {
-    if (box->IsCharacterOn(this)) {
-      m_IsStandingOnPlatform = true;
-      m_IsOnGround = true;
-
-      glm::vec2 pos = GetPosition();
-      glm::vec2 boxPos = box->GetPosition();
-      pos.y = boxPos.y + 11.5f - 13.5f; // 對齊 box 頂部
-      SetPosition(pos);
-      break;
     }
   }
 }

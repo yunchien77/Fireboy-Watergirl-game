@@ -76,10 +76,11 @@ public:
 
   void Loading(float deltaTime);
 
+  bool CheckBoxCollision(std::shared_ptr<Character> character);
+
 private:
   State m_CurrentState = State::START;
   int m_CurrentLevel = 1;
-  // bool m_IsLevelCompleted = false;
   int unlockedLevel = 1;
 
   std::shared_ptr<BackgroundImage> m_TitleBackground; // 遊戲封面背景

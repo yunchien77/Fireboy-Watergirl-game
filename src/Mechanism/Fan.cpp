@@ -8,12 +8,12 @@
 
 Fan::Fan(const glm::vec2 &position, float strength, float windWidth)
     : m_InitialPosition(position), m_Strength(strength), m_WindWidth(windWidth),
-      m_WindHeight(300.0f), // Default wind height effect
-      m_MaxWindHeight(400.0f), m_AnimationTime(0.0f) {
+      m_WindHeight(190.0f), // Default wind height effect
+      m_MaxWindHeight(230.0f), m_AnimationTime(0.0f) {
   SetDrawable(std::make_shared<Util::Image>(GetImagePath()));
   SetPosition(position);
-  SetPivot({0.0f, 14.0f}); // Center pivot
-  SetZIndex(20);           // Ensure it's drawn at appropriate layer
+  SetPivot({0.0f, 14.0f});
+  SetZIndex(20);
 
   // Initialize wind particles
   m_WindParticles.reserve(30); // Reserve space for particles
@@ -50,42 +50,57 @@ bool Fan::IsCharacterInWindZone(Character *character) const {
   // 檢查角色是否在風扇正上方（水平重疊）
   bool horizontalOverlap = (charRight > fanLeft) && (charLeft < fanRight);
 
-  bool isAboveFan = false;
   // 檢查角色是否在風扇上方
-  if (charPos.y >= 0) {
-    isAboveFan = charPos.y > (fanPos.y - 16.0);
-  } else {
-    isAboveFan = charPos.y < (fanPos.y - 16.0);
+  bool isAboveFan = charPos.y > (fanPos.y - 28.0);
+
+  if (isAboveFan && horizontalOverlap) {
+    if (character->IsFireboy()) {
+      std::cout << "Fireboy in wind zone" << std::endl;
+    } else {
+      std::cout << "Watergirl in wind zone" << std::endl;
+    }
   }
 
   return isAboveFan && horizontalOverlap;
 }
 
 void Fan::ApplyWindForce(Character *character, float deltaTime) {
-  if (!character || !IsCharacterInWindZone(character))
-    return;
-
   glm::vec2 charPos = character->GetPosition();
   glm::vec2 fanPos = m_Transform.translation;
 
-  // Calculate distance from fan (higher = less force)
-  float distanceY = fanPos.y - charPos.y;
-  float distanceFactor = std::max(0.0f, 1.0f - (distanceY / m_MaxWindHeight));
+  // 如果角色不在风区，清除风力影响
+  if (!IsCharacterInWindZone(character)) {
+    character->SetAffectedByWind(false);
+    return;
+  }
 
-  // 計算垂直風力 - 符號修正：正值代表向上浮力
-  float verticalForce = m_Strength * distanceFactor * deltaTime;
+  // 设置角色受风力影响
+  character->SetAffectedByWind(true);
 
-  // 應用風力到角色，將垂直力設為正值代表向上
+  // 计算风力强度基于距离的衰减
+  float distanceFromFan = std::abs(charPos.y - (fanPos.y - 16.0f));
+
+  // 限制最大高度 - 这是关键修改
+  if (distanceFromFan > m_MaxWindHeight) {
+    character->SetAffectedByWind(false);
+    return; // 超过最大高度，不再应用风力
+  }
+
+  float distanceFactor =
+      1.0f - std::min(1.0f, distanceFromFan / m_MaxWindHeight);
+
+  // 增加最小风力确保持续向上效果
+  float minForceFactor = 0.7f;
+  distanceFactor = std::max(minForceFactor, distanceFactor);
+
+  // 计算垂直风力 - 确保值足够大以克服重力
+  float verticalForce = m_Strength * distanceFactor * deltaTime * 0.3f;
+
+  // 应用风力到角色
   character->ApplyExternalForce(verticalForce);
 }
 
-void Fan::UpdateAnimation(float deltaTime) {
-  m_AnimationTime += deltaTime;
-
-  // Update fan rotation animation here
-  // This would rotate the fan blade sprite
-  // SetRotation(m_AnimationTime * 360.0f); // If you have rotation support
-}
+void Fan::UpdateAnimation(float deltaTime) { m_AnimationTime += deltaTime; }
 
 void Fan::UpdateWindParticles(float deltaTime) {
   // Update existing particles

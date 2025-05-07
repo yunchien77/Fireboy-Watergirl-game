@@ -107,7 +107,7 @@ bool Level5::Initialize() {
 
   // Create fans - adding two fans to the level
   std::vector<std::tuple<int, int, float, float>> fanInfos = {
-      {2, 14, 120.0f, 70.0f}, // col, row, strength, width
+      {2, 14, 150.0f, 80.0f}, // col, row, strength, width
       {36, 14, 150.0f, 80.0f} // col, row, strength, width
   };
 

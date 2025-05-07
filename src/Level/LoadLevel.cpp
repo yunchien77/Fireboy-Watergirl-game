@@ -11,8 +11,6 @@
 // 載入地圖網格，並初始化 GridSystem
 bool App::LoadLevelGrid(int levelNumber) {
   std::cout << "Loading level " << levelNumber << " grid..." << std::endl;
-  // std::cout << "current state: " << static_cast<int>(m_CurrentState)
-  //           << std::endl;
 
   // 清理現有資源
   for (auto &trap : m_Traps) {
@@ -23,8 +21,8 @@ bool App::LoadLevelGrid(int levelNumber) {
   // 創建並初始化關卡
   auto level = LevelFactory::CreateLevel(
       levelNumber, m_GridSystem, m_Root, m_Gems, m_Gates, m_Buttons, m_Traps,
-      m_Levers, m_Platforms, m_Boxes, m_Fireboy, m_Watergirl, m_Fireboy_Door,
-      m_Watergirl_Door);
+      m_Levers, m_Platforms, m_Boxes, m_Fans, m_Fireboy, m_Watergirl,
+      m_Fireboy_Door, m_Watergirl_Door);
 
   if (!level) {
     return false;

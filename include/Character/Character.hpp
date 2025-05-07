@@ -74,8 +74,11 @@ public:
 
   bool IsMoving() const;
   bool IsFacingRight() const;
-  void SetBoxes(const std::vector<std::shared_ptr<Box>>& boxes);
+  void SetBoxes(const std::vector<std::shared_ptr<Box>> &boxes);
 
+  void ApplyExternalForce(float y);
+  void SetAffectedByWind(bool affected);
+  bool IsAffectedByWind() const;
 
 protected:
   // 應用水平翻轉
@@ -102,6 +105,10 @@ protected:
   bool m_IsStandingOnPlatform = false;
   glm::vec2 m_Velocity = glm::vec2(0.0f);
   std::shared_ptr<Platform> m_PreviousPlatform;
+
+private:
+  glm::vec2 m_ExternalForce = {0.0f, 0.0f};
+  bool m_AffectedByWind = false;
 };
 
 #endif // CHARACTER_HPP

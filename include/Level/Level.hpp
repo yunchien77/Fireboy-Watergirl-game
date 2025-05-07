@@ -14,7 +14,7 @@ class Door;
 class Lever;
 class Platform;
 class Box;
-
+class Fan;
 
 class Level {
 protected:
@@ -27,6 +27,7 @@ protected:
   std::vector<std::shared_ptr<Lever>> &m_Levers;
   std::vector<std::shared_ptr<Platform>> &m_Platforms;
   std::vector<std::shared_ptr<Box>> &m_Boxes;
+  std::vector<std::shared_ptr<Fan>> &m_Fans;
   std::shared_ptr<Character> &m_Fireboy;
   std::shared_ptr<Character> &m_Watergirl;
   std::shared_ptr<Door> &m_Fireboy_Door;
@@ -41,6 +42,7 @@ public:
         std::vector<std::shared_ptr<Lever>> &levers,
         std::vector<std::shared_ptr<Platform>> &platforms,
         std::vector<std::shared_ptr<Box>> &boxes,
+        std::vector<std::shared_ptr<Fan>> &fans,
         std::shared_ptr<Character> &fireboy,
         std::shared_ptr<Character> &watergirl,
         std::shared_ptr<Door> &fireboyDoor,

@@ -3,7 +3,7 @@
 
 #include "Character/Character.hpp"
 #include "Interface/IGem.hpp"
-#include "Mechanism/Door.hpp"
+
 #include "Object/BackgroundImage.hpp"
 #include "Object/GridSystem.hpp"
 #include "Object/Option.hpp"
@@ -16,6 +16,8 @@
 #include <string>
 
 #include "Mechanism/Button.hpp"
+#include "Mechanism/Door.hpp"
+#include "Mechanism/Fan.hpp"
 #include "Mechanism/Gate.hpp"
 #include "Mechanism/Lever.hpp"
 #include "Mechanism/Platform.hpp"
@@ -78,6 +80,8 @@ public:
 
   bool CheckBoxCollision(std::shared_ptr<Character> character);
 
+  void UpdateFans(float deltaTime);
+
 private:
   State m_CurrentState = State::START;
   int m_CurrentLevel = 1;
@@ -112,6 +116,7 @@ private:
   std::vector<std::shared_ptr<Platform>> m_Platforms;
   std::vector<std::shared_ptr<Lever>> m_Levers;
   std::vector<std::shared_ptr<Box>> m_Boxes;
+  std::vector<std::shared_ptr<Fan>> m_Fans;
 
   std::shared_ptr<BackgroundImage> m_GameWinBackground;
   std::shared_ptr<BackgroundImage> m_GamePausedBackground;

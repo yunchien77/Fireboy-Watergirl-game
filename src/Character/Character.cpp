@@ -93,6 +93,13 @@ void Character::Move(int deltaX, bool upKeyPressed, const GridSystem &grid,
 }
 
 void Character::Update() {
+  // Apply external forces to movement
+  if (m_AffectedByWind) {
+    m_Transform.translation.x += m_ExternalForce.x;
+    m_Transform.translation.y += m_ExternalForce.y;
+    m_ExternalForce = {0.0f, 0.0f}; // Reset external forces
+  }
+
   // 紀錄之前的platform狀態
   bool wasOnPlatform = m_IsStandingOnPlatform;
   std::shared_ptr<Platform> previousPlatform = m_CurrentPlatform;
@@ -517,3 +524,14 @@ bool Character::IsFacingRight() const { return m_FacingRight; }
 void Character::SetBoxes(const std::vector<std::shared_ptr<Box>> &boxes) {
   m_Boxes = boxes;
 }
+
+void Character::ApplyExternalForce(float y) {
+  m_ExternalForce.y += y;
+  m_AffectedByWind = true;
+}
+
+void Character::SetAffectedByWind(bool affected) {
+  m_AffectedByWind = affected;
+}
+
+bool Character::IsAffectedByWind() const { return m_AffectedByWind; }

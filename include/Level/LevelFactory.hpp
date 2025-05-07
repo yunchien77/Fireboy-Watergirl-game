@@ -13,9 +13,9 @@ public:
               std::vector<std::shared_ptr<Lever>> &levers,
               std::vector<std::shared_ptr<Platform>> &platforms,
               std::vector<std::shared_ptr<Box>> &boxes,
+              std::vector<std::shared_ptr<Fan>> &fans,
               std::shared_ptr<Character> &fireboy,
               std::shared_ptr<Character> &watergirl,
               std::shared_ptr<Door> &fireboyDoor,
-              std::shared_ptr<Door> &watergirlDoor
-              );
+              std::shared_ptr<Door> &watergirlDoor);
 };

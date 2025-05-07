@@ -1,4 +1,3 @@
-// Level3.cpp
 #include "Level/Level5.hpp"
 #include "Character/Fireboy.hpp"
 #include "Character/Watergirl.hpp"
@@ -6,6 +5,7 @@
 #include "Mechanism/Box.hpp"
 #include "Mechanism/Button.hpp"
 #include "Mechanism/Door.hpp"
+#include "Mechanism/Fan.hpp"
 #include "Mechanism/Gem.hpp"
 #include "Mechanism/Lever.hpp"
 #include "Mechanism/LiquidTrap.hpp"
@@ -103,6 +103,22 @@ bool Level5::Initialize() {
     gem->SetInitialPosition(pos);
     m_Gems.push_back(gem);
     m_Root.AddChild(gem);
+  }
+
+  // Create fans - adding two fans to the level
+  std::vector<std::tuple<int, int, float, float>> fanInfos = {
+      {2, 14, 120.0f, 70.0f}, // col, row, strength, width
+      {36, 14, 150.0f, 80.0f} // col, row, strength, width
+  };
+
+  for (const auto &[col, row, strength, width] : fanInfos) {
+    glm::vec2 pos = m_GridSystem.CellToGamePosition(col, row);
+
+    auto fan = std::make_shared<Fan>(pos, strength, width);
+    fan->SetPosition(pos);
+    fan->SetInitialPosition(pos);
+    m_Fans.push_back(fan);
+    m_Root.AddChild(fan);
   }
 
   return true;

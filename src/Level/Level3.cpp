@@ -45,6 +45,7 @@ bool Level3::Initialize() {
   m_Watergirl_Door->SetOpen(false);
   m_Watergirl_Door->SetVisible(true);
 
+  // 水池座標列表
   std::vector<std::pair<int, int>> waterTrapCoords = {{28, 28}};
 
   for (const auto &[row, col] : waterTrapCoords) {

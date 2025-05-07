@@ -118,6 +118,7 @@ bool Level2::Initialize() {
     glm::vec2 pos = m_GridSystem.CellToGamePosition(cell.x, cell.y);
     pos.y += 20;
     auto button = std::make_shared<Button>(ButtonColor::WHITE, pos);
+    button->SetInitialState(pos);
     button->linkTrigger(gate.get());
     m_Buttons.push_back(button);
     m_Root.AddChild(button);

@@ -185,18 +185,14 @@ bool App::CheckBoxCollision(std::shared_ptr<Character> character) {
   return hasCollision;
 }
 
-void App::UpdateFans(float deltaTime) {
-  // Update all fans
+void App::UpdateFans() {
   for (auto &fan : m_Fans) {
-    fan->Update(deltaTime);
-
-    // Apply wind effect to characters
     if (m_Fireboy) {
-      fan->ApplyWindForce(m_Fireboy.get(), deltaTime);
+      fan->ApplyWindForce(m_Fireboy.get());
     }
 
     if (m_Watergirl) {
-      fan->ApplyWindForce(m_Watergirl.get(), deltaTime);
+      fan->ApplyWindForce(m_Watergirl.get());
     }
   }
 }
@@ -343,7 +339,7 @@ void App::GamePlay() {
   }
 
   // Update fans and apply wind force
-  UpdateFans(1.0f / 60.0f);
+  UpdateFans();
 
   // 更新角色位置
   m_Fireboy->Update();

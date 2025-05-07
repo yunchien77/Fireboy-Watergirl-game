@@ -80,7 +80,7 @@ public:
 
   bool CheckBoxCollision(std::shared_ptr<Character> character);
 
-  void UpdateFans(float deltaTime);
+  void UpdateFans();
 
 private:
   State m_CurrentState = State::START;

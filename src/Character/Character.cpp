@@ -94,15 +94,10 @@ void Character::Move(int deltaX, bool upKeyPressed, const GridSystem &grid,
 
 void Character::Update() {
   if (m_AffectedByWind) {
-    m_Transform.translation.x += m_ExternalForce.x;
     m_Transform.translation.y += m_ExternalForce.y;
 
-    // 只在每帧清除水平力量，保留垂直风力
-    m_ExternalForce.x = 0.0f;
-
-    // 如果有持续的垂直风力，暂时禁用跳跃和重力
     if (std::abs(m_ExternalForce.y) > 0.1f) {
-      m_IsJumping = false; // 防止跳跃逻辑覆盖风力
+      m_IsJumping = false;
     }
   }
 

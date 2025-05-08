@@ -80,6 +80,9 @@ public:
   void SetAffectedByWind(bool affected);
   bool IsAffectedByWind() const;
 
+  static constexpr float MAX_EXTERNAL_FORCE = 25.0f;
+  static constexpr float MIN_EXTERNAL_FORCE = 0.0f;
+
 protected:
   // 應用水平翻轉
   void ApplyFlip();

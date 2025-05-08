@@ -541,8 +541,18 @@ void Character::SetBoxes(const std::vector<std::shared_ptr<Box>> &boxes) {
 }
 
 void Character::ApplyExternalForce(float y) {
+  // 添加風力
   m_ExternalForce.y += y;
+
+  // 應用限制
+  if (m_ExternalForce.y > MAX_EXTERNAL_FORCE) {
+    m_ExternalForce.y = MAX_EXTERNAL_FORCE;
+  } else if (m_ExternalForce.y < MIN_EXTERNAL_FORCE) {
+    m_ExternalForce.y = MIN_EXTERNAL_FORCE;
+  }
+
   m_AffectedByWind = true;
+  std::cout << "External force applied: " << m_ExternalForce.y << std::endl;
 }
 
 void Character::SetAffectedByWind(bool affected) {

@@ -81,4 +81,10 @@ void App::ResetGame() {
     m_Root.RemoveChild(box);
   }
   m_Boxes.clear(); // 完全清除箱子列表
+
+  for (auto &fan : m_Fans) {
+    fan->SetVisible(false);
+    m_Root.RemoveChild(fan);
+  }
+  m_Fans.clear(); // 完全清除風扇列表
 }

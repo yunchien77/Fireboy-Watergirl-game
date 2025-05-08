@@ -28,7 +28,7 @@ LiquidTrap::LiquidTrap(CellType type, SizeType sizeType)
     break;
   }
   SetImage(imagePath);
-  this->SetZIndex(20);
+  this->SetZIndex(21);
 
   SetPivot(glm::vec2(0.0f, -5.0f));
 }

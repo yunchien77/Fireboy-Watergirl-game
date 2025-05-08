@@ -42,40 +42,22 @@ bool Level5::Initialize() {
   m_Watergirl_Door->SetOpen(false);
   m_Watergirl_Door->SetVisible(true);
 
-  // 水池座標列表
-  std::vector<std::pair<int, int>> waterTrapCoords = {{8, 22}, {30, 28}};
+  // 岩漿和水池
+  std::vector<std::tuple<CellType, SizeType, std::vector<std::pair<int, int>>>>
+      trapData = {{CellType::WATER, SizeType::LARGE, {{8, 22}, {30, 28}}},
+                  {CellType::WATER, SizeType::SMALL, {{27, 13}}},
+                  {CellType::LAVA, SizeType::LARGE, {{8, 28}, {30, 22}}},
+                  {CellType::LAVA, SizeType::SMALL, {{11, 13}}}};
 
-  for (const auto &[row, col] : waterTrapCoords) {
-    auto waterTrap =
-        std::make_shared<LiquidTrap>(CellType::WATER, SizeType::LARGE);
-    glm::vec2 pos = m_GridSystem.CellToGamePosition(row, col);
-    waterTrap->SetPosition(pos);
-    m_Traps.push_back(waterTrap);
-    m_Root.AddChild(waterTrap);
+  for (const auto &[type, size, coords] : trapData) {
+    for (const auto &[row, col] : coords) {
+      auto trap = std::make_shared<LiquidTrap>(type, size);
+      glm::vec2 pos = m_GridSystem.CellToGamePosition(row, col);
+      trap->SetPosition(pos);
+      m_Traps.push_back(trap);
+      m_Root.AddChild(trap);
+    }
   }
-
-  auto waterTrap =
-      std::make_shared<LiquidTrap>(CellType::WATER, SizeType::SMALL);
-  waterTrap->SetPosition(m_GridSystem.CellToGamePosition(27, 13));
-  m_Traps.push_back(waterTrap);
-  m_Root.AddChild(waterTrap);
-
-  // 岩漿座標列表
-  std::vector<std::pair<int, int>> lavaTrapCoords = {{8, 28}, {30, 22}};
-
-  for (const auto &[row, col] : lavaTrapCoords) {
-    auto lavaTrap =
-        std::make_shared<LiquidTrap>(CellType::LAVA, SizeType::LARGE);
-    glm::vec2 pos = m_GridSystem.CellToGamePosition(row, col);
-    lavaTrap->SetPosition(pos);
-    m_Traps.push_back(lavaTrap);
-    m_Root.AddChild(lavaTrap);
-  }
-
-  auto lavaTrap = std::make_shared<LiquidTrap>(CellType::LAVA, SizeType::SMALL);
-  lavaTrap->SetPosition(m_GridSystem.CellToGamePosition(11, 13));
-  m_Traps.push_back(lavaTrap);
-  m_Root.AddChild(lavaTrap);
 
   // 火寶石座標
   std::vector<std::pair<int, int>> fireGemCoords = {

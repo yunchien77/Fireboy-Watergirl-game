@@ -106,7 +106,7 @@ App::App() {
       RESOURCE_DIR "/material/background/button/unlevel.png",
       glm::vec2(0, 134));
   m_Level4Button->SetVisible(false);
-  m_Level4Button->SetInteractable(false); // 第四關不可互動
+  m_Level4Button->SetInteractable(true); // 第四關不可互動
 
   // 設置按鈕點擊事件回調
   m_Level4Button->SetOnClickCallback([this]() {
@@ -195,6 +195,10 @@ App::App() {
   m_Root.AddChild(m_Level3Background);
 
   // 第四關背景
+  m_Level4Background = std::make_shared<BackgroundImage>(
+      RESOURCE_DIR "/material/background/rlevel4.png");
+  m_Level4Background->SetVisible(false);
+  m_Root.AddChild(m_Level4Background);
 
   // 第五關背景
   m_Level5Background = std::make_shared<BackgroundImage>(
@@ -252,6 +256,7 @@ App::App() {
     m_Level1Background->SetVisible(false);
     m_Level2Background->SetVisible(false);
     m_Level3Background->SetVisible(false);
+    m_Level4Background->SetVisible(false);
     m_Level5Background->SetVisible(false);
   });
   m_Root.AddChild(m_ContinueButton);
@@ -301,6 +306,7 @@ App::App() {
     m_Level1Background->SetVisible(false);
     m_Level2Background->SetVisible(false);
     m_Level3Background->SetVisible(false);
+    m_Level4Background->SetVisible(false);
     m_Level5Background->SetVisible(false);
   });
 

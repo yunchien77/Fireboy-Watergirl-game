@@ -3,6 +3,7 @@
 #include "Level/Level1.hpp"
 #include "Level/Level2.hpp"
 #include "Level/Level3.hpp"
+#include "Level/Level4.hpp"
 #include "Level/Level5.hpp"
 
 std::unique_ptr<Level> LevelFactory::CreateLevel(
@@ -29,6 +30,11 @@ std::unique_ptr<Level> LevelFactory::CreateLevel(
         boxes, fans, fireboy, watergirl, fireboyDoor, watergirlDoor);
   case 3:
     return std::make_unique<Level3>(
+        gridSystem, root, gems, triggers, buttons, traps, levers, platforms,
+        boxes, fans, fireboy, watergirl, fireboyDoor, watergirlDoor);
+
+  case 4:
+    return std::make_unique<Level4>(
         gridSystem, root, gems, triggers, buttons, traps, levers, platforms,
         boxes, fans, fireboy, watergirl, fireboyDoor, watergirlDoor);
 

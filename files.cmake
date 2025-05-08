@@ -13,6 +13,7 @@ set(SRC_FILES
         Level/Level1.cpp
         Level/Level2.cpp
         Level/Level3.cpp
+        Level/Level4.cpp
         Level/Level5.cpp
         Level/LevelFactory.cpp
         Character/Character.cpp
@@ -54,6 +55,7 @@ set(INCLUDE_FILES
         Level/Level1.hpp
         Level/Level2.hpp
         Level/Level3.hpp
+        Level/Level4.hpp
         Level/Level5.hpp
         Level/LevelFactory.hpp
 )

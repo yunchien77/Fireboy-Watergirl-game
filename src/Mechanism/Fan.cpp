@@ -7,18 +7,44 @@
 #include <map>
 #include <random>
 
-Fan::Fan(const glm::vec2 &position, float strength)
+Fan::Fan(const glm::vec2 &position, float strength, FanColor color)
     : m_InitialPosition(position), m_Strength(strength),
-      m_MaxWindHeight(200.0f), m_AnimationTime(0.0f) {
+      m_MaxWindHeight(200.0f), m_AnimationTime(0.0f), m_Color(color) {
   SetDrawable(std::make_shared<Util::Image>(GetImagePath()));
   SetPosition(position);
   SetPivot({0.0f, 14.0f});
   SetZIndex(20);
 }
 
-std::string Fan::GetImagePath() const {
-  return RESOURCE_DIR "/material/props/fan/fan-white.png";
+std::string Fan::GetImagePath() const { return GetImagePath(m_Color); }
+
+std::string Fan::GetImagePath(FanColor color) {
+  std::string base = RESOURCE_DIR "/material/props/fan/fan-";
+  switch (color) {
+  case FanColor::BLUE:
+    base += "blue";
+    break;
+  case FanColor::GREEN:
+    base += "green";
+    break;
+  case FanColor::PINK:
+    base += "pink";
+    break;
+  case FanColor::RED:
+    base += "red";
+    break;
+  case FanColor::WHITE:
+    base += "white";
+    break;
+  case FanColor::YELLOW:
+    base += "yellow";
+    break;
+  }
+  base += ".png";
+  return base;
 }
+
+FanColor Fan::GetColor() const { return m_Color; }
 
 bool Fan::IsCharacterInWindZone(Character *character) const {
   if (!character)
@@ -120,6 +146,10 @@ void Fan::ApplyWindForce(Character *character) {
   lastForces[character] = smoothedForce;
 
   character->ApplyExternalForce(smoothedForce);
+}
+
+void Fan::Update(float deltaTime) {
+  m_AnimationTime += deltaTime * 1000.0f; // Update animation time
 }
 
 void Fan::SetPosition(const glm::vec2 &position) {

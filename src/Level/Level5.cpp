@@ -87,16 +87,15 @@ bool Level5::Initialize() {
     m_Root.AddChild(gem);
   }
 
-  // Create fans - adding two fans to the level
-  std::vector<std::tuple<int, int, float>> fanInfos = {
-      {2, 14, 150.0f}, // col, row, strength
-      {36, 14, 150.0f} // col, row, strength
+  std::vector<std::tuple<int, int, float, FanColor>> fanInfos = {
+      {2, 14, 150.0f, FanColor::WHITE}, // col, row, strength, color
+      {36, 14, 150.0f, FanColor::WHITE} // col, row, strength, color
   };
 
-  for (const auto &[col, row, strength] : fanInfos) {
+  for (const auto &[col, row, strength, color] : fanInfos) {
     glm::vec2 pos = m_GridSystem.CellToGamePosition(col, row);
 
-    auto fan = std::make_shared<Fan>(pos, strength);
+    auto fan = std::make_shared<Fan>(pos, strength, color);
     fan->SetPosition(pos);
     fan->SetInitialPosition(pos);
     m_Fans.push_back(fan);

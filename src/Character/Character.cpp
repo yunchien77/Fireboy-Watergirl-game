@@ -94,9 +94,23 @@ void Character::Move(int deltaX, bool upKeyPressed, const GridSystem &grid,
 
 void Character::Update() {
   if (m_AffectedByWind) {
-    m_Transform.translation.y += m_ExternalForce.y;
+    // Apply wind force to character position
+    if (std::abs(m_ExternalForce.y) > 0.001f) {
+      // Apply force with a slight randomness for natural floating effect
+      float randomFactor =
+          1.0f + (static_cast<float>(rand() % 10) - 5.0f) / 100.0f;
 
-    if (std::abs(m_ExternalForce.y) > 0.1f) {
+      // Significantly reduce the force application by adding a small factor
+      m_Transform.translation.y += m_ExternalForce.y * randomFactor * 0.3f;
+
+      // Make the force decay even more slowly
+      m_ExternalForce.y *= 0.995f;
+    } else {
+      m_ExternalForce.y = 0.0f;
+    }
+
+    // Disable jumping when affected by wind to prevent interference
+    if (std::abs(m_ExternalForce.y) > 0.02f) {
       m_IsJumping = false;
     }
   }

@@ -550,9 +550,11 @@ void Character::ApplyExternalForce(float y) {
   }
 
   m_AffectedByWind = true;
-  // std::cout << "External force applied: " << m_ExternalForce.y <<
-  // std::endl;
 }
+
+const glm::vec2 &Character::GetExternalForce() const { return m_ExternalForce; }
+
+void Character::ResetExternalForce() { m_ExternalForce = {0.0f, 0.0f}; }
 
 void Character::SetAffectedByWind(bool affected) {
   m_AffectedByWind = affected;

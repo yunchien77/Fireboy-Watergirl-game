@@ -83,6 +83,9 @@ public:
   static constexpr float MAX_EXTERNAL_FORCE = 25.0f;
   static constexpr float MIN_EXTERNAL_FORCE = 0.0f;
 
+  const glm::vec2 &GetExternalForce() const;
+  void ResetExternalForce();
+
 protected:
   // 應用水平翻轉
   void ApplyFlip();

@@ -63,8 +63,13 @@ bool Fan::IsCharacterInWindZone(Character *character) const {
   float charLeft = charPos.x - (charSize.x / 2.0f);
   float charRight = charPos.x + (charSize.x / 2.0f);
 
+  float charWidth = charSize.x;
+  float overlapAmount =
+      std::min(charRight, fanRight) - std::max(charLeft, fanLeft);
+  bool horizontalOverlap = (overlapAmount > (charWidth * 0.4f));
+
   // 檢查角色是否在風扇正上方（水平重疊）
-  bool horizontalOverlap = (charRight > fanLeft) && (charLeft < fanRight);
+  // bool horizontalOverlap = (charRight > fanLeft) && (charLeft < fanRight);
 
   // 檢查角色是否在風扇上方
   bool isAboveFan = charPos.y > (fanPos.y - 28.0);
@@ -77,8 +82,12 @@ void Fan::ApplyWindForce(Character *character) {
   if (!IsCharacterInWindZone(character)) {
     if (character->IsAffectedByWind()) {
       character->ApplyExternalForce(-0.15f);
-    } else {
+    }
+
+    // 若風力變得很小，完全取消風力效果
+    if (std::abs(character->GetExternalForce().y) < 0.05f) {
       character->SetAffectedByWind(false);
+      character->ResetExternalForce();
     }
     return;
   }

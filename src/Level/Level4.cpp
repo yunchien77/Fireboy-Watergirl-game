@@ -58,7 +58,7 @@ bool Level4::Initialize() {
 
   // 水寶石座標
   std::vector<std::pair<int, int>> waterGemCoords = {
-      {34, 14},{29, 25}, {6, 11}, {26, 18},{29, 8}, {11, 6}};
+      {34, 14},{29, 25}, {8, 11}, {26, 18},{29, 8}, {11, 6}};
 
   for (const auto &[row, col] : waterGemCoords) {
     auto gem = std::make_shared<Gem>(GemType::WATER);

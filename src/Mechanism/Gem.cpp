@@ -54,7 +54,7 @@ void Gem::OnCharacterEnter(Character *character) {
 }
 
 const SDL_Rect &Gem::getRect() const {
-  float shrinkFactor = 0.4f;
+  float shrinkFactor = 0.8f;
   glm::vec2 pos = m_Transform.translation;
   glm::vec2 size = GetScaledSize() * shrinkFactor;
   m_Rect.x = static_cast<int>(pos.x - size.x / 2);

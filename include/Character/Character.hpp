@@ -86,6 +86,8 @@ public:
   const glm::vec2 &GetExternalForce() const;
   void ResetExternalForce();
 
+  bool IsCollidingWithPlatformBottom(Platform *platform, const glm::vec2& charPos) const;
+
 protected:
   // 應用水平翻轉
   void ApplyFlip();
@@ -103,6 +105,7 @@ protected:
   bool m_IsDead = false;
   glm::vec2 m_SpawnPoint;
   glm::vec2 m_LastPosition;
+  bool m_HitCeiling = false;
 
   std::vector<std::shared_ptr<Platform>> m_Platforms;
   std::shared_ptr<Platform> m_CurrentPlatform;

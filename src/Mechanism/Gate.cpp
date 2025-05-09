@@ -130,4 +130,5 @@ void Gate::Respawn() {
   m_IsAnimating = true; // 重啟動畫以回復狀態
 
   SetDrawable(std::make_shared<Util::Image>(GetImagePath(m_Color)));
+  m_ActiveTriggerCount = 0;
 }

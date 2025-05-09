@@ -50,16 +50,16 @@ void Platform::OnReleased() {
   m_IsAnimating = true;
 }
 
-void Platform::UpdateAnimation(float deltaTime) {
+void Platform::UpdateAnimation(float deltaTime, const std::vector<Character*>& characters) {
   if (!m_IsAnimating) {
-    m_LastDeltaMovement = {0.0f, 0.0f}; // 沒動就清空
+    m_LastDeltaMovement = {0.0f, 0.0f};
     return;
   }
 
   glm::vec2 oldPos = m_Transform.translation;
   glm::vec2 direction = m_TargetPosition - oldPos;
 
-  // 如果距離太近，直接移動到目標位置
+  // 太近直接傳送
   if (glm::length(direction) < 1.0f) {
     m_LastDeltaMovement = m_TargetPosition - oldPos;
     SetPosition(m_TargetPosition);
@@ -70,15 +70,48 @@ void Platform::UpdateAnimation(float deltaTime) {
   float speed = 80.0f;
   glm::vec2 movement = glm::normalize(direction) * speed * deltaTime;
 
-  // 防止超過目標
+  // 防止 overshoot
   if (glm::length(movement) > glm::length(direction)) {
     movement = direction;
     m_IsAnimating = false;
   }
 
-  // 更新位置並記錄移動量
+  // ❗如果是往下移動，檢查與角色碰撞
+  if (movement.y < 0) {
+    for (Character* c : characters) {
+      if (WillCollideWithCharacterBelow(c, movement)) {
+        m_IsAnimating = false;
+        m_LastDeltaMovement = {0.0f, 0.0f};
+        return;
+      }
+    }
+  }
+
   SetPosition(oldPos + movement);
   m_LastDeltaMovement = movement;
+}
+
+bool Platform::WillCollideWithCharacterBelow(Character* character, const glm::vec2& movement) const {
+  glm::vec2 nextPlatPos = m_Transform.translation + movement;
+  glm::vec2 platSize = GetScaledSize();
+
+  float platLeft = nextPlatPos.x - platSize.x / 2;
+  float platRight = nextPlatPos.x + platSize.x / 2;
+  float platBottom = nextPlatPos.y;
+  float platTop = nextPlatPos.y + 11.5f;
+
+  glm::vec2 charPos = character->GetPosition();
+  glm::vec2 charSize = character->GetSize();
+
+  float charLeft = charPos.x - charSize.x / 2;
+  float charRight = charPos.x + charSize.x / 2;
+  float charTop = charPos.y + charSize.y;
+  float charBottom = charPos.y + 13.5f;
+
+  bool horizontalOverlap = (charRight > platLeft) && (charLeft < platRight);
+  bool verticalOverlap = (charTop > platBottom) && (charBottom < platTop);
+
+  return horizontalOverlap && verticalOverlap;
 }
 
 void Platform::SetPosition(const glm::vec2 &position) {
@@ -179,3 +212,4 @@ void Platform::SetInitialPosition(const glm::vec2 &pos) {
 }
 
 void Platform::Respawn() { SetPosition(m_InitialPosition); }
+

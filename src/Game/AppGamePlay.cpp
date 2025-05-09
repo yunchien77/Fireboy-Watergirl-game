@@ -346,7 +346,8 @@ void App::GamePlay() {
 
   // 更新平台
   for (auto &platform : m_Platforms) {
-    platform->UpdateAnimation(deltaTime);
+    std::vector<Character*> charList = { m_Fireboy.get(), m_Watergirl.get() };
+    platform->UpdateAnimation(deltaTime, charList);
   }
 
   // Update fans and apply wind force

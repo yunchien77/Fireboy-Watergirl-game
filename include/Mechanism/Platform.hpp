@@ -17,7 +17,8 @@ public:
 
   void OnTriggered() override;
   void OnReleased() override;
-  void UpdateAnimation(float deltaTime);
+  void UpdateAnimation(float deltaTime, const std::vector<Character*>& characters);
+  bool WillCollideWithCharacterBelow(Character* character, const glm::vec2& movement) const;
   void SetPosition(const glm::vec2 &position);
   // get position
   [[nodiscard]] const glm::vec2 &GetPosition() const {

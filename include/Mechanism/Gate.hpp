@@ -34,6 +34,7 @@ private:
   bool m_IsAnimating = false;
   bool m_ShouldOpen = false;
   bool m_InitialIsOpen = false;
+  int m_ActiveTriggerCount = 0;
 
   std::string GetImagePath(GateColor color);
 };

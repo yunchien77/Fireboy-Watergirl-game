@@ -26,7 +26,8 @@ public:
 private:
   ButtonColor m_Color;
   mutable SDL_Rect m_Rect;
-  bool m_IsPressed = false;
+  bool m_IsPressedFireboy = false;
+  bool m_IsPressedWatergirl = false;
   std::vector<ITriggerable *> m_Triggers;
   glm::vec2 m_InitialPosition;
   std::string GetImagePath(ButtonColor color);

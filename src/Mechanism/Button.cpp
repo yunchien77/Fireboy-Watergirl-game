@@ -33,30 +33,35 @@ std::string Button::GetImagePath(ButtonColor color) {
 
 void Button::update(Character *fb, Character *wg) {
   auto rect = getRect();
+
   bool fbOn = SDL_HasIntersection(&fb->getRect(), &rect);
   bool wgOn = SDL_HasIntersection(&wg->getRect(), &rect);
-  bool nowPressed = fbOn || wgOn;
 
-  if (nowPressed && !m_IsPressed) {
-    m_IsPressed = true;
+  // 先判斷目前整體狀態
+  bool nowPressed = fbOn || wgOn;
+  bool wasPressed = m_IsPressedFireboy || m_IsPressedWatergirl;
+
+  // 狀態切換才觸發
+  if (nowPressed != wasPressed) {
     for (auto *t : m_Triggers) {
       if (auto *gate = dynamic_cast<Gate*>(t)) {
-        if (gate->GetColor() == m_Color) gate->OnTriggered();
+        if (gate->GetColor() == m_Color) {
+          if (nowPressed) gate->OnTriggered();
+          else gate->OnReleased();
+        }
       } else if (auto *platform = dynamic_cast<Platform*>(t)) {
-        if (platform->GetColor() == m_Color) platform->OnTriggered();
-      }
-    }
-  } else if (!nowPressed && m_IsPressed) {
-    m_IsPressed = false;
-    for (auto *t : m_Triggers) {
-      if (auto *gate = dynamic_cast<Gate*>(t)) {
-        if (gate->GetColor() == m_Color) gate->OnReleased();
-      } else if (auto *platform = dynamic_cast<Platform*>(t)) {
-        if (platform->GetColor() == m_Color) platform->OnReleased();
+        if (platform->GetColor() == m_Color) {
+          if (nowPressed) platform->OnTriggered();
+          else platform->OnReleased();
+        }
       }
     }
   }
+
+  m_IsPressedFireboy = fbOn;
+  m_IsPressedWatergirl = wgOn;
 }
+
 
 void Button::linkTrigger(ITriggerable *target) {
   m_Triggers.push_back(target);
@@ -64,7 +69,7 @@ void Button::linkTrigger(ITriggerable *target) {
 
 const SDL_Rect &Button::getRect() const {
   glm::vec2 pos = m_Transform.translation;
-  glm::vec2 size = GetScaledSize() * 0.4f; // 可依實際按鈕大小微調縮放
+  glm::vec2 size = GetScaledSize() * 0.5f; // 可依實際按鈕大小微調縮放
   m_Rect.x = static_cast<int>(pos.x - size.x / 2);
   m_Rect.y = static_cast<int>(pos.y - size.y / 2);
   m_Rect.w = static_cast<int>(size.x);

@@ -1,4 +1,7 @@
 #include "Mechanism/Gate.hpp"
+
+#include <iostream>
+
 #include "Util/Image.hpp"
 
 Gate::Gate(GateColor color, const glm::vec2 &pos)
@@ -28,17 +31,30 @@ std::string Gate::GetImagePath(GateColor color) {
   return "";
 }
 
-void Gate::OnTriggered() { SetOpen(true); }
+void Gate::OnTriggered() {
+  m_ActiveTriggerCount++;
+  if (m_ActiveTriggerCount == 1) {
+    std::cout << "Gate set to open\n";
+    SetOpen(true);
+  }
+}
 
-void Gate::OnReleased() { SetOpen(false); }
+void Gate::OnReleased() {
+  if (m_ActiveTriggerCount > 0) {
+    m_ActiveTriggerCount--;
+    if (m_ActiveTriggerCount == 0) {
+      SetOpen(false);
+    }
+  }
+}
 
 void Gate::SetOpen(bool open) {
-  if (m_IsOpen == open)
-    return;
-  m_IsOpen = open;
+  if (m_IsOpen != open)
+    m_IsOpen = open;
   m_ShouldOpen = open;
   m_IsAnimating = true;
 }
+
 
 void Gate::SetPosition(const glm::vec2 &position) {
   m_Transform.translation = position;

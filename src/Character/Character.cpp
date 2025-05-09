@@ -1,7 +1,10 @@
 #include "Character/Character.hpp"
+#include "Mechanism/Fan.hpp"
 #include <cmath>
 #include <iostream>
 #include <map>
+
+class Fan; // 前向宣告
 
 Character::Character(const std::string &imagePath, const float zindex = 30)
     : GameObject(std::make_shared<Util::Image>(imagePath), zindex),
@@ -94,24 +97,21 @@ void Character::Move(int deltaX, bool upKeyPressed, const GridSystem &grid,
 
 void Character::Update() {
   if (m_AffectedByWind) {
-    // Apply wind force to character position
     if (std::abs(m_ExternalForce.y) > 0.001f) {
-      // Apply force with a slight randomness for natural floating effect
-      float randomFactor =
-          1.0f + (static_cast<float>(rand() % 10) - 5.0f) / 100.0f;
+      // 使用風扇提供的全局漂浮效果
+      float floatEffect = Fan::GetWindFloatEffect();
 
-      // Significantly reduce the force application by adding a small factor
-      m_Transform.translation.y += m_ExternalForce.y * randomFactor * 0.3f;
+      glm::vec2 pos = GetPosition();
 
-      // Make the force decay even more slowly
-      m_ExternalForce.y *= 0.995f;
-    } else {
-      m_ExternalForce.y = 0.0f;
-    }
+      // 應用風力，產生緩慢的上下漂浮
+      if (pos.y < 200.0f) {
+        m_Transform.translation.y +=
+            m_ExternalForce.y * floatEffect * 0.2f + 2.0f;
+      } else {
+        m_Transform.translation.y += m_ExternalForce.y * floatEffect * 0.2f;
+      }
 
-    // Disable jumping when affected by wind to prevent interference
-    if (std::abs(m_ExternalForce.y) > 0.02f) {
-      m_IsJumping = false;
+      // m_ExternalForce.y *= 0.995f;
     }
   }
 
@@ -175,8 +175,8 @@ void Character::Update() {
 }
 
 void Character::UpdateJump(const GridSystem &grid) {
-  // Only reset jump state when character is jumping, standing on platform, and
-  // jump height > 0
+  // Only reset jump state when character is jumping, standing on platform,
+  // and jump height > 0
   if (m_IsJumping && m_IsStandingOnPlatform && m_JumpHeight > 0) {
     m_IsJumping = false;
     m_Velocity.y = 0;
@@ -220,8 +220,8 @@ void Character::UpdateJump(const GridSystem &grid) {
       // Using collision threshold for sides
       int leftCollisionCount = 0;
       int rightCollisionCount = 0;
-      int collisionThreshold =
-          2; // Need at least this many collision points to count as a collision
+      int collisionThreshold = 2; // Need at least this many collision points
+                                  // to count as a collision
 
       // Check collision along the left side
       checkPoints = 20; // Reduced number of check points for sides
@@ -324,8 +324,8 @@ void Character::UpdateJump(const GridSystem &grid) {
       // Using collision threshold for sides during falling
       int leftCollisionCount = 0;
       int rightCollisionCount = 0;
-      int collisionThreshold =
-          2; // Need at least this many collision points to count as a collision
+      int collisionThreshold = 2; // Need at least this many collision points
+                                  // to count as a collision
 
       // Check collision along the left side while falling
       checkPoints = 10; // Reduced number of check points for sides
@@ -544,15 +544,14 @@ void Character::ApplyExternalForce(float y) {
   // 添加風力
   m_ExternalForce.y += y;
 
-  // 應用限制
+  // 限制最大風力
   if (m_ExternalForce.y > MAX_EXTERNAL_FORCE) {
     m_ExternalForce.y = MAX_EXTERNAL_FORCE;
-  } else if (m_ExternalForce.y < MIN_EXTERNAL_FORCE) {
-    m_ExternalForce.y = MIN_EXTERNAL_FORCE;
   }
 
   m_AffectedByWind = true;
-  std::cout << "External force applied: " << m_ExternalForce.y << std::endl;
+  // std::cout << "External force applied: " << m_ExternalForce.y <<
+  // std::endl;
 }
 
 void Character::SetAffectedByWind(bool affected) {

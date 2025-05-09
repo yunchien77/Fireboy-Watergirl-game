@@ -27,6 +27,7 @@ public:
 
   // Get fan color
   FanColor GetColor() const;
+  static float GetWindFloatEffect(); // 取得全局共享的風力漂浮效果
 
 private:
   glm::vec2 m_InitialPosition;
@@ -38,6 +39,7 @@ private:
 
   std::string GetImagePath() const;
   static std::string GetImagePath(FanColor color);
+  static float s_GlobalWindTime;
 };
 
 #endif // FAN_HPP

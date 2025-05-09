@@ -81,10 +81,14 @@ void HandleCollision(Character &player, App &app, bool isFireboy) {
 }
 
 void App::ResetGameLevel() {
-  if (m_Fireboy)
+  if (m_Fireboy) {
     m_Fireboy->Respawn();
-  if (m_Watergirl)
+    m_Fireboy->SetAffectedByWind(false);
+  }
+  if (m_Watergirl) {
     m_Watergirl->Respawn();
+    m_Watergirl->SetAffectedByWind(false);
+  }
 
   for (auto &trap : m_Traps) {
     trap->OnCharacterEnter(nullptr);
@@ -112,6 +116,10 @@ void App::ResetGameLevel() {
 
   for (auto &box : m_Boxes) {
     box->Respawn();
+  }
+
+  for (auto &fan : m_Fans) {
+    fan->Respawn();
   }
 }
 
@@ -186,11 +194,14 @@ bool App::CheckBoxCollision(std::shared_ptr<Character> character) {
 }
 
 void App::UpdateFans() {
+  float deltaTime = 1.0f / 60.0f; // 假設60fps
   for (auto &fan : m_Fans) {
+    // 更新風扇動畫時間
+    fan->Update(deltaTime);
+
     if (m_Fireboy) {
       fan->ApplyWindForce(m_Fireboy.get());
     }
-
     if (m_Watergirl) {
       fan->ApplyWindForce(m_Watergirl.get());
     }

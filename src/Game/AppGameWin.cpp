@@ -24,7 +24,7 @@ void App::GameWin() {
   if (!m_CharacterIndicator) {
     m_CharacterIndicator = std::make_shared<BackgroundImage>(
         RESOURCE_DIR "/material/background/icon/result-pass.png", 40);
-    m_CharacterIndicator->SetPosition(glm::vec2(-100, 110));
+    m_CharacterIndicator->SetPosition(glm::vec2(-100, 85));
     m_Root.AddChild(m_CharacterIndicator);
   }
   m_CharacterIndicator->SetVisible(true);
@@ -35,7 +35,7 @@ void App::GameWin() {
                       : RESOURCE_DIR
             "/material/background/icon/result-fail.png",
         40);
-    m_GemCollectedIndicator->SetPosition(glm::vec2(-100, 50));
+    m_GemCollectedIndicator->SetPosition(glm::vec2(-100, -10));
     m_Root.AddChild(m_GemCollectedIndicator);
   } else {
     // Update existing image

@@ -50,7 +50,8 @@ void Platform::OnReleased() {
   m_IsAnimating = true;
 }
 
-void Platform::UpdateAnimation(float deltaTime, const std::vector<Character*>& characters) {
+void Platform::UpdateAnimation(float deltaTime,
+                               const std::vector<Character *> &characters) {
   if (!m_IsAnimating) {
     m_LastDeltaMovement = {0.0f, 0.0f};
     return;
@@ -78,7 +79,7 @@ void Platform::UpdateAnimation(float deltaTime, const std::vector<Character*>& c
 
   // ❗如果是往下移動，檢查與角色碰撞
   if (movement.y < 0) {
-    for (Character* c : characters) {
+    for (Character *c : characters) {
       if (WillCollideWithCharacterBelow(c, movement)) {
         m_IsAnimating = false;
         m_LastDeltaMovement = {0.0f, 0.0f};
@@ -91,7 +92,8 @@ void Platform::UpdateAnimation(float deltaTime, const std::vector<Character*>& c
   m_LastDeltaMovement = movement;
 }
 
-bool Platform::WillCollideWithCharacterBelow(Character* character, const glm::vec2& movement) const {
+bool Platform::WillCollideWithCharacterBelow(Character *character,
+                                             const glm::vec2 &movement) const {
   glm::vec2 nextPlatPos = m_Transform.translation + movement;
   glm::vec2 platSize = GetScaledSize();
 
@@ -176,13 +178,15 @@ bool Platform::CheckCollision(Character *character, int moveDirection) const {
 
   // 檢查是否相交
   if (horizontalOverlap && verticalOverlap) {
-    // 判斷是哪一側的碰撞
+    // 使用更寬的碰撞範圍，尤其是跳躍時
+    float sideCollisionTolerance = character->IsJumping() ? 10.0f : 5.0f;
+
     if (moveDirection > 0 && charRight >= platLeft &&
-        charRight <= platLeft + 5.0f) {
+        charRight <= platLeft + sideCollisionTolerance) {
       // 從左側碰撞
       return true;
     } else if (moveDirection < 0 && charLeft <= platRight &&
-               charLeft >= platRight - 5.0f) {
+               charLeft >= platRight - sideCollisionTolerance) {
       // 從右側碰撞
       return true;
     } else if (charBottom <= platTop && charBottom >= platTop - 5.0f) {
@@ -212,4 +216,3 @@ void Platform::SetInitialPosition(const glm::vec2 &pos) {
 }
 
 void Platform::Respawn() { SetPosition(m_InitialPosition); }
-

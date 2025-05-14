@@ -86,7 +86,8 @@ public:
   const glm::vec2 &GetExternalForce() const;
   void ResetExternalForce();
 
-  bool IsCollidingWithPlatformBottom(Platform *platform, const glm::vec2& charPos) const;
+  bool IsCollidingWithPlatformBottom(Platform *platform,
+                                     const glm::vec2 &charPos) const;
 
 protected:
   // 應用水平翻轉

@@ -54,13 +54,18 @@ void Character::Move(int deltaX, bool upKeyPressed, const GridSystem &grid,
 
   ApplyFlip();
 
-  // 逐像素移動以實現精確碰撞
+  // 提高大距離移動時的碰撞檢測精度
   int moveDirection = (deltaX > 0) ? 1 : ((deltaX < 0) ? -1 : 0);
   int moveAmount = std::abs(deltaX);
 
-  for (int i = 0; i < moveAmount; i++) {
+  // 針對跳躍時的移動，使用更小的步進值
+  int step = (m_IsJumping && moveAmount > 5) ? 1 : 1;
+
+  for (int i = 0; i < moveAmount; i += step) {
     glm::vec2 newPos = GetPosition();
-    newPos.x += moveDirection;
+    // 不要超過實際的移動距離
+    int actualStep = std::min(step, moveAmount - i);
+    newPos.x += moveDirection * actualStep;
 
     // 檢查新位置是否會與網格碰撞
     if (grid.CheckCollision(newPos, m_Size, isFireboy, moveDirection)) {
@@ -84,7 +89,7 @@ void Character::Move(int deltaX, bool upKeyPressed, const GridSystem &grid,
     SetPosition(newPos);
   }
 
-  // 處理跳躍邏輯（保持原樣）
+  // 處理跳躍邏輯
   if (upKeyPressed && !m_UpKeyWasPressed && m_IsOnGround) {
     m_IsJumping = true;
     m_IsOnGround = false;
@@ -220,8 +225,8 @@ void Character::UpdateJump(const GridSystem &grid) {
       // Using collision threshold for sides
       int leftCollisionCount = 0;
       int rightCollisionCount = 0;
-      int collisionThreshold = 2; // Need at least this many collision points
-                                  // to count as a collision
+      int collisionThreshold =
+          2; // Need at least this many collision points to count as a collision
 
       // Check collision along the left side
       checkPoints = 20; // Reduced number of check points for sides
@@ -275,6 +280,47 @@ void Character::UpdateJump(const GridSystem &grid) {
         nextPos.x = cellLeftEdge - (m_Size.x / 2) + tolerance / 2;
       }
 
+      // 檢查與平台的碰撞 (新增)
+      int moveDirection = 0;
+      if (nextPos.x > pos.x)
+        moveDirection = 1;
+      else if (nextPos.x < pos.x)
+        moveDirection = -1;
+
+      bool platformCollision = false;
+      for (const auto &platform : m_Platforms) {
+        // 儲存當前位置
+        glm::vec2 currentPos = GetPosition();
+
+        // 暫時將角色移動到下一個位置進行碰撞檢測
+        SetPosition(nextPos);
+
+        if (platform->CheckCollision(this, moveDirection)) {
+          platformCollision = true;
+
+          // 還原原始位置
+          SetPosition(currentPos);
+
+          // 根據碰撞調整位置
+          glm::vec2 platPos = platform->GetPosition();
+          glm::vec2 platSize = platform->GetScaledSize();
+
+          if (moveDirection > 0) {
+            // 從左側碰撞
+            float platLeft = platPos.x - (platSize.x / 2);
+            nextPos.x = platLeft - (m_Size.x / 2) - 0.1f;
+          } else if (moveDirection < 0) {
+            // 從右側碰撞
+            float platRight = platPos.x + (platSize.x / 2);
+            nextPos.x = platRight + (m_Size.x / 2) + 0.1f;
+          }
+          break;
+        }
+
+        // 還原原始位置
+        SetPosition(currentPos);
+      }
+
       if (topCollision) {
         // Hit ceiling - start falling
         m_JumpHeight += isMoving ? (jumpSpeed / 1.5f) : m_JumpMaxHeight;
@@ -324,8 +370,8 @@ void Character::UpdateJump(const GridSystem &grid) {
       // Using collision threshold for sides during falling
       int leftCollisionCount = 0;
       int rightCollisionCount = 0;
-      int collisionThreshold = 2; // Need at least this many collision points
-                                  // to count as a collision
+      int collisionThreshold =
+          2; // Need at least this many collision points to count as a collision
 
       // Check collision along the left side while falling
       checkPoints = 10; // Reduced number of check points for sides
@@ -378,6 +424,77 @@ void Character::UpdateJump(const GridSystem &grid) {
                 .x -
             (grid.GetCellSize() / 2.0f);
         nextPos.x = cellLeftEdge - (m_Size.x / 2) + tolerance / 2;
+      }
+
+      // 檢查與平台的碰撞 (下落時) (新增)
+      int moveDirection = 0;
+      if (nextPos.x > pos.x)
+        moveDirection = 1;
+      else if (nextPos.x < pos.x)
+        moveDirection = -1;
+
+      bool platformCollision = false;
+      for (const auto &platform : m_Platforms) {
+        // 儲存當前位置
+        glm::vec2 currentPos = GetPosition();
+
+        // 暫時將角色移動到下一個位置進行碰撞檢測
+        SetPosition(nextPos);
+
+        if (platform->CheckCollision(this, moveDirection)) {
+          platformCollision = true;
+
+          // 還原原始位置
+          SetPosition(currentPos);
+
+          // 根據碰撞調整位置
+          glm::vec2 platPos = platform->GetPosition();
+          glm::vec2 platSize = platform->GetScaledSize();
+
+          if (moveDirection > 0) {
+            // 從左側碰撞
+            float platLeft = platPos.x - (platSize.x / 2);
+            nextPos.x = platLeft - (m_Size.x / 2) - 0.1f;
+          } else if (moveDirection < 0) {
+            // 從右側碰撞
+            float platRight = platPos.x + (platSize.x / 2);
+            nextPos.x = platRight + (m_Size.x / 2) + 0.1f;
+          }
+          break;
+        }
+
+        // 還原原始位置
+        SetPosition(currentPos);
+      }
+
+      // 檢查角色是否著陸在平台上
+      for (const auto &platform : m_Platforms) {
+        // 儲存當前位置
+        glm::vec2 currentPos = GetPosition();
+
+        // 暫時將角色移動到下一個位置進行碰撞檢測
+        SetPosition(nextPos);
+
+        if (platform->IsCharacterOn(this)) {
+          // 著陸在平台上
+          glm::vec2 platPos = platform->GetPosition();
+
+          // 還原原始位置
+          SetPosition(currentPos);
+
+          // 調整位置以正確站在平台上
+          pos.y = platPos.y + 11.5f - 13.5f; // platTop - charBottomOffset
+          m_IsJumping = false;
+          m_IsOnGround = true;
+          m_JumpHeight = 0;
+          m_IsStandingOnPlatform = true;
+          m_CurrentPlatform = platform;
+          SetPosition(pos);
+          return;
+        }
+
+        // 還原原始位置
+        SetPosition(currentPos);
       }
 
       if (!bottomCollision) {

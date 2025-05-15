@@ -823,13 +823,6 @@ void Character::MoveWithCollision(const glm::vec2& offset, const GridSystem& gri
         glm::ivec2 gridPos = grid.GameToCellPosition(checkPos);
         CellType cell = grid.GetCell(gridPos.x, gridPos.y);
 
-        std::cout << "[TRACE] Checking Grid(" << gridPos.x << ", " << gridPos.y
-                  << ") CellType = " << static_cast<int>(cell)
-                  << " | Pos: " << checkX << ", " << checkY
-                  << " | CanMoveOn = " << grid.CanMoveOn(cell, IsFireboy())
-                  << " | CanStandOn = " << grid.CanStandOn(cell, IsFireboy())
-                  << std::endl;
-
         glm::vec2 charCenter = nextPos;
         glm::vec2 cellCenter = grid.CellToGamePosition(gridPos.x, gridPos.y);
         float cellSize = grid.GetCellSize();
@@ -839,9 +832,7 @@ void Character::MoveWithCollision(const glm::vec2& offset, const GridSystem& gri
         bool yBlocked = false;
 
         if (grid.CanStandOn(cell, IsFireboy())) {
-          std::cout << "[DIFF] charBottom = " << charBottom << " | cellCenter.y = " << cellCenter.y << std::endl;
           if (charBottom >= cellCenter.y - 32.0f) {
-            std::cout << "[HIT] From side or bottom into platform → charBottom = " << charBottom << std::endl;
             yBlocked = true;
           } else {
             yBlocked = false;
@@ -851,10 +842,6 @@ void Character::MoveWithCollision(const glm::vec2& offset, const GridSystem& gri
         }
 
         if (yBlocked) {
-          std::cout << "[DEBUG] Blocked at Grid(" << gridPos.x << ", " << gridPos.y
-                    << ") by CellType = " << static_cast<int>(cell)
-                    << " | Pos: " << checkX << ", " << checkY
-                    << " | diff.y = " << diff.y << std::endl;
           ResetExternalForce();
           SetAffectedByWind(false);
           blocked = true;

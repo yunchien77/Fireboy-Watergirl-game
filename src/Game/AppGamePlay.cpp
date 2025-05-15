@@ -258,6 +258,9 @@ void App::GamePlay() {
   m_Fireboy->SetPlatforms(m_Platforms);
   m_Watergirl->SetPlatforms(m_Platforms);
 
+  m_Fireboy->SetGridSystem(&m_GridSystem);
+  m_Watergirl->SetGridSystem(&m_GridSystem);
+
   // 執行移動、跳躍、重力
   m_Fireboy->Move(fireboyMoveX, fireboyUpKeyPressed, m_GridSystem, true);
   m_Fireboy->UpdateJump(m_GridSystem);
@@ -356,6 +359,21 @@ void App::GamePlay() {
   // 更新角色位置
   m_Fireboy->Update(m_GridSystem);
   m_Watergirl->Update(m_GridSystem);
+
+  // 若角色站在平台上，改用 MoveWithCollision 來移動並做碰撞修正
+  if (m_Fireboy->IsStandingOnPlatform() && m_Fireboy->GetCurrentPlatform()) {
+    glm::vec2 delta = m_Fireboy->GetCurrentPlatform()->GetDeltaMovement();
+    if (glm::length(delta) > 0.01f) {
+      m_Fireboy->MoveWithCollision(delta, m_GridSystem);
+    }
+  }
+  if (m_Watergirl->IsStandingOnPlatform() && m_Watergirl->GetCurrentPlatform()) {
+    glm::vec2 delta = m_Watergirl->GetCurrentPlatform()->GetDeltaMovement();
+    if (glm::length(delta) > 0.01f) {
+      m_Watergirl->MoveWithCollision(delta, m_GridSystem);
+    }
+  }
+
 
   // 檢查箱子
   for (auto &box : m_Boxes) {

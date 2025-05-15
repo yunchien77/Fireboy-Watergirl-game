@@ -89,6 +89,13 @@ public:
   bool IsCollidingWithPlatformBottom(Platform *platform,
                                      const glm::vec2 &charPos) const;
 
+  void MoveWithCollision(const glm::vec2& offset, const GridSystem& grid);
+
+  bool IsStandingOnPlatform() const;
+  std::shared_ptr<Platform> GetCurrentPlatform() const;
+  void SetGridSystem(GridSystem* grid);
+
+
 protected:
   // 應用水平翻轉
   void ApplyFlip();
@@ -119,6 +126,8 @@ protected:
 private:
   glm::vec2 m_ExternalForce = {0.0f, 0.0f};
   bool m_AffectedByWind = false;
+  GridSystem* m_GridRef = nullptr;
+
 };
 
 #endif // CHARACTER_HPP

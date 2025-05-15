@@ -225,23 +225,20 @@ void Character::Move(int deltaX, bool upKeyPressed, const GridSystem &grid,
 
 void Character::Update(const GridSystem &grid) {
   if (m_AffectedByWind) {
-    if (std::abs(m_ExternalForce.y) > 0.001f) {
-      // 使用風扇提供的全局漂浮效果
+    if (std::abs(m_ExternalForce.y) > 0.001f && m_GridRef) {
       float floatEffect = Fan::GetWindFloatEffect();
+      float windAmount = m_ExternalForce.y * floatEffect * 0.2f;
 
-      glm::vec2 pos = GetPosition();
-
-      // 應用風力，產生緩慢的上下漂浮
-      if (pos.y < 200.0f) {
-        m_Transform.translation.y +=
-            m_ExternalForce.y * floatEffect * 0.2f + 2.0f;
-      } else {
-        m_Transform.translation.y += m_ExternalForce.y * floatEffect * 0.2f;
+      // 避免低空飛行硬升高（給點初始推力）
+      if (GetPosition().y < 200.0f) {
+        windAmount += 2.0f;
       }
 
-      // m_ExternalForce.y *= 0.995f;
+      glm::vec2 offset(0.0f, windAmount);
+      MoveWithCollision(offset, *m_GridRef);
     }
   }
+
 
   // 紀錄之前的platform狀態
   bool wasOnPlatform = m_IsStandingOnPlatform;
@@ -297,7 +294,7 @@ void Character::Update(const GridSystem &grid) {
     // 直接使用平台提供的移動量
     glm::vec2 platMove = m_CurrentPlatform->GetDeltaMovement();
     if (glm::length(platMove) > 0.01f) { // 若有實際移動才應用
-      Translate(platMove);
+      //Translate(platMove);
     }
   }
 }
@@ -797,3 +794,94 @@ void Character::SetAffectedByWind(bool affected) {
 }
 
 bool Character::IsAffectedByWind() const { return m_AffectedByWind; }
+
+void Character::MoveWithCollision(const glm::vec2& offset, const GridSystem& grid) {
+  glm::vec2 pos = GetPosition();
+  int steps = static_cast<int>(glm::ceil(glm::length(offset) / 2.0f));
+  if (steps == 0) steps = 1;
+
+  glm::vec2 stepVec = offset / static_cast<float>(steps);
+
+  for (int i = 0; i < steps; ++i) {
+    glm::vec2 nextPos = pos + stepVec;
+
+    float left = nextPos.x - m_Size.x / 2.0f + 1.0f;
+    float right = nextPos.x + m_Size.x / 2.0f - 1.0f;
+    float top = nextPos.y + m_Size.y;
+    float bottom = nextPos.y + 13.5f;
+
+    bool blocked = false;
+    int horizontalPoints = 4;
+    int verticalPoints = 4;
+
+    for (int xi = 0; xi <= horizontalPoints; ++xi) {
+      float checkX = left + (right - left) * (xi / static_cast<float>(horizontalPoints));
+      for (int yi = 0; yi <= verticalPoints; ++yi) {
+        float checkY = bottom + (top - bottom) * (yi / static_cast<float>(verticalPoints));
+        glm::vec2 checkPos = {checkX, checkY};
+
+        glm::ivec2 gridPos = grid.GameToCellPosition(checkPos);
+        CellType cell = grid.GetCell(gridPos.x, gridPos.y);
+
+        std::cout << "[TRACE] Checking Grid(" << gridPos.x << ", " << gridPos.y
+                  << ") CellType = " << static_cast<int>(cell)
+                  << " | Pos: " << checkX << ", " << checkY
+                  << " | CanMoveOn = " << grid.CanMoveOn(cell, IsFireboy())
+                  << " | CanStandOn = " << grid.CanStandOn(cell, IsFireboy())
+                  << std::endl;
+
+        glm::vec2 charCenter = nextPos;
+        glm::vec2 cellCenter = grid.CellToGamePosition(gridPos.x, gridPos.y);
+        float cellSize = grid.GetCellSize();
+        glm::vec2 diff = charCenter - cellCenter;
+
+        float charBottom = charCenter.y + 13.5f;
+        bool yBlocked = false;
+
+        if (grid.CanStandOn(cell, IsFireboy())) {
+          std::cout << "[DIFF] charBottom = " << charBottom << " | cellCenter.y = " << cellCenter.y << std::endl;
+          if (charBottom >= cellCenter.y - 32.0f) {
+            std::cout << "[HIT] From side or bottom into platform → charBottom = " << charBottom << std::endl;
+            yBlocked = true;
+          } else {
+            yBlocked = false;
+          }
+        } else {
+          yBlocked = !grid.CanMoveOn(cell, IsFireboy());
+        }
+
+        if (yBlocked) {
+          std::cout << "[DEBUG] Blocked at Grid(" << gridPos.x << ", " << gridPos.y
+                    << ") by CellType = " << static_cast<int>(cell)
+                    << " | Pos: " << checkX << ", " << checkY
+                    << " | diff.y = " << diff.y << std::endl;
+          ResetExternalForce();
+          SetAffectedByWind(false);
+          blocked = true;
+          break;
+        }
+      }
+      if (blocked) break;
+    }
+
+    if (!blocked) {
+      pos = nextPos;
+    } else {
+      break;
+    }
+  }
+
+  SetPosition(pos);
+}
+
+bool Character::IsStandingOnPlatform() const {
+  return m_IsStandingOnPlatform;
+}
+
+std::shared_ptr<Platform> Character::GetCurrentPlatform() const {
+  return m_CurrentPlatform;
+}
+
+void Character::SetGridSystem(GridSystem* grid) {
+  m_GridRef = grid;
+}

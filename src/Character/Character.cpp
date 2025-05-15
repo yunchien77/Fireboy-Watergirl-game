@@ -100,7 +100,130 @@ void Character::Move(int deltaX, bool upKeyPressed, const GridSystem &grid,
   UpdateAnimation();
 }
 
-void Character::Update() {
+// void Character::Update(const GridSystem &grid) {
+//   if (m_AffectedByWind) {
+//     if (std::abs(m_ExternalForce.y) > 0.001f) {
+//       // 使用風扇提供的全局漂浮效果
+//       float floatEffect = Fan::GetWindFloatEffect();
+
+//       glm::vec2 pos = GetPosition();
+//       glm::vec2 newPos = pos;
+
+//       // 計算風力導致的位移
+//       float windDisplacement = m_ExternalForce.y * floatEffect * 0.2f;
+//       if (pos.y < 200.0f) {
+//         windDisplacement += 2.0f;
+//       }
+
+//       // 計算新位置(僅Y方向)
+//       newPos.y += windDisplacement;
+
+//       // 執行碰撞檢測
+//       float top = newPos.y + m_Size.y;
+//       float left = newPos.x - (m_Size.x / 2) + 0.3f;
+//       float right = newPos.x + (m_Size.x / 2) - 0.3f;
+//       float bottom = newPos.y;
+
+//       // 用於跟踪是否發生任何碰撞
+//       bool hasCollision = false;
+
+//       // 檢查頭頂上是否有障礙物
+//       for (float checkX = left; checkX <= right; checkX += 5.0f) {
+//         glm::ivec2 gridPos = grid.GameToCellPosition(glm::vec2(checkX, top));
+//         CellType cellType = grid.GetCell(gridPos.x, gridPos.y);
+//         if (cellType != CellType::EMPTY) {
+//           hasCollision = true;
+//           break;
+//         }
+//       }
+
+//       // 檢查左側碰撞
+//       for (float checkY = bottom; checkY <= top; checkY += 5.0f) {
+//         glm::ivec2 gridPos = grid.GameToCellPosition(glm::vec2(left,
+//         checkY)); CellType cellType = grid.GetCell(gridPos.x, gridPos.y); if
+//         (cellType != CellType::EMPTY) {
+//           hasCollision = true;
+//           break;
+//         }
+//       }
+
+//       // 檢查右側碰撞
+//       for (float checkY = bottom; checkY <= top; checkY += 5.0f) {
+//         glm::ivec2 gridPos = grid.GameToCellPosition(glm::vec2(right,
+//         checkY)); CellType cellType = grid.GetCell(gridPos.x, gridPos.y); if
+//         (cellType != CellType::EMPTY) {
+//           hasCollision = true;
+//           break;
+//         }
+//       }
+
+//       // 只有在沒有碰撞的情況下才應用風力
+//       if (!hasCollision) {
+//         m_Transform.translation.y = newPos.y;
+//       }
+//     }
+//   }
+
+//   // 紀錄之前的platform狀態
+//   bool wasOnPlatform = m_IsStandingOnPlatform;
+//   std::shared_ptr<Platform> previousPlatform = m_CurrentPlatform;
+
+//   m_IsStandingOnPlatform = false;
+//   m_CurrentPlatform = nullptr;
+
+//   // 首先檢查角色是否站在箱子上
+//   bool standingOnBox = false;
+//   for (const auto &box : m_Boxes) {
+//     if (box->IsCharacterOn(this)) {
+//       standingOnBox = true;
+//       m_IsStandingOnPlatform = true;
+//       m_IsOnGround = true;
+
+//       // 調整角色位置以完全站在箱子上
+//       glm::vec2 pos = GetPosition();
+//       glm::vec2 boxPos = box->GetPosition();
+//       glm::vec2 boxSize = box->GetSize();
+//       pos.y = boxPos.y + boxSize.y - 13.5f;
+//       SetPosition(pos);
+//       break;
+//     }
+//   }
+
+//   // 如果沒有站在箱子上，再檢查是否站在平台上
+//   if (!standingOnBox) {
+//     // 檢查角色是否站在任何平台上
+//     for (const auto &platform : m_Platforms) {
+//       if (platform->IsCharacterOn(this)) {
+//         // 找到了角色站立的平台
+//         m_IsStandingOnPlatform = true;
+//         m_IsOnGround = true;
+//         m_CurrentPlatform = platform;
+
+//         // 只有首次接觸平台時才調整位置
+//         if (!wasOnPlatform || previousPlatform != platform) {
+//           glm::vec2 pos = GetPosition();
+//           glm::vec2 platPos = platform->GetPosition();
+//           // 使用準確的偏移量，將角色底部對齊平台頂部
+//           pos.y = platPos.y + 11.5f - 13.5f; // platTop - charBottomOffset
+//           SetPosition(pos);
+//         }
+
+//         break;
+//       }
+//     }
+//   }
+
+//   // 如果角色站在平台上，應用平台的移動
+//   if (m_IsStandingOnPlatform && m_CurrentPlatform) {
+//     // 直接使用平台提供的移動量
+//     glm::vec2 platMove = m_CurrentPlatform->GetDeltaMovement();
+//     if (glm::length(platMove) > 0.01f) { // 若有實際移動才應用
+//       Translate(platMove);
+//     }
+//   }
+// }
+
+void Character::Update(const GridSystem &grid) {
   if (m_AffectedByWind) {
     if (std::abs(m_ExternalForce.y) > 0.001f) {
       // 使用風扇提供的全局漂浮效果
@@ -287,7 +410,6 @@ void Character::UpdateJump(const GridSystem &grid) {
       else if (nextPos.x < pos.x)
         moveDirection = -1;
 
-      bool platformCollision = false;
       for (const auto &platform : m_Platforms) {
         // 儲存當前位置
         glm::vec2 currentPos = GetPosition();
@@ -296,7 +418,6 @@ void Character::UpdateJump(const GridSystem &grid) {
         SetPosition(nextPos);
 
         if (platform->CheckCollision(this, moveDirection)) {
-          platformCollision = true;
 
           // 還原原始位置
           SetPosition(currentPos);
@@ -433,7 +554,6 @@ void Character::UpdateJump(const GridSystem &grid) {
       else if (nextPos.x < pos.x)
         moveDirection = -1;
 
-      bool platformCollision = false;
       for (const auto &platform : m_Platforms) {
         // 儲存當前位置
         glm::vec2 currentPos = GetPosition();
@@ -442,7 +562,6 @@ void Character::UpdateJump(const GridSystem &grid) {
         SetPosition(nextPos);
 
         if (platform->CheckCollision(this, moveDirection)) {
-          platformCollision = true;
 
           // 還原原始位置
           SetPosition(currentPos);

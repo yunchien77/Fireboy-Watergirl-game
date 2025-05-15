@@ -346,7 +346,7 @@ void App::GamePlay() {
 
   // 更新平台
   for (auto &platform : m_Platforms) {
-    std::vector<Character*> charList = { m_Fireboy.get(), m_Watergirl.get() };
+    std::vector<Character *> charList = {m_Fireboy.get(), m_Watergirl.get()};
     platform->UpdateAnimation(deltaTime, charList);
   }
 
@@ -354,8 +354,8 @@ void App::GamePlay() {
   UpdateFans();
 
   // 更新角色位置
-  m_Fireboy->Update();
-  m_Watergirl->Update();
+  m_Fireboy->Update(m_GridSystem);
+  m_Watergirl->Update(m_GridSystem);
 
   // 檢查箱子
   for (auto &box : m_Boxes) {

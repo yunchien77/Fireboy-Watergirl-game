@@ -9,7 +9,7 @@
 
 Fan::Fan(const glm::vec2 &position, float strength, FanColor color)
     : m_InitialPosition(position), m_Strength(strength),
-      m_MaxWindHeight(250.0f), m_AnimationTime(0.0f), m_Color(color) {
+      m_MaxWindHeight(270.0f), m_AnimationTime(0.0f), m_Color(color) {
   SetDrawable(std::make_shared<Util::Image>(GetImagePath()));
   SetPosition(position);
   SetPivot({0.0f, 14.0f});

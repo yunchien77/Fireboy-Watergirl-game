@@ -77,7 +77,7 @@ void Platform::UpdateAnimation(float deltaTime,
     m_IsAnimating = false;
   }
 
-  // ❗如果是往下移動，檢查與角色碰撞
+  // 如果是往下移動，檢查與角色碰撞
   if (movement.y < 0) {
     for (Character *c : characters) {
       if (WillCollideWithCharacterBelow(c, movement)) {

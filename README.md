@@ -1,6 +1,8 @@
-# 🔥💧 Fireboy and Watergirl: Forest Adventure
+# Fireboy and Watergirl: Forest Adventure
 
 Welcome to **Fireboy and Watergirl: Forest Adventure**!🌳
+
+
 This is a cooperative puzzle-platformer where you control two characters to solve challenges and reach the exit doors. Teamwork, timing, and logic are the keys to success! 
 
 
@@ -23,29 +25,29 @@ This is a cooperative puzzle-platformer where you control two characters to solv
 
 ## 📜 Game Rules
 
-1. **Character Properties**
+- **Character Properties**
 
    * Fireboy is immune to fire but dies in water.
    * Watergirl is immune to water but dies in fire.
    * Both die in green acid pools ☠️.
 
-2. **Cooperative Gameplay**
+- **Cooperative Gameplay**
 
    * Both characters must reach their respective exit doors to complete a level.
    * Play solo by switching between characters or team up with a friend!
 
-3. **Collectibles**
+- **Collectibles**
 
    * 🔴 Red gems for Fireboy
    * 🔵 Blue gems for Watergirl
    * Collect gems matching each character's color for a game win
 
-4. **Level Progression**
+- **Level Progression**
 
    * Level 1 is unlocked by default.
    * Complete levels to unlock the next ones.
 
-5. **Interactive Mechanics**
+- **Interactive Mechanics**
 
    * **Buttons**: Step on them to activate mechanisms like gates or platforms.
    * **Levers**: Pull to trigger gates, either temporarily or permanently.
@@ -68,6 +70,8 @@ This is a cooperative puzzle-platformer where you control two characters to solv
 ## 🛠️ Development Info
 
 This game is developed using the [PTSD Template](https://github.com/ntut-open-source-club/practical-tools-for-simple-design), a C++ project structure designed for the **OOPL2024s** course.
+
+
 
 
 

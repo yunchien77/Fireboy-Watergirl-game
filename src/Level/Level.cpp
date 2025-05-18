@@ -34,33 +34,6 @@ Level::Level(GridSystem &gridSystem,
       m_Watergirl(watergirl), m_Fireboy_Door(fireboyDoor),
       m_Watergirl_Door(watergirlDoor) {}
 
-void Level::Cleanup() {
-  for (auto &gem : m_Gems) {
-    m_Root.RemoveChild(gem);
-  }
-  m_Gems.clear();
-
-  for (auto &gate : m_Triggers) {
-    m_Root.RemoveChild(gate);
-  }
-  m_Triggers.clear();
-
-  for (auto &button : m_Buttons) {
-    m_Root.RemoveChild(button);
-  }
-  m_Buttons.clear();
-
-  // for (auto &lever : m_Levers) {
-  //   //m_Root.RemoveChild(lever);
-  // }
-  // m_Levers.clear();
-
-  // for (auto &platform : m_Platforms) {
-  //   //m_Root.RemoveChild(platform);
-  // }
-  m_Platforms.clear();
-}
-
 bool Level::LoadGrid(int levelNumber) {
   std::string gridFilePath =
       RESOURCE_DIR "/map/level" + std::to_string(levelNumber) + "_grid.txt";

@@ -21,108 +21,102 @@ public:
   Character &operator=(const Character &) = delete;
   Character &operator=(Character &&) = delete;
 
+  // 基本getter方法
   [[nodiscard]] const std::string &GetImagePath() const;
   [[nodiscard]] const glm::vec2 &GetPosition() const;
   [[nodiscard]] bool GetVisibility() const;
   [[nodiscard]] bool IsJumping() const;
   [[nodiscard]] bool IsOnGround() const;
+  [[nodiscard]] bool IsMoving() const;
+  [[nodiscard]] bool IsFacingRight() const;
+  [[nodiscard]] bool IsDead() const;
+  [[nodiscard]] glm::vec2 GetSize() const;
+  [[nodiscard]] bool IsStandingOnPlatform() const;
+  [[nodiscard]] std::shared_ptr<Platform> GetCurrentPlatform() const;
+  [[nodiscard]] const glm::vec2 &GetExternalForce() const;
+  [[nodiscard]] bool IsAffectedByWind() const;
 
-  // 更改角色的圖像
+  // 角色狀態設定
   void SetImage(const std::string &imagePath);
-
-  // 更改角色的位置
   void SetPosition(const glm::vec2 &position);
+  void SetSpawnPoint(const glm::vec2 &spawn);
+  void SetPreviousPosition();
+  void UndoMovement();
+  void SetStandingOnPlatform(bool value);
+  void SetPlatforms(const std::vector<std::shared_ptr<Platform>> &platforms);
+  void SetBoxes(const std::vector<std::shared_ptr<Box>> &boxes);
+  void SetGridSystem(GridSystem *grid);
+  void SetAffectedByWind(bool affected);
 
-  // 取得角色的尺寸
-  glm::vec2 GetSize() const;
-
-  // 移動角色
+  // 角色移動和物理相關
   void Move(int deltaX, bool upKeyPressed, const GridSystem &grid,
             bool isFireboy);
-
-  // 更新跳躍
+  void MoveWithCollision(const glm::vec2 &offset, const GridSystem &grid);
   void UpdateJump(const GridSystem &grid);
-
-  // 應用重力
   void ApplyGravity(const GridSystem &grid);
+  void ApplyExternalForce(float y);
+  void ResetExternalForce();
+  void Translate(const glm::vec2 &offset);
 
-  // 更新角色的動畫(純虛擬函數 -> Fireboy 和 Watergirl 會實現)
+  // 角色生命週期
+  virtual void Die();
+  void Respawn();
+  void Update();
+
+  // 動畫相關
   virtual void UpdateAnimation() = 0;
 
-  virtual void Die();  // 設定角色死亡
-  bool IsDead() const; // 查詢死亡狀態
-  void Respawn();      // 重生
-  void SetSpawnPoint(const glm::vec2 &spawn);
+  // 碰撞相關
+  bool IsCollidingWithPlatformBottom(Platform *platform,
+                                     const glm::vec2 &charPos) const;
 
   virtual const SDL_Rect &getRect() const = 0;
-
   virtual bool IsFireboy() const = 0;
-
   virtual float getX() const = 0;
   virtual float getY() const = 0;
   virtual int getWidth() const = 0;
   virtual int getHeight() const = 0;
 
-  void SetPreviousPosition();
-  void UndoMovement();
-
-  void Translate(const glm::vec2 &offset);
-  void Update();
-  void SetPlatforms(const std::vector<std::shared_ptr<Platform>> &platforms);
-  void SetStandingOnPlatform(bool value);
   static constexpr float GRAVITY_SPEED = 10.0f;
-
-  bool IsMoving() const;
-  bool IsFacingRight() const;
-  void SetBoxes(const std::vector<std::shared_ptr<Box>> &boxes);
-
-  void ApplyExternalForce(float y);
-  void SetAffectedByWind(bool affected);
-  bool IsAffectedByWind() const;
-
   static constexpr float MAX_EXTERNAL_FORCE = 25.0f;
   static constexpr float MIN_EXTERNAL_FORCE = 0.0f;
 
-  const glm::vec2 &GetExternalForce() const;
-  void ResetExternalForce();
-
-  bool IsCollidingWithPlatformBottom(Platform *platform,
-                                     const glm::vec2 &charPos) const;
-
-  void MoveWithCollision(const glm::vec2 &offset, const GridSystem &grid);
-
-  bool IsStandingOnPlatform() const;
-  std::shared_ptr<Platform> GetCurrentPlatform() const;
-  void SetGridSystem(GridSystem *grid);
-
 protected:
-  // 應用水平翻轉
+  // 角色移動輔助方法
   void ApplyFlip();
 
+  // 角色基本屬性
   std::string m_ImagePath;
+  bool m_FacingRight; // 角色面向方向：true為右，false為左
+  glm::vec2 m_Size;   // 角色的尺寸
   bool isMoving;      // 是否正在移動
   bool currentSprite; // 切換動畫幀
+
+  // 跳躍相關屬性
   bool m_IsJumping;
   int m_JumpHeight;    // 當前跳躍高度
   int m_JumpMaxHeight; // 最大跳躍高度
   bool m_IsOnGround;   // 角色是否在地面上
   bool m_UpKeyWasPressed; // 上鍵是否已被按下（用於防止持續按住時重複跳躍）
-  bool m_FacingRight; // 角色面向方向：true為右，false為左
-  glm::vec2 m_Size;   // 角色的尺寸
+  bool m_HitCeiling = false;
+
+  // 生命狀態和位置紀錄
   bool m_IsDead = false;
   glm::vec2 m_SpawnPoint;
   glm::vec2 m_LastPosition;
-  bool m_HitCeiling = false;
 
+  // 平台和箱子相關
   std::vector<std::shared_ptr<Platform>> m_Platforms;
   std::shared_ptr<Platform> m_CurrentPlatform;
-  std::vector<std::shared_ptr<Box>> m_Boxes;
-
-  bool m_IsStandingOnPlatform = false;
-  glm::vec2 m_Velocity = glm::vec2(0.0f);
   std::shared_ptr<Platform> m_PreviousPlatform;
+  std::vector<std::shared_ptr<Box>> m_Boxes;
+  bool m_IsStandingOnPlatform = false;
+
+  // 物理相關
+  glm::vec2 m_Velocity = glm::vec2(0.0f);
 
 private:
+  // 外部力量(風等)相關
   glm::vec2 m_ExternalForce = {0.0f, 0.0f};
   bool m_AffectedByWind = false;
   GridSystem *m_GridRef = nullptr;

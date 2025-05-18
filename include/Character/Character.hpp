@@ -67,7 +67,7 @@ public:
   void UndoMovement();
 
   void Translate(const glm::vec2 &offset);
-  void Update(const GridSystem &grid);
+  void Update();
   void SetPlatforms(const std::vector<std::shared_ptr<Platform>> &platforms);
   void SetStandingOnPlatform(bool value);
   static constexpr float GRAVITY_SPEED = 10.0f;
@@ -89,12 +89,11 @@ public:
   bool IsCollidingWithPlatformBottom(Platform *platform,
                                      const glm::vec2 &charPos) const;
 
-  void MoveWithCollision(const glm::vec2& offset, const GridSystem& grid);
+  void MoveWithCollision(const glm::vec2 &offset, const GridSystem &grid);
 
   bool IsStandingOnPlatform() const;
   std::shared_ptr<Platform> GetCurrentPlatform() const;
-  void SetGridSystem(GridSystem* grid);
-
+  void SetGridSystem(GridSystem *grid);
 
 protected:
   // 應用水平翻轉
@@ -126,8 +125,7 @@ protected:
 private:
   glm::vec2 m_ExternalForce = {0.0f, 0.0f};
   bool m_AffectedByWind = false;
-  GridSystem* m_GridRef = nullptr;
-
+  GridSystem *m_GridRef = nullptr;
 };
 
 #endif // CHARACTER_HPP

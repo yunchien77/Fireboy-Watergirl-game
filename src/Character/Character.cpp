@@ -100,130 +100,7 @@ void Character::Move(int deltaX, bool upKeyPressed, const GridSystem &grid,
   UpdateAnimation();
 }
 
-// void Character::Update(const GridSystem &grid) {
-//   if (m_AffectedByWind) {
-//     if (std::abs(m_ExternalForce.y) > 0.001f) {
-//       // 使用風扇提供的全局漂浮效果
-//       float floatEffect = Fan::GetWindFloatEffect();
-
-//       glm::vec2 pos = GetPosition();
-//       glm::vec2 newPos = pos;
-
-//       // 計算風力導致的位移
-//       float windDisplacement = m_ExternalForce.y * floatEffect * 0.2f;
-//       if (pos.y < 200.0f) {
-//         windDisplacement += 2.0f;
-//       }
-
-//       // 計算新位置(僅Y方向)
-//       newPos.y += windDisplacement;
-
-//       // 執行碰撞檢測
-//       float top = newPos.y + m_Size.y;
-//       float left = newPos.x - (m_Size.x / 2) + 0.3f;
-//       float right = newPos.x + (m_Size.x / 2) - 0.3f;
-//       float bottom = newPos.y;
-
-//       // 用於跟踪是否發生任何碰撞
-//       bool hasCollision = false;
-
-//       // 檢查頭頂上是否有障礙物
-//       for (float checkX = left; checkX <= right; checkX += 5.0f) {
-//         glm::ivec2 gridPos = grid.GameToCellPosition(glm::vec2(checkX, top));
-//         CellType cellType = grid.GetCell(gridPos.x, gridPos.y);
-//         if (cellType != CellType::EMPTY) {
-//           hasCollision = true;
-//           break;
-//         }
-//       }
-
-//       // 檢查左側碰撞
-//       for (float checkY = bottom; checkY <= top; checkY += 5.0f) {
-//         glm::ivec2 gridPos = grid.GameToCellPosition(glm::vec2(left,
-//         checkY)); CellType cellType = grid.GetCell(gridPos.x, gridPos.y); if
-//         (cellType != CellType::EMPTY) {
-//           hasCollision = true;
-//           break;
-//         }
-//       }
-
-//       // 檢查右側碰撞
-//       for (float checkY = bottom; checkY <= top; checkY += 5.0f) {
-//         glm::ivec2 gridPos = grid.GameToCellPosition(glm::vec2(right,
-//         checkY)); CellType cellType = grid.GetCell(gridPos.x, gridPos.y); if
-//         (cellType != CellType::EMPTY) {
-//           hasCollision = true;
-//           break;
-//         }
-//       }
-
-//       // 只有在沒有碰撞的情況下才應用風力
-//       if (!hasCollision) {
-//         m_Transform.translation.y = newPos.y;
-//       }
-//     }
-//   }
-
-//   // 紀錄之前的platform狀態
-//   bool wasOnPlatform = m_IsStandingOnPlatform;
-//   std::shared_ptr<Platform> previousPlatform = m_CurrentPlatform;
-
-//   m_IsStandingOnPlatform = false;
-//   m_CurrentPlatform = nullptr;
-
-//   // 首先檢查角色是否站在箱子上
-//   bool standingOnBox = false;
-//   for (const auto &box : m_Boxes) {
-//     if (box->IsCharacterOn(this)) {
-//       standingOnBox = true;
-//       m_IsStandingOnPlatform = true;
-//       m_IsOnGround = true;
-
-//       // 調整角色位置以完全站在箱子上
-//       glm::vec2 pos = GetPosition();
-//       glm::vec2 boxPos = box->GetPosition();
-//       glm::vec2 boxSize = box->GetSize();
-//       pos.y = boxPos.y + boxSize.y - 13.5f;
-//       SetPosition(pos);
-//       break;
-//     }
-//   }
-
-//   // 如果沒有站在箱子上，再檢查是否站在平台上
-//   if (!standingOnBox) {
-//     // 檢查角色是否站在任何平台上
-//     for (const auto &platform : m_Platforms) {
-//       if (platform->IsCharacterOn(this)) {
-//         // 找到了角色站立的平台
-//         m_IsStandingOnPlatform = true;
-//         m_IsOnGround = true;
-//         m_CurrentPlatform = platform;
-
-//         // 只有首次接觸平台時才調整位置
-//         if (!wasOnPlatform || previousPlatform != platform) {
-//           glm::vec2 pos = GetPosition();
-//           glm::vec2 platPos = platform->GetPosition();
-//           // 使用準確的偏移量，將角色底部對齊平台頂部
-//           pos.y = platPos.y + 11.5f - 13.5f; // platTop - charBottomOffset
-//           SetPosition(pos);
-//         }
-
-//         break;
-//       }
-//     }
-//   }
-
-//   // 如果角色站在平台上，應用平台的移動
-//   if (m_IsStandingOnPlatform && m_CurrentPlatform) {
-//     // 直接使用平台提供的移動量
-//     glm::vec2 platMove = m_CurrentPlatform->GetDeltaMovement();
-//     if (glm::length(platMove) > 0.01f) { // 若有實際移動才應用
-//       Translate(platMove);
-//     }
-//   }
-// }
-
-void Character::Update(const GridSystem &grid) {
+void Character::Update() {
   if (m_AffectedByWind) {
     if (std::abs(m_ExternalForce.y) > 0.001f && m_GridRef) {
       float floatEffect = Fan::GetWindFloatEffect();
@@ -238,7 +115,6 @@ void Character::Update(const GridSystem &grid) {
       MoveWithCollision(offset, *m_GridRef);
     }
   }
-
 
   // 紀錄之前的platform狀態
   bool wasOnPlatform = m_IsStandingOnPlatform;
@@ -294,7 +170,7 @@ void Character::Update(const GridSystem &grid) {
     // 直接使用平台提供的移動量
     glm::vec2 platMove = m_CurrentPlatform->GetDeltaMovement();
     if (glm::length(platMove) > 0.01f) { // 若有實際移動才應用
-      //Translate(platMove);
+      // Translate(platMove);
     }
   }
 }
@@ -795,96 +671,131 @@ void Character::SetAffectedByWind(bool affected) {
 
 bool Character::IsAffectedByWind() const { return m_AffectedByWind; }
 
-void Character::MoveWithCollision(const glm::vec2& offset, const GridSystem& grid) {
+void Character::MoveWithCollision(const glm::vec2 &offset,
+                                  const GridSystem &grid) {
   glm::vec2 pos = GetPosition();
   int steps = static_cast<int>(glm::ceil(glm::length(offset) / 2.0f));
-  if (steps == 0) steps = 1;
+  if (steps == 0)
+    steps = 1;
 
   glm::vec2 stepVec = offset / static_cast<float>(steps);
 
+  // 確定移動方向
+  int moveDirection = 0;
+
+  // 如果水平移動值接近0，使用角色朝向決定側面碰撞檢測方向
+  if (std::abs(offset.x) < 0.0001f) {
+    moveDirection = IsFacingRight() ? 1 : -1;
+  }
+
   for (int i = 0; i < steps; ++i) {
     glm::vec2 nextPos = pos + stepVec;
-
-    float left = nextPos.x - m_Size.x / 2.0f + 1.0f;
-    float right = nextPos.x + m_Size.x / 2.0f - 1.0f;
-    float top = nextPos.y + m_Size.y;
-    float bottom = nextPos.y + 13.5f;
-
     bool blocked = false;
-    int horizontalPoints = 4;
-    int verticalPoints = 4;
 
-    for (int xi = 0; xi <= horizontalPoints; ++xi) {
-      float checkX = left + (right - left) * (xi / static_cast<float>(horizontalPoints));
-      for (int yi = 0; yi <= verticalPoints; ++yi) {
-        float checkY = bottom + (top - bottom) * (yi / static_cast<float>(verticalPoints));
-        glm::vec2 checkPos = {checkX, checkY};
+    // 計算角色在下一位置的邊界
+    float charLeft = nextPos.x - m_Size.x / 2.0f;
+    float charRight = nextPos.x + m_Size.x / 2.0f;
+    float charTop = nextPos.y + m_Size.y;
+    float charBottom = nextPos.y + 13.5f;
 
-        glm::ivec2 gridPos = grid.GameToCellPosition(checkPos);
-        CellType cell = grid.GetCell(gridPos.x, gridPos.y);
+    // 主要檢查點：左邊界、右邊界、底部
+    std::vector<glm::vec2> checkPoints;
 
-        std::cout << "[TRACE] Checking Grid(" << gridPos.x << ", " << gridPos.y
-                  << ") CellType = " << static_cast<int>(cell)
-                  << " | Pos: " << checkX << ", " << checkY
-                  << " | CanMoveOn = " << grid.CanMoveOn(cell, IsFireboy())
-                  << " | CanStandOn = " << grid.CanStandOn(cell, IsFireboy())
-                  << std::endl;
+    // 根據移動方向優先檢查相應的邊界
+    if (moveDirection < 0) {
+      // 向左移動：檢查左邊界的多個點
+      for (int j = 0; j <= 6; ++j) {
+        float checkY = charBottom + (charTop - charBottom) * (j / 6.0f);
+        checkPoints.push_back({charLeft, checkY});
+      }
+    } else if (moveDirection > 0) {
+      // 向右移動：檢查右邊界的多個點
+      for (int j = 0; j <= 6; ++j) {
+        float checkY = charBottom + (charTop - charBottom) * (j / 6.0f);
+        checkPoints.push_back({charRight, checkY});
+      }
+    }
 
-        glm::vec2 charCenter = nextPos;
-        glm::vec2 cellCenter = grid.CellToGamePosition(gridPos.x, gridPos.y);
-        float cellSize = grid.GetCellSize();
-        glm::vec2 diff = charCenter - cellCenter;
+    // 檢查底部（無論移動方向）
+    for (int j = 0; j <= 4; ++j) {
+      float checkX = charLeft + (charRight - charLeft) * (j / 4.0f);
+      checkPoints.push_back({checkX, charBottom});
+    }
 
-        float charBottom = charCenter.y + 13.5f;
-        bool yBlocked = false;
+    // 檢查頂部（無論移動方向）- 特別是對於垂直移動
+    if (std::abs(stepVec.y) > 0.001f) {
+      for (int j = 0; j <= 4; ++j) {
+        float checkX = charLeft + (charRight - charLeft) * (j / 4.0f);
+        checkPoints.push_back({checkX, charTop});
+      }
+    }
 
-        if (grid.CanStandOn(cell, IsFireboy())) {
-          std::cout << "[DIFF] charBottom = " << charBottom << " | cellCenter.y = " << cellCenter.y << std::endl;
-          if (charBottom >= cellCenter.y - 32.0f) {
-            // ✅ 額外修正：如果角色明顯在地板上方，則允許通過
-            if (charCenter.y < cellCenter.y - 10.0f) {
-              yBlocked = false; // 正常從上方落下
-            } else {
-              std::cout << "[HIT] From side or bottom into platform → charBottom = " << charBottom << std::endl;
-              yBlocked = true; // 側邊或下方
-            }
-          }
-        } else if (!grid.CanMoveOn(cell, IsFireboy())) {
-          yBlocked = true;
+    // 遍歷所有檢查點
+    for (const auto &checkPos : checkPoints) {
+      glm::ivec2 gridPos = grid.GameToCellPosition(checkPos);
+      CellType cell = grid.GetCell(gridPos.x, gridPos.y);
+
+      // 取得網格中心點和大小
+      glm::vec2 cellCenter = grid.CellToGamePosition(gridPos.x, gridPos.y);
+      float cellSize = grid.GetCellSize();
+
+      // 計算網格的上下左右邊緣
+      float cellLeft = cellCenter.x - cellSize / 2.0f;
+      float cellRight = cellCenter.x + cellSize / 2.0f;
+      float cellTop = cellCenter.y + cellSize / 2.0f;
+      // float cellBottom = cellCenter.y - cellSize / 2.0f;
+
+      // 如果是地板類型，需特殊處理
+      if (grid.CanStandOn(cell, IsFireboy())) {
+        // 判斷是從上方行走還是從側面碰撞
+        std::cout << "charBottom: " << charBottom
+                  << ", cellTop: " << (cellTop - 20.0f) << std::endl;
+        // 1. 角色底部高於地板頂部，視為行走狀態，允許移動
+        if (charBottom >= cellTop - 20.0f) { // 添加一點容差
+          std::cout << "Allow move on floor" << std::endl;
+          continue; // 允許移動
         }
 
-        if (yBlocked) {
-          std::cout << "[DEBUG] Blocked at Grid(" << gridPos.x << ", " << gridPos.y
-                    << ") by CellType = " << static_cast<int>(cell)
-                    << " | Pos: " << checkX << ", " << checkY
-                    << " | diff.y = " << diff.y << std::endl;
-          ResetExternalForce();
-          SetAffectedByWind(false);
+        // 2. 側面碰撞檢測
+        if (moveDirection < 0 && checkPos.x <= cellRight) {
+          std::cout << "Blocked on left side" << std::endl;
+          // 向左移動且撞到地板右側
+          blocked = true;
+          break;
+        } else if (moveDirection > 0 && checkPos.x >= cellLeft) {
+          // 向右移動且撞到地板左側
+          std::cout << "Blocked on right side" << std::endl;
           blocked = true;
           break;
         }
       }
-      if (blocked) break;
+      // 其他不可通行的格子
+      else if (!grid.CanMoveOn(cell, IsFireboy())) {
+        blocked = true;
+        break;
+      }
     }
 
-    if (!blocked) {
-      pos = nextPos;
-    } else {
+    if (blocked) {
+      // 碰撞：風力重置、停止移動
+      if (std::abs(offset.y) > 0.001f) { // 只有垂直移動時才重置風力
+        ResetExternalForce();
+        SetAffectedByWind(false);
+      }
       break;
+    } else {
+      // 沒有碰撞，更新位置
+      pos = nextPos;
     }
   }
 
   SetPosition(pos);
 }
 
-bool Character::IsStandingOnPlatform() const {
-  return m_IsStandingOnPlatform;
-}
+bool Character::IsStandingOnPlatform() const { return m_IsStandingOnPlatform; }
 
 std::shared_ptr<Platform> Character::GetCurrentPlatform() const {
   return m_CurrentPlatform;
 }
 
-void Character::SetGridSystem(GridSystem* grid) {
-  m_GridRef = grid;
-}
+void Character::SetGridSystem(GridSystem *grid) { m_GridRef = grid; }

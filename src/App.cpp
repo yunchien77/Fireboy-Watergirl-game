@@ -53,7 +53,7 @@ App::App() {
       RESOURCE_DIR "/material/background/button/unlevel.png",
       glm::vec2(0, -102));
   m_Level2Button->SetVisible(false);
-  // m_Level2Button->SetInteractable(false); // 第二關不可互動
+  m_Level2Button->SetInteractable(false); // 第二關不可互動
 
   // 設置按鈕點擊事件回調
   m_Level2Button->SetOnClickCallback([this]() {
@@ -79,7 +79,7 @@ App::App() {
   m_Level3Button = std::make_shared<Option>(
       RESOURCE_DIR "/material/background/button/unlevel.png", glm::vec2(0, 16));
   m_Level3Button->SetVisible(false);
-  // m_Level3Button->SetInteractable(false); // 第三關不可互動
+  m_Level3Button->SetInteractable(false); // 第三關不可互動
 
   // 設置按鈕點擊事件回調
   m_Level3Button->SetOnClickCallback([this]() {
@@ -106,7 +106,7 @@ App::App() {
       RESOURCE_DIR "/material/background/button/unlevel.png",
       glm::vec2(0, 134));
   m_Level4Button->SetVisible(false);
-  m_Level4Button->SetInteractable(true); // 第四關不可互動
+  m_Level4Button->SetInteractable(false); // 第四關不可互動
 
   // 設置按鈕點擊事件回調
   m_Level4Button->SetOnClickCallback([this]() {
@@ -133,7 +133,7 @@ App::App() {
       RESOURCE_DIR "/material/background/button/unlevel.png",
       glm::vec2(0, 252));
   m_Level5Button->SetVisible(false);
-  // m_Level5Button->SetInteractable(false); // 第五關不可互動
+  m_Level5Button->SetInteractable(false); // 第五關不可互動
 
   // 設置按鈕點擊事件回調
   m_Level5Button->SetOnClickCallback([this]() {

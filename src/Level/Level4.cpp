@@ -46,7 +46,7 @@ bool Level4::Initialize() {
 
   // 火寶石座標
   std::vector<std::pair<int, int>> fireGemCoords = {
-      {8, 3},  {23, 6}, {24, 12}, {13, 23},{15, 16}, {36, 3}};
+      {8, 3}, {23, 6}, {24, 12}, {13, 23}, {15, 16}, {36, 3}};
 
   for (const auto &[row, col] : fireGemCoords) {
     auto gem = std::make_shared<Gem>(GemType::FIRE);
@@ -59,7 +59,7 @@ bool Level4::Initialize() {
 
   // 水寶石座標
   std::vector<std::pair<int, int>> waterGemCoords = {
-      {34, 14},{29, 25}, {8, 11}, {26, 18},{29, 8}, {11, 6}};
+      {34, 14}, {29, 25}, {8, 11}, {26, 18}, {29, 8}, {11, 6}};
 
   for (const auto &[row, col] : waterGemCoords) {
     auto gem = std::make_shared<Gem>(GemType::WATER);
@@ -82,7 +82,8 @@ bool Level4::Initialize() {
     m_Root.AddChild(waterTrap);
   }
 
-  std::vector<std::pair<int, int>> SmallwaterTrapCoords = {{34, 15}, {7, 17}, {12, 17}};
+  std::vector<std::pair<int, int>> SmallwaterTrapCoords = {
+      {34, 15}, {7, 17}, {12, 17}};
 
   for (const auto &[row, col] : SmallwaterTrapCoords) {
     auto waterTrap =
@@ -93,7 +94,6 @@ bool Level4::Initialize() {
     m_Traps.push_back(waterTrap);
     m_Root.AddChild(waterTrap);
   }
-
 
   // 岩漿座標列表
   std::vector<std::pair<int, int>> LargelavaTrapCoords = {{7, 4}};
@@ -108,7 +108,7 @@ bool Level4::Initialize() {
     m_Root.AddChild(lavaTrap);
   }
 
-  std::vector<std::pair<int, int>> SmalllavaTrapCoords = {{21, 7},{25, 7}};
+  std::vector<std::pair<int, int>> SmalllavaTrapCoords = {{21, 7}, {25, 7}};
 
   for (const auto &[row, col] : SmalllavaTrapCoords) {
     auto lavaTrap =
@@ -120,7 +120,8 @@ bool Level4::Initialize() {
   }
 
   // 毒池座標列表
-  std::vector<std::pair<int, int>> LargepoisionTrapCoords = {{8, 27}, {17, 27}, {26, 27}};
+  std::vector<std::pair<int, int>> LargepoisionTrapCoords = {
+      {8, 27}, {17, 27}, {26, 27}};
 
   for (const auto &[row, col] : LargepoisionTrapCoords) {
     auto poisionTrap =
@@ -131,56 +132,58 @@ bool Level4::Initialize() {
     m_Root.AddChild(poisionTrap);
   }
 
-  std::vector<std::pair<int, int>> SmallpoisionTrapCoords = {{32, 27}, {35, 27}};
+  std::vector<std::pair<int, int>> SmallpoisionTrapCoords = {{32, 27},
+                                                             {35, 27}};
 
   for (const auto &[row, col] : SmallpoisionTrapCoords) {
-     auto poisionTrap =
-         std::make_shared<LiquidTrap>(CellType::POISON, SizeType::SMALL);
-     glm::vec2 pos = m_GridSystem.CellToGamePosition(row, col);
-     pos.y -= 3.0f;
-     poisionTrap->SetPosition(pos);
-     m_Traps.push_back(poisionTrap);
-     m_Root.AddChild(poisionTrap);
+    auto poisionTrap =
+        std::make_shared<LiquidTrap>(CellType::POISON, SizeType::SMALL);
+    glm::vec2 pos = m_GridSystem.CellToGamePosition(row, col);
+    pos.y -= 3.0f;
+    poisionTrap->SetPosition(pos);
+    m_Traps.push_back(poisionTrap);
+    m_Root.AddChild(poisionTrap);
   }
 
-    // yellow lever
-    glm::vec2 yellowLeverPos = m_GridSystem.CellToGamePosition(35, 5);
-    auto yellowLever = std::make_shared<Lever>(LeverColor::YELLOW, yellowLeverPos);
-    yellowLever->SetPosition(yellowLeverPos);
-    yellowLever->SetInitialState(yellowLeverPos, false);
-    m_Levers.push_back(yellowLever);
-    m_Root.AddChild(yellowLever);
+  // yellow lever
+  glm::vec2 yellowLeverPos = m_GridSystem.CellToGamePosition(35, 5);
+  auto yellowLever =
+      std::make_shared<Lever>(LeverColor::YELLOW, yellowLeverPos);
+  yellowLever->SetPosition(yellowLeverPos);
+  yellowLever->SetInitialState(yellowLeverPos, false);
+  m_Levers.push_back(yellowLever);
+  m_Root.AddChild(yellowLever);
 
-    // yellow gate
-    glm::vec2 yellowGatePos = m_GridSystem.CellToGamePosition(12, 2);
-    auto yellowGate = std::make_shared<Gate>(GateColor::YELLOW, yellowGatePos);
-    yellowGate->SetPosition(yellowGatePos);
-    yellowGate->SetInitialState(yellowGatePos, false);
-    m_Triggers.push_back(yellowGate);
-    m_Root.AddChild(yellowGate);
+  // yellow gate
+  glm::vec2 yellowGatePos = m_GridSystem.CellToGamePosition(12, 2);
+  auto yellowGate = std::make_shared<Gate>(GateColor::YELLOW, yellowGatePos);
+  yellowGate->SetPosition(yellowGatePos);
+  yellowGate->SetInitialState(yellowGatePos, false);
+  m_Triggers.push_back(yellowGate);
+  m_Root.AddChild(yellowGate);
 
-    // link yellow lever to yellow gate
-    yellowLever->linkTrigger(yellowGate.get());
+  // link yellow lever to yellow gate
+  yellowLever->linkTrigger(yellowGate.get());
 
-    // blue lever
-    glm::vec2 blueLeverPos = m_GridSystem.CellToGamePosition(10, 11);
-    auto blueLever = std::make_shared<Lever>(LeverColor::BLUE, blueLeverPos);
-    blueLever->SetPosition(blueLeverPos);
-    blueLever->SetInitialState(blueLeverPos, false);
-    m_Levers.push_back(blueLever);
-    m_Root.AddChild(blueLever);
+  // blue lever
+  glm::vec2 blueLeverPos = m_GridSystem.CellToGamePosition(10, 11);
+  auto blueLever = std::make_shared<Lever>(LeverColor::BLUE, blueLeverPos);
+  blueLever->SetPosition(blueLeverPos);
+  blueLever->SetInitialState(blueLeverPos, false);
+  m_Levers.push_back(blueLever);
+  m_Root.AddChild(blueLever);
 
-    // blue platform
-    glm::vec2 bluePlatformPos = m_GridSystem.CellToGamePosition(33, 9);
-    bluePlatformPos.x += 12.0f;
-    auto bluePlatform = std::make_shared<Platform>(PlatformColor::BLUE, bluePlatformPos, glm::vec2(80, 0));
-    bluePlatform->SetPosition(bluePlatformPos);
-    m_Platforms.push_back(bluePlatform);
-    m_Root.AddChild(bluePlatform);
+  // blue platform
+  glm::vec2 bluePlatformPos = m_GridSystem.CellToGamePosition(33, 9);
+  bluePlatformPos.x += 12.0f;
+  auto bluePlatform = std::make_shared<Platform>(
+      PlatformColor::BLUE, bluePlatformPos, glm::vec2(80, 0));
+  bluePlatform->SetPosition(bluePlatformPos);
+  m_Platforms.push_back(bluePlatform);
+  m_Root.AddChild(bluePlatform);
 
-    // link blue lever to blue platform
-    blueLever->linkTrigger(bluePlatform.get());
-
+  // link blue lever to blue platform
+  blueLever->linkTrigger(bluePlatform.get());
 
   return true;
 }

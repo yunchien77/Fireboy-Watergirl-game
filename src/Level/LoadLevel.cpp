@@ -12,12 +12,6 @@
 bool App::LoadLevelGrid(int levelNumber) {
   std::cout << "Loading level " << levelNumber << " grid..." << std::endl;
 
-  // 清理現有資源
-  for (auto &trap : m_Traps) {
-    m_Root.RemoveChild(trap);
-  }
-  m_Traps.clear();
-
   // 創建並初始化關卡
   auto level = LevelFactory::CreateLevel(
       levelNumber, m_GridSystem, m_Root, m_Gems, m_Gates, m_Buttons, m_Traps,

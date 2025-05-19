@@ -74,7 +74,7 @@ void App::ResetGame() {
     platform->SetVisible(false);
     m_Root.RemoveChild(platform);
   }
-  m_Levers.clear(); // 完全清除平台列表
+  m_Platforms.clear(); // 完全清除平台列表
 
   for (auto &box : m_Boxes) {
     box->SetVisible(false);

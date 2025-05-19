@@ -110,7 +110,7 @@ public:
    * @param moveDirection Direction of movement (-1 left, 1 right)
    * @return true if collision detected, false otherwise
    */
-  bool CheckCollision(Character *character, int moveDirection) const;
+  bool CheckCollision(Character *character, int moveDirection) const override;
 
   /**
    * @brief Set initial position for respawn

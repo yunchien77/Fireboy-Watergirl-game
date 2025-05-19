@@ -1,4 +1,5 @@
-#pragma once
+#ifndef LEVEL_HPP
+#define LEVEL_HPP
 
 #include "Interface/ITriggerable.hpp"
 #include "Object/GridSystem.hpp"
@@ -67,14 +68,24 @@ public:
   virtual void Cleanup();
 
 protected:
-  void InitCharacter(std::shared_ptr<Character> &character, const glm::ivec2 &gridPos);
+  void InitCharacter(std::shared_ptr<Character> &character,
+                     const glm::ivec2 &gridPos);
   void InitDoor(std::shared_ptr<Door> &door, const glm::ivec2 &gridPos);
   void InitGems(GemType type, const std::vector<glm::ivec2> &coords);
-  void InitLiquidTraps(CellType type, SizeType size, const std::vector<glm::ivec2> &coords);
+  void InitLiquidTraps(CellType type, SizeType size,
+                       const std::vector<glm::ivec2> &coords);
   void InitBoxes(const std::vector<glm::ivec2> &coords);
-  void InitFans(const std::vector<std::tuple<int, int, float, FanColor>> &fanInfos);
+  void
+  InitFans(const std::vector<std::tuple<int, int, float, FanColor>> &fanInfos);
   std::shared_ptr<Gate> InitGate(GateColor color, const glm::ivec2 &cellPos);
-  std::shared_ptr<Button> InitButton(ButtonColor color, const glm::ivec2 &cellPos, ITriggerable *target);
-  std::shared_ptr<Lever> InitLever(LeverColor color, const glm::ivec2 &cellPos, ITriggerable *target);
-  std::shared_ptr<Platform> InitPlatform(PlatformColor color, const glm::ivec2 &cellPos, const glm::vec2 &offset);
+  std::shared_ptr<Button> InitButton(ButtonColor color,
+                                     const glm::ivec2 &cellPos,
+                                     ITriggerable *target);
+  std::shared_ptr<Lever> InitLever(LeverColor color, const glm::ivec2 &cellPos,
+                                   ITriggerable *target);
+  std::shared_ptr<Platform> InitPlatform(PlatformColor color,
+                                         const glm::ivec2 &cellPos,
+                                         const glm::vec2 &offset);
 };
+
+#endif // LEVEL_HPP

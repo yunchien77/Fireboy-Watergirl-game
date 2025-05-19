@@ -23,7 +23,7 @@ public:
                 float zIndex = 20.0f);
   virtual ~MechanismBase() = default;
 
-  // Position handling
+  // Posiion handling
   virtual void SetPosition(const glm::vec2 &position);
   virtual glm::vec2 GetPosition() const;
 
@@ -37,7 +37,7 @@ public:
   // Color accessor
   Color GetColor() const;
 
-  const SDL_Rect &getRect() const {
+  virtual const SDL_Rect &getRect() const {
     UpdateRect();
     return m_Rect;
   }

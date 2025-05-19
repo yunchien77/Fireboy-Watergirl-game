@@ -6,7 +6,6 @@
 #include "Util/GameObject.hpp"
 #include <vector>
 
-
 using ButtonColor = Color;
 
 class Character;

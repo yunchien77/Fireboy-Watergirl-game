@@ -841,7 +841,7 @@ void Character::MoveWithCollision(const glm::vec2& offset, const GridSystem& gri
         if (grid.CanStandOn(cell, IsFireboy())) {
           std::cout << "[DIFF] charBottom = " << charBottom << " | cellCenter.y = " << cellCenter.y << std::endl;
           if (charBottom >= cellCenter.y - 32.0f) {
-            // ✅ 額外修正：如果角色明顯在地板上方，則允許通過
+            // 額外修正：如果角色明顯在地板上方，則允許通過
             if (charCenter.y < cellCenter.y - 10.0f) {
               yBlocked = false; // 正常從上方落下
             } else {

@@ -1,8 +1,7 @@
 #include "Mechanism/Gate.hpp"
-
+#include "Util/Image.hpp"
 #include <iostream>
 
-#include "Util/Image.hpp"
 
 Gate::Gate(GateColor color, const glm::vec2 &pos)
     : m_Color(color), m_InitialPosition(pos) {
@@ -11,6 +10,7 @@ Gate::Gate(GateColor color, const glm::vec2 &pos)
   SetPivot({0.0f, 0.0f});
   SetZIndex(25);
   SetVisible(true);
+  SetScale({1.0f, 1.0f});
 }
 
 std::string Gate::GetImagePath(GateColor color) {
@@ -55,7 +55,6 @@ void Gate::SetOpen(bool open) {
   m_IsAnimating = true;
 }
 
-
 void Gate::SetPosition(const glm::vec2 &position) {
   m_Transform.translation = position;
 }
@@ -83,34 +82,34 @@ void Gate::UpdateAnimation(float deltaTime) {
     return;
 
   float speed = 100.0f;
-  float scaleSpeed = 2.0f; // 每秒縮放變化率
+  float scaleSpeed = 2.0f; // scale change rate per second
   float maxOffsetY = 50.0f;
 
   glm::vec2 pos = m_Transform.translation;
   float currentScale = m_Transform.scale.y;
 
   if (m_ShouldOpen) {
-    // 門往下滑
+    // Move gate down
     pos.y += speed * deltaTime;
-    // 同時縮小
+    // Shrink simultaneously
     float newScale = std::max(0.0f, currentScale - scaleSpeed * deltaTime);
     SetScale({1.0f, newScale});
 
     if (pos.y >= m_InitialPosition.y + maxOffsetY || newScale <= 0.1f) {
       pos.y = m_InitialPosition.y + maxOffsetY;
-      SetScale({1.0f, 0.0f}); // 完全縮小
+      SetScale({1.0f, 0.0f}); // Fully shrunk
       m_IsAnimating = false;
     }
   } else {
-    // 門往上升
+    // Move gate up
     pos.y -= speed * deltaTime;
-    // 同時放大
+    // Expand simultaneously
     float newScale = std::min(1.0f, currentScale + scaleSpeed * deltaTime);
     SetScale({1.0f, newScale});
 
     if (pos.y <= m_InitialPosition.y) {
       pos.y = m_InitialPosition.y;
-      SetScale({1.0f, 1.0f}); // 恢復原始大小
+      SetScale({1.0f, 1.0f}); // Restore original size
       m_IsAnimating = false;
     }
   }
@@ -127,7 +126,7 @@ void Gate::Respawn() {
   SetPosition(m_InitialPosition);
   m_IsOpen = m_InitialIsOpen;
   m_ShouldOpen = m_InitialIsOpen;
-  m_IsAnimating = true; // 重啟動畫以回復狀態
+  m_IsAnimating = true; // Restart animation to restore state
 
   SetDrawable(std::make_shared<Util::Image>(GetImagePath(m_Color)));
   m_ActiveTriggerCount = 0;

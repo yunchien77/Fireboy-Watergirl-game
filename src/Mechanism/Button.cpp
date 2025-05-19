@@ -4,6 +4,7 @@
 
 #include "Character/Character.hpp"
 #include "Mechanism/Gate.hpp"
+#include "Mechanism/Platform.hpp"
 #include "Util/Image.hpp"
 
 Button::Button(ButtonColor color, const glm::vec2 &pos) : m_Color(color) {
@@ -11,6 +12,7 @@ Button::Button(ButtonColor color, const glm::vec2 &pos) : m_Color(color) {
   SetPosition(pos);
   SetPivot({0.0f, 0.0f});
   SetZIndex(25);
+  m_InitialPosition = pos;
 }
 
 std::string Button::GetImagePath(ButtonColor color) {
@@ -27,32 +29,40 @@ std::string Button::GetImagePath(ButtonColor color) {
     return RESOURCE_DIR "/material/props/button/button-white.png";
   case ButtonColor::YELLOW:
     return RESOURCE_DIR "/material/props/button/button-yellow.png";
+  default:
+    return "";
   }
-  return "";
 }
 
-void Button::update(Character *fb, Character *wg) {
+void Button::Update(Character *fb, Character *wg) {
+  if (!fb || !wg)
+    return;
+
   auto rect = getRect();
 
   bool fbOn = SDL_HasIntersection(&fb->getRect(), &rect);
   bool wgOn = SDL_HasIntersection(&wg->getRect(), &rect);
 
-  // 先判斷目前整體狀態
+  // First determine current overall state
   bool nowPressed = fbOn || wgOn;
   bool wasPressed = m_IsPressedFireboy || m_IsPressedWatergirl;
 
-  // 狀態切換才觸發
+  // Only trigger on state change
   if (nowPressed != wasPressed) {
-    for (auto *t : m_Triggers) {
-      if (auto *gate = dynamic_cast<Gate*>(t)) {
+    for (auto *trigger : m_Triggers) {
+      if (auto *gate = dynamic_cast<Gate *>(trigger)) {
         if (gate->GetColor() == m_Color) {
-          if (nowPressed) gate->OnTriggered();
-          else gate->OnReleased();
+          if (nowPressed)
+            gate->OnTriggered();
+          else
+            gate->OnReleased();
         }
-      } else if (auto *platform = dynamic_cast<Platform*>(t)) {
+      } else if (auto *platform = dynamic_cast<Platform *>(trigger)) {
         if (platform->GetColor() == m_Color) {
-          if (nowPressed) platform->OnTriggered();
-          else platform->OnReleased();
+          if (nowPressed)
+            platform->OnTriggered();
+          else
+            platform->OnReleased();
         }
       }
     }
@@ -62,14 +72,16 @@ void Button::update(Character *fb, Character *wg) {
   m_IsPressedWatergirl = wgOn;
 }
 
-
-void Button::linkTrigger(ITriggerable *target) {
-  m_Triggers.push_back(target);
+void Button::LinkTrigger(ITriggerable *target) {
+  if (target) {
+    m_Triggers.push_back(target);
+  }
 }
 
 const SDL_Rect &Button::getRect() const {
   glm::vec2 pos = m_Transform.translation;
-  glm::vec2 size = GetScaledSize() * 0.5f; // 可依實際按鈕大小微調縮放
+  glm::vec2 size =
+      GetScaledSize() * 0.5f; // Scale according to actual button size
   m_Rect.x = static_cast<int>(pos.x - size.x / 2);
   m_Rect.y = static_cast<int>(pos.y - size.y / 2);
   m_Rect.w = static_cast<int>(size.x);
@@ -83,10 +95,10 @@ void Button::SetPosition(const glm::vec2 &position) {
   m_Transform.translation = position;
 }
 
-void Button::SetInitialState(const glm::vec2& pos) {
-  m_InitialPosition = pos;
-}
+void Button::SetInitialState(const glm::vec2 &pos) { m_InitialPosition = pos; }
 
 void Button::Respawn() {
   SetPosition(m_InitialPosition);
+  m_IsPressedFireboy = false;
+  m_IsPressedWatergirl = false;
 }

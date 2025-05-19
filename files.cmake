@@ -29,6 +29,7 @@ set(SRC_FILES
         Mechanism/Box.cpp
         Mechanism/Fan.cpp
         Mechanism/Door.cpp
+        Mechanism/MechanismBase.cpp
 )
 
 set(INCLUDE_FILES
@@ -45,6 +46,8 @@ set(INCLUDE_FILES
         Interface/ITrap.hpp
         Interface/IGem.hpp
         Interface/ITriggerable.hpp
+        Interface/IInteractable.hpp
+        Interface/ICollidable.hpp
         Mechanism/Gem.hpp
         Mechanism/Gate.hpp
         Mechanism/Button.hpp
@@ -52,6 +55,7 @@ set(INCLUDE_FILES
         Mechanism/Lever.hpp
         Mechanism/Box.hpp
         Mechanism/Fan.hpp
+        Mechanism/MechanismBase.hpp
         Level/Level.hpp
         Level/Level1.hpp
         Level/Level2.hpp

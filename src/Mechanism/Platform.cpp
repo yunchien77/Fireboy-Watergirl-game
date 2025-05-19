@@ -50,6 +50,24 @@ void Platform::OnReleased() {
   m_IsAnimating = true;
 }
 
+void Platform::OnCharacterEnter(Character *character) {
+  // Add character to the list of characters on platform
+  auto it = std::find(m_CharactersOnPlatform.begin(),
+                      m_CharactersOnPlatform.end(), character);
+  if (it == m_CharactersOnPlatform.end()) {
+    m_CharactersOnPlatform.push_back(character);
+  }
+}
+
+// void Platform::OnCharacterExit(Character *character) {
+//   // Remove character from the list of characters on platform
+//   auto it = std::find(m_CharactersOnPlatform.begin(),
+//                       m_CharactersOnPlatform.end(), character);
+//   if (it != m_CharactersOnPlatform.end()) {
+//     m_CharactersOnPlatform.erase(it);
+//   }
+// }
+
 void Platform::UpdateAnimation(float deltaTime,
                                const std::vector<Character *> &characters) {
   if (!m_IsAnimating) {
@@ -90,6 +108,14 @@ void Platform::UpdateAnimation(float deltaTime,
 
   SetPosition(oldPos + movement);
   m_LastDeltaMovement = movement;
+
+  // Move characters that are on the platform
+  for (Character *character : m_CharactersOnPlatform) {
+    if (IsCharacterOn(character)) {
+      glm::vec2 charPos = character->GetPosition();
+      character->SetPosition(charPos + movement);
+    }
+  }
 }
 
 bool Platform::WillCollideWithCharacterBelow(Character *character,
@@ -204,7 +230,7 @@ const SDL_Rect &Platform::getRect() const {
   glm::vec2 pos = m_Transform.translation;
   glm::vec2 size = GetScaledSize();
 
-  m_Rect.x = static_cast<int>(pos.x);
+  m_Rect.x = static_cast<int>(pos.x - size.x / 2);
   m_Rect.y = static_cast<int>(pos.y);
   m_Rect.w = static_cast<int>(size.x);
   m_Rect.h = static_cast<int>(size.y);
@@ -215,4 +241,10 @@ void Platform::SetInitialPosition(const glm::vec2 &pos) {
   m_InitialPosition = pos;
 }
 
-void Platform::Respawn() { SetPosition(m_InitialPosition); }
+void Platform::Respawn() {
+  SetPosition(m_InitialPosition);
+  m_CharactersOnPlatform.clear();
+  m_IsAnimating = false;
+  m_ShouldMove = false;
+  m_LastDeltaMovement = {0.0f, 0.0f};
+}

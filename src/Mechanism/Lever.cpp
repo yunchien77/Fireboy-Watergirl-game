@@ -34,45 +34,85 @@ std::string Lever::GetImagePath(LeverColor color, bool isOn) const {
   return base;
 }
 
+void Lever::OnCharacterEnter(Character *character) {
+  if (character == nullptr) {
+    return;
+  }
+
+  // Add character to interacting list if not already present
+  if (std::find(m_InteractingCharacters.begin(), m_InteractingCharacters.end(),
+                character) == m_InteractingCharacters.end()) {
+    m_InteractingCharacters.push_back(character);
+  }
+
+  // Check if we should toggle the lever
+  if (ShouldToggle(character)) {
+    Toggle();
+  }
+}
+
+// void Lever::OnCharacterExit(Character *character) {
+//   if (character == nullptr) {
+//     return;
+//   }
+
+//   // Remove character from interacting list
+//   auto it = std::find(m_InteractingCharacters.begin(),
+//                       m_InteractingCharacters.end(), character);
+//   if (it != m_InteractingCharacters.end()) {
+//     m_InteractingCharacters.erase(it);
+//   }
+// }
+
+bool Lever::ShouldToggle(Character *character) const {
+  // Check character's facing direction
+  bool characterFacingRight = character->IsFacingRight();
+
+  // !m_IsOn: 桿子向右(off), m_IsOn: 桿子向左(on)
+  // Only toggle when character is facing opposite to lever direction
+  if (!characterFacingRight && !m_IsOn) {
+    // Character facing left, lever right(off), directions opposite, trigger
+    return true;
+  } else if (characterFacingRight && m_IsOn) {
+    // Character facing right, lever left(on), directions opposite, trigger
+    return true;
+  }
+
+  return false;
+}
+
 void Lever::update(Character *fb, Character *wg) {
+  // This method is kept for backward compatibility
+  // It could be refactored to use the collision detection system
+  // For now, we'll keep the old implementation
   auto rect = getRect();
 
-  // 檢查 Fireboy
+  // Check Fireboy
   if (SDL_HasIntersection(&fb->getRect(), &rect)) {
-    // 檢查角色的面向方向
     bool characterFacingRight = fb->IsFacingRight();
 
-    // !m_IsOn: 桿子向右(off), m_IsOn: 桿子向左(on)
-    // 只有當角色面向與桿子方向相反時才觸發
     if (!characterFacingRight && !m_IsOn) {
-      // 角色面向左，桿子向右(off)，方向相反，觸發
       Toggle();
       return;
     } else if (characterFacingRight && m_IsOn) {
-      // 角色面向右，桿子向左(on)，方向相反，觸發
       Toggle();
       return;
     }
   }
 
-  // 檢查 Watergirl
+  // Check Watergirl
   if (SDL_HasIntersection(&wg->getRect(), &rect)) {
-    // 檢查角色的面向方向
     bool characterFacingRight = wg->IsFacingRight();
 
-    // 只有當角色面向與桿子方向相反時才觸發
     if (!characterFacingRight && !m_IsOn) {
-      // 角色面向左，桿子向右(off)，方向相反，觸發
       Toggle();
       return;
     } else if (characterFacingRight && m_IsOn) {
-      // 角色面向右，桿子向左(on)，方向相反，觸發
       Toggle();
       return;
     }
   }
 }
-
 
 void Lever::Toggle() {
   m_IsOn = !m_IsOn;
@@ -104,17 +144,19 @@ void Lever::SetPosition(const glm::vec2 &position) {
   m_Transform.translation = position;
 }
 
-void Lever::SetInitialState(const glm::vec2& pos, bool isOn) {
-    m_InitialPosition = pos;
-    m_InitialIsOn = isOn;
+void Lever::SetInitialState(const glm::vec2 &pos, bool isOn) {
+  m_InitialPosition = pos;
+  m_InitialIsOn = isOn;
 }
 
 void Lever::Respawn() {
-    SetPosition(m_InitialPosition);
-    m_IsOn = m_InitialIsOn;
-    SetDrawable(std::make_shared<Util::Image>(GetImagePath(m_Color, m_IsOn)));
-    for (auto* t : m_Triggers) {
-        if (m_IsOn) t->OnTriggered();
-        else t->OnReleased();
-    }
+  SetPosition(m_InitialPosition);
+  m_IsOn = m_InitialIsOn;
+  SetDrawable(std::make_shared<Util::Image>(GetImagePath(m_Color, m_IsOn)));
+  for (auto *t : m_Triggers) {
+    if (m_IsOn)
+      t->OnTriggered();
+    else
+      t->OnReleased();
+  }
 }

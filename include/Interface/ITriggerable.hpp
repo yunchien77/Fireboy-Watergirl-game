@@ -3,9 +3,9 @@
 
 class ITriggerable {
 public:
-    virtual void OnTriggered() = 0;
-    virtual void OnReleased() = 0;
-    virtual ~ITriggerable() = default;
+  virtual void OnTriggered() = 0;
+  virtual void OnReleased() = 0;
+  virtual ~ITriggerable() = default;
 };
 
 #endif

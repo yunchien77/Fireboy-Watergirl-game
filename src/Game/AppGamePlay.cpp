@@ -336,7 +336,7 @@ void App::GamePlay() {
 
   // 按鈕更新（踩到的邏輯）
   for (auto &b : m_Buttons) {
-    b->update(m_Fireboy.get(), m_Watergirl.get());
+    b->Update(m_Fireboy.get(), m_Watergirl.get());
   }
 
   float deltaTime = 1.0f / 60.0f;

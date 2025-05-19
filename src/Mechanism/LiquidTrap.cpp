@@ -42,6 +42,18 @@ void LiquidTrap::SetPosition(const glm::vec2 &position) {
   m_Transform.translation = position;
 }
 
+const SDL_Rect &LiquidTrap::getRect() const {
+  glm::vec2 pos = m_Transform.translation;
+  glm::vec2 size = GetScaledSize();
+
+  m_Rect.x = static_cast<int>(pos.x - size.x / 2);
+  m_Rect.y = static_cast<int>(pos.y - size.y / 2);
+  m_Rect.w = static_cast<int>(size.x);
+  m_Rect.h = static_cast<int>(size.y);
+
+  return m_Rect;
+}
+
 void LiquidTrap::OnCharacterEnter(Character *character) {
   if (character == nullptr) {
     return;

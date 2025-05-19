@@ -30,8 +30,8 @@ std::string Fan::GetImagePath(FanColor color) {
   case FanColor::PINK:
     base += "pink";
     break;
-  case FanColor::RED:
-    base += "red";
+  case FanColor::ORANGE:
+    base += "orange";
     break;
   case FanColor::WHITE:
     base += "white";

@@ -1,6 +1,7 @@
 #include "App.hpp"
 #include "Core/Context.hpp"
 #include <SDL.h>
+#include "Util/BGM.hpp"
 
 int main(int, char **) {
   if (SDL_Init(SDL_INIT_VIDEO) != 0) {
@@ -9,6 +10,11 @@ int main(int, char **) {
 
   auto context = Core::Context::GetInstance();
   App app;
+
+  // 加入背景音樂
+  Util::BGM bgm(RESOURCE_DIR "/material/music/LevelMusic.mp3");
+  bgm.SetVolume(96);
+  bgm.Play(-1);
 
   while (!context->GetExit()) {
     switch (app.GetCurrentState()) {

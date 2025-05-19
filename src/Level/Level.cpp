@@ -122,6 +122,7 @@ void Level::InitFans(const std::vector<std::tuple<int, int, float, FanColor>> &f
 
 std::shared_ptr<Gate> Level::InitGate(GateColor color, const glm::ivec2 &cellPos) {
   glm::vec2 pos = m_GridSystem.CellToGamePosition(cellPos.x, cellPos.y);
+  pos.y -= 15.0f;
   auto gate = std::make_shared<Gate>(color, pos);
   m_Triggers.push_back(gate);
   m_Root.AddChild(gate);

@@ -37,7 +37,7 @@ bool Level4::Initialize() {
     InitLiquidTraps(CellType::POISON, SizeType::SMALL, {{32, 27}, {35, 27}});
 
     // 機關連動
-    auto yellowGate = InitGate(GateColor::YELLOW, {12, 2});
+    auto yellowGate = InitGate(GateColor::YELLOW, {12, 1});
     InitLever(LeverColor::YELLOW, {35, 5}, yellowGate.get());
 
     auto bluePlatform = InitPlatform(PlatformColor::BLUE, {33, 9}, {80, 0});

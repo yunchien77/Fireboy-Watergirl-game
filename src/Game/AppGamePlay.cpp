@@ -266,7 +266,7 @@ void App::GamePlay() {
   m_Fireboy->UpdateJump(m_GridSystem);
   m_Fireboy->ApplyGravity(m_GridSystem);
 
-  m_Watergirl->Move(watergirlMoveX, watergirlUpKeyPressed, m_GridSystem, true);
+  m_Watergirl->Move(watergirlMoveX, watergirlUpKeyPressed, m_GridSystem, false);
   m_Watergirl->UpdateJump(m_GridSystem);
   m_Watergirl->ApplyGravity(m_GridSystem);
 

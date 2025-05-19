@@ -1,13 +1,15 @@
 #ifndef FAN_HPP
 #define FAN_HPP
 
+#include "Object/Color.hpp"
 #include "Util/GameObject.hpp"
 #include <glm/glm.hpp>
 #include <memory>
 
+
 class Character;
 
-enum class FanColor { BLUE, GREEN, PINK, RED, WHITE, YELLOW };
+using FanColor = Color;
 
 class Fan : public Util::GameObject {
 public:

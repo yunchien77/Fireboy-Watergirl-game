@@ -44,7 +44,6 @@ set(INCLUDE_FILES
         Interface/ITrap.hpp
         Interface/IGem.hpp
         Interface/ITriggerable.hpp
-        Interface/IMechanism.hpp
         Mechanism/Gem.hpp
         Mechanism/Gate.hpp
         Mechanism/Button.hpp

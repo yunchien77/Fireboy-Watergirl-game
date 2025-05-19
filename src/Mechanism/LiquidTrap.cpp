@@ -30,7 +30,7 @@ LiquidTrap::LiquidTrap(CellType type, SizeType sizeType)
   SetImage(imagePath);
   this->SetZIndex(21);
 
-  SetPivot(glm::vec2(0.0f, -5.0f));
+  SetPivot(glm::vec2(0.0f, -3.5f));
 }
 
 void LiquidTrap::SetImage(const std::string &imagePath) {

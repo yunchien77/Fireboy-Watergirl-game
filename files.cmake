@@ -28,6 +28,7 @@ set(SRC_FILES
         Mechanism/Lever.cpp
         Mechanism/Box.cpp
         Mechanism/Fan.cpp
+        Mechanism/Door.cpp
 )
 
 set(INCLUDE_FILES

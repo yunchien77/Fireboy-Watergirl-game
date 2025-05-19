@@ -1,6 +1,7 @@
 #ifndef BOX_HPP
 #define BOX_HPP
 
+#include "Mechanism/MechanismBase.hpp"
 #include "Object/GridSystem.hpp"
 #include "Util/GameObject.hpp"
 #include <glm/glm.hpp>
@@ -8,38 +9,44 @@
 
 class Character;
 
-class Box : public Util::GameObject {
+class Box : public MechanismBase {
 public:
   Box();
 
-  void SetPosition(const glm::vec2 &position);
-  glm::vec2 GetPosition() const;
-  glm::vec2 GetSize() const { return boxSize; }
+  // Position and state methods - override from MechanismBase
+  void SetPosition(const glm::vec2 &position) override;
+  glm::vec2 GetPosition() const override;
+  glm::vec2 GetSize() const { return m_BoxSize; }
+  void SetInitialPosition(const glm::vec2 &pos) override;
+  void Respawn() override;
 
-  void Update();
+  // Physics methods
+  void Update() override;
   void ApplyGravity();
   bool IsGrounded();
 
+  // Character interaction methods
   void OnCollisionWithCharacter(std::shared_ptr<Character> character);
-  bool CheckCollisionWithTerrain(const glm::vec2 &position);
   bool IsCharacterOn(Character *character) const;
-
-  // 新增檢查角色碰撞的方法
   bool CheckCharacterCollision(std::shared_ptr<Character> character);
 
-  void Respawn();
-  void SetInitialPosition(const glm::vec2 &pos);
+  // Terrain collision methods
+  bool CheckCollisionWithTerrain(const glm::vec2 &position);
 
+  // Environment setup
   void SetGridSystem(GridSystem *grid) { m_GridSystem = grid; }
 
 private:
-  float velocityY;
-  float gravity;
-  float moveSpeed;
-  bool grounded;
-  glm::vec2 boxSize;
-  glm::vec2 m_InitialPosition;
+  // Physics properties
+  float m_VelocityY;
+  float m_Gravity;
+  float m_MoveSpeed;
+  bool m_Grounded;
 
+  // Size and position
+  glm::vec2 m_BoxSize;
+
+  // Environment reference
   GridSystem *m_GridSystem = nullptr;
 };
 

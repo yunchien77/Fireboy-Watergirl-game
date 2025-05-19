@@ -2,33 +2,33 @@
 #define BUTTON_HPP
 
 #include "Interface/ITriggerable.hpp"
+#include "Mechanism/MechanismBase.hpp"
 #include "Object/Color.hpp"
-#include "Util/GameObject.hpp"
 #include <vector>
 
 using ButtonColor = Color;
 
 class Character;
 
-class Button : public Util::GameObject {
+class Button : public MechanismBase {
 public:
-  Button(ButtonColor color, const glm::vec2 &pos);
+  Button(Color color, const glm::vec2 &pos);
 
-  void update(Character *fb, Character *wg);
-  void linkTrigger(ITriggerable *target);
-  void SetPosition(const glm::vec2 &position);
-  const SDL_Rect &getRect() const;
-  void SetInitialState(const glm::vec2 &pos);
-  void Respawn();
-  ButtonColor GetColor() const;
+  // State update and management
+  using MechanismBase::Update;
+  void Update(Character *fb, Character *wg);
+  void Respawn() override;
+
+  // Trigger linking
+  void LinkTrigger(ITriggerable *target);
+
+  // Position management
+  void SetPosition(const glm::vec2 &position) override;
 
 private:
-  ButtonColor m_Color;
-  mutable SDL_Rect m_Rect;
   bool m_IsPressedFireboy = false;
   bool m_IsPressedWatergirl = false;
   std::vector<ITriggerable *> m_Triggers;
-  glm::vec2 m_InitialPosition;
   std::string GetImagePath(ButtonColor color);
 };
 

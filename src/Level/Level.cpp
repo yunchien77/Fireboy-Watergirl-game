@@ -33,32 +33,43 @@ Level::Level(GridSystem &gridSystem, Util::Renderer &root,
       m_Watergirl_Door(watergirlDoor) {}
 
 void Level::Cleanup() {
-  for (auto &gem : m_Gems) m_Root.RemoveChild(gem);
+  for (auto &gem : m_Gems)
+    m_Root.RemoveChild(gem);
   m_Gems.clear();
-  for (auto &gate : m_Triggers) m_Root.RemoveChild(gate);
+  for (auto &gate : m_Triggers)
+    m_Root.RemoveChild(gate);
   m_Triggers.clear();
-  for (auto &button : m_Buttons) m_Root.RemoveChild(button);
+  for (auto &button : m_Buttons)
+    m_Root.RemoveChild(button);
   m_Buttons.clear();
-  for (auto &lever : m_Levers) m_Root.RemoveChild(lever);
+  for (auto &lever : m_Levers)
+    m_Root.RemoveChild(lever);
   m_Levers.clear();
-  for (auto &platform : m_Platforms) m_Root.RemoveChild(platform);
+  for (auto &platform : m_Platforms)
+    m_Root.RemoveChild(platform);
   m_Platforms.clear();
-  for (auto &box : m_Boxes) m_Root.RemoveChild(box);
+  for (auto &box : m_Boxes)
+    m_Root.RemoveChild(box);
   m_Boxes.clear();
-  for (auto &fan : m_Fans) m_Root.RemoveChild(fan);
+  for (auto &fan : m_Fans)
+    m_Root.RemoveChild(fan);
   m_Fans.clear();
-  for (auto &trap : m_Traps) m_Root.RemoveChild(trap);
+  for (auto &trap : m_Traps)
+    m_Root.RemoveChild(trap);
   m_Traps.clear();
 }
 
 bool Level::LoadGrid(int levelNumber) {
-  std::string gridFilePath = RESOURCE_DIR "/map/level" + std::to_string(levelNumber) + "_grid.txt";
+  std::string gridFilePath =
+      RESOURCE_DIR "/map/level" + std::to_string(levelNumber) + "_grid.txt";
   bool success = m_GridSystem.LoadFromFile(gridFilePath);
-  if (success) LOG_INFO("Successfully loaded grid for level {}", levelNumber);
+  if (success)
+    LOG_INFO("Successfully loaded grid for level {}", levelNumber);
   return success;
 }
 
-void Level::InitCharacter(std::shared_ptr<Character> &character, const glm::ivec2 &gridPos) {
+void Level::InitCharacter(std::shared_ptr<Character> &character,
+                          const glm::ivec2 &gridPos) {
   glm::vec2 pos = m_GridSystem.CellToGamePosition(gridPos.x, gridPos.y);
   character->SetPosition(pos);
   character->SetSpawnPoint(pos);
@@ -83,8 +94,9 @@ void Level::InitGems(GemType type, const std::vector<glm::ivec2> &coords) {
   }
 }
 
-void Level::InitLiquidTraps(CellType type, SizeType size, const std::vector<glm::ivec2> &coords) {
-  for (const auto& coord : coords) {
+void Level::InitLiquidTraps(CellType type, SizeType size,
+                            const std::vector<glm::ivec2> &coords) {
+  for (const auto &coord : coords) {
     int row = coord.x;
     int col = coord.y;
     auto trap = std::make_shared<LiquidTrap>(type, size);
@@ -96,7 +108,7 @@ void Level::InitLiquidTraps(CellType type, SizeType size, const std::vector<glm:
 }
 
 void Level::InitBoxes(const std::vector<glm::ivec2> &coords) {
-  for (const auto& coord : coords) {
+  for (const auto &coord : coords) {
     int row = coord.x;
     int col = coord.y;
     auto box = std::make_shared<Box>();
@@ -109,7 +121,8 @@ void Level::InitBoxes(const std::vector<glm::ivec2> &coords) {
   }
 }
 
-void Level::InitFans(const std::vector<std::tuple<int, int, float, FanColor>> &fanInfos) {
+void Level::InitFans(
+    const std::vector<std::tuple<int, int, float, FanColor>> &fanInfos) {
   for (const auto &[row, col, strength, color] : fanInfos) {
     glm::vec2 pos = m_GridSystem.CellToGamePosition(row, col);
     auto fan = std::make_shared<Fan>(pos, strength, color);
@@ -120,7 +133,8 @@ void Level::InitFans(const std::vector<std::tuple<int, int, float, FanColor>> &f
   }
 }
 
-std::shared_ptr<Gate> Level::InitGate(GateColor color, const glm::ivec2 &cellPos) {
+std::shared_ptr<Gate> Level::InitGate(GateColor color,
+                                      const glm::ivec2 &cellPos) {
   glm::vec2 pos = m_GridSystem.CellToGamePosition(cellPos.x, cellPos.y);
   pos.y -= 15.0f;
   auto gate = std::make_shared<Gate>(color, pos);
@@ -129,18 +143,22 @@ std::shared_ptr<Gate> Level::InitGate(GateColor color, const glm::ivec2 &cellPos
   return gate;
 }
 
-std::shared_ptr<Button> Level::InitButton(ButtonColor color, const glm::ivec2 &cellPos, ITriggerable *target) {
+std::shared_ptr<Button> Level::InitButton(ButtonColor color,
+                                          const glm::ivec2 &cellPos,
+                                          ITriggerable *target) {
   glm::vec2 pos = m_GridSystem.CellToGamePosition(cellPos.x, cellPos.y);
   pos.y += 20;
   auto button = std::make_shared<Button>(color, pos);
-  button->SetInitialState(pos);
-  button->linkTrigger(target);
+  button->SetInitialPosition(pos);
+  button->LinkTrigger(target);
   m_Buttons.push_back(button);
   m_Root.AddChild(button);
   return button;
 }
 
-std::shared_ptr<Lever> Level::InitLever(LeverColor color, const glm::ivec2 &cellPos, ITriggerable *target) {
+std::shared_ptr<Lever> Level::InitLever(LeverColor color,
+                                        const glm::ivec2 &cellPos,
+                                        ITriggerable *target) {
   glm::vec2 pos = m_GridSystem.CellToGamePosition(cellPos.x, cellPos.y);
   auto lever = std::make_shared<Lever>(color, pos);
   lever->SetInitialState(pos, false);
@@ -150,7 +168,9 @@ std::shared_ptr<Lever> Level::InitLever(LeverColor color, const glm::ivec2 &cell
   return lever;
 }
 
-std::shared_ptr<Platform> Level::InitPlatform(PlatformColor color, const glm::ivec2 &cellPos, const glm::vec2 &offset) {
+std::shared_ptr<Platform> Level::InitPlatform(PlatformColor color,
+                                              const glm::ivec2 &cellPos,
+                                              const glm::vec2 &offset) {
   glm::vec2 pos = m_GridSystem.CellToGamePosition(cellPos.x, cellPos.y);
   pos.x += 12.0f;
   auto platform = std::make_shared<Platform>(color, pos, offset);

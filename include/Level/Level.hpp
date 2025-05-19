@@ -64,6 +64,8 @@ public:
 
   virtual bool LoadGrid(int levelNumber);
 
+  virtual void Cleanup();
+
 protected:
   void InitCharacter(std::shared_ptr<Character> &character, const glm::ivec2 &gridPos);
   void InitDoor(std::shared_ptr<Door> &door, const glm::ivec2 &gridPos);

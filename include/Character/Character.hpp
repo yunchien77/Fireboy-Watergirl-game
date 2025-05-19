@@ -81,6 +81,19 @@ public:
   static constexpr float MAX_EXTERNAL_FORCE = 25.0f;
   static constexpr float MIN_EXTERNAL_FORCE = 0.0f;
 
+  glm::vec2 AdjustPositionForPlatform(const glm::vec2 &position,
+                                      int moveDirection);
+  bool CheckStandingOnPlatform(const glm::vec2 &position,
+                               std::shared_ptr<Platform> &outPlatform);
+  void HandleJumpAscending(const GridSystem &grid);
+  void HandleJumpDescending(const GridSystem &grid);
+  bool CheckTopCollision(const glm::vec2 &position, const GridSystem &grid);
+  bool CheckBottomCollision(const glm::vec2 &position, const GridSystem &grid);
+  glm::vec2 CheckAndAdjustSideCollisions(const glm::vec2 &position,
+                                         const GridSystem &grid);
+  void HandleLandingOnPlatform(std::shared_ptr<Platform> platform);
+  void AdjustPositionToAvoidWalls(glm::vec2 &position, const GridSystem &grid);
+
 protected:
   // 角色移動輔助方法
   void ApplyFlip();

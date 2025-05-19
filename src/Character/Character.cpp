@@ -4,6 +4,8 @@
 #include <iostream>
 #include <map>
 
+#define CHARACTER_OFFSET 13.5f
+
 class Fan;
 
 // 構造函數和基本初始化
@@ -14,7 +16,7 @@ Character::Character(const std::string &imagePath, const float zindex)
       m_JumpMaxHeight(90), m_IsOnGround(true), m_UpKeyWasPressed(false) {
 
   m_Size = GetScaledSize();
-  SetPivot(glm::vec2(0.0f, -m_Size.y / 2 - 13.5));
+  SetPivot(glm::vec2(0.0f, -m_Size.y / 2 - CHARACTER_OFFSET));
 }
 
 //==================================
@@ -80,9 +82,85 @@ void Character::SetAffectedByWind(bool affected) {
   m_AffectedByWind = affected;
 }
 
-//==================================
-// 角色移動和物理相關方法實現
-//==================================
+// ============================================================
+// 角色移動相關輔助函數
+// ============================================================
+
+void Character::ApplyFlip() {
+  if (m_FacingRight) {
+    m_Transform.scale.x = std::abs(m_Transform.scale.x); // 確保正向
+  } else {
+    m_Transform.scale.x = -std::abs(m_Transform.scale.x); // 確保負向
+  }
+}
+
+void Character::Translate(const glm::vec2 &offset) {
+  m_Transform.translation += offset;
+}
+
+// ============================================================
+// 碰撞檢測相關函數
+// ============================================================
+
+// 根據平台碰撞調整位置
+glm::vec2 Character::AdjustPositionForPlatform(const glm::vec2 &position,
+                                               int moveDirection) {
+  glm::vec2 adjustedPos = position;
+  glm::vec2 currentPos = GetPosition();
+
+  // 暫時設定到測試位置
+  SetPosition(position);
+
+  for (const auto &platform : m_Platforms) {
+    if (platform->CheckCollision(this, moveDirection)) {
+      // 根據碰撞方向調整位置
+      glm::vec2 platPos = platform->GetPosition();
+      glm::vec2 platSize = platform->GetScaledSize();
+
+      if (moveDirection > 0) {
+        // 從左側碰撞
+        float platLeft = platPos.x - (platSize.x / 2);
+        adjustedPos.x = platLeft - (m_Size.x / 2) - 0.1f;
+      } else if (moveDirection < 0) {
+        // 從右側碰撞
+        float platRight = platPos.x + (platSize.x / 2);
+        adjustedPos.x = platRight + (m_Size.x / 2) + 0.1f;
+      }
+      break;
+    }
+  }
+
+  // 恢復原位置
+  SetPosition(currentPos);
+  return adjustedPos;
+}
+
+// 檢查角色是否站在平台上
+bool Character::CheckStandingOnPlatform(
+    const glm::vec2 &position, std::shared_ptr<Platform> &outPlatform) {
+  glm::vec2 currentPos = GetPosition();
+
+  // 暫時設定到測試位置
+  SetPosition(position);
+
+  bool isStanding = false;
+  for (const auto &platform : m_Platforms) {
+    if (platform->IsCharacterOn(this)) {
+      isStanding = true;
+      outPlatform = platform;
+      break;
+    }
+  }
+
+  // 恢復原位置
+  SetPosition(currentPos);
+  return isStanding;
+}
+
+// ============================================================
+// 角色移動相關方法
+// ============================================================
+
 void Character::Move(int deltaX, bool upKeyPressed, const GridSystem &grid,
                      bool isFireboy) {
   isMoving = (deltaX != 0);
@@ -262,335 +340,223 @@ void Character::MoveWithCollision(const glm::vec2 &offset,
   SetPosition(pos);
 }
 
-void Character::Translate(const glm::vec2 &offset) {
-  m_Transform.translation += offset;
+// ============================================================
+// 角色跳躍相關方法
+// ============================================================
+
+// 處理角色跳躍上升階段
+void Character::HandleJumpAscending(const GridSystem &grid) {
+  glm::vec2 pos = GetPosition();
+  float jumpSpeed = 7.0f;
+  glm::vec2 nextPos = pos;
+  nextPos.y += jumpSpeed;
+
+  // 檢查頂部碰撞
+  bool topCollision = CheckTopCollision(nextPos, grid);
+
+  // 檢查側面碰撞並調整位置
+  nextPos = CheckAndAdjustSideCollisions(nextPos, grid);
+
+  // 檢查平台碰撞並調整位置
+  int moveDirection = (nextPos.x > pos.x) ? 1 : ((nextPos.x < pos.x) ? -1 : 0);
+  nextPos = AdjustPositionForPlatform(nextPos, moveDirection);
+
+  if (topCollision) {
+    // 撞到天花板 - 開始下落
+    m_JumpHeight += isMoving ? (jumpSpeed / 1.5f) : m_JumpMaxHeight;
+    return;
+  }
+
+  pos = nextPos;
+  m_JumpHeight += jumpSpeed;
+  SetPosition(pos);
 }
 
-//==================================
-// 角色跳躍和重力相關方法實現
-//==================================
+// 處理角色跳躍下落階段
+void Character::HandleJumpDescending(const GridSystem &grid) {
+  glm::vec2 pos = GetPosition();
+  float fallSpeed = 5.0f;
+  glm::vec2 nextPos = pos;
+  nextPos.y -= fallSpeed;
+
+  // 檢查底部碰撞
+  bool bottomCollision = CheckBottomCollision(nextPos, grid);
+  if (bottomCollision) {
+    return; // 已著陸
+  }
+
+  // 檢查側面碰撞並調整位置
+  nextPos = CheckAndAdjustSideCollisions(nextPos, grid);
+
+  // 檢查平台碰撞並調整位置
+  int moveDirection = (nextPos.x > pos.x) ? 1 : ((nextPos.x < pos.x) ? -1 : 0);
+  nextPos = AdjustPositionForPlatform(nextPos, moveDirection);
+
+  // 檢查是否著陸在平台上
+  std::shared_ptr<Platform> landingPlatform;
+  if (CheckStandingOnPlatform(nextPos, landingPlatform)) {
+    HandleLandingOnPlatform(landingPlatform);
+    return;
+  }
+
+  pos = nextPos;
+  SetPosition(pos);
+}
+
+// 檢查頂部碰撞
+bool Character::CheckTopCollision(const glm::vec2 &position,
+                                  const GridSystem &grid) {
+  float left = position.x - (m_Size.x / 2) + 0.3f; // 添加容差
+  float right = position.x + (m_Size.x / 2) - 0.3f;
+  float top = position.y + m_Size.y;
+
+  int checkPoints = 10;
+  for (int i = 0; i <= checkPoints; i++) {
+    float checkX =
+        left + (right - left) * (static_cast<float>(i) / checkPoints);
+    glm::ivec2 gridPosTop = grid.GameToCellPosition(glm::vec2(checkX, top));
+    CellType aboveCell = grid.GetCell(gridPosTop.x, gridPosTop.y);
+
+    if (aboveCell != CellType::EMPTY) {
+      return true;
+    }
+  }
+
+  return false;
+}
+
+// 檢查底部碰撞
+bool Character::CheckBottomCollision(const glm::vec2 &position,
+                                     const GridSystem &grid) {
+  float left = position.x - (m_Size.x / 2) + 0.3f; // 添加容差
+  float right = position.x + (m_Size.x / 2) - 0.3f;
+  float bottom = position.y + CHARACTER_OFFSET;
+
+  int checkPoints = 10;
+  for (int i = 0; i <= checkPoints; i++) {
+    float checkX =
+        left + (right - left) * (static_cast<float>(i) / checkPoints);
+    glm::ivec2 gridPosBottom =
+        grid.GameToCellPosition(glm::vec2(checkX, bottom));
+    CellType belowCell = grid.GetCell(gridPosBottom.x, gridPosBottom.y);
+
+    if (belowCell != CellType::EMPTY) {
+      // 調整Y位置以吸附到地板
+      float cellBottomY =
+          grid.CellToGamePosition(gridPosBottom.x, gridPosBottom.y).y;
+      glm::vec2 pos = GetPosition();
+      pos.y = cellBottomY + (grid.GetCellSize() / 2.0f) - CHARACTER_OFFSET;
+      m_IsJumping = false;
+      m_IsOnGround = true;
+      m_JumpHeight = 0;
+      SetPosition(pos);
+      return true;
+    }
+  }
+
+  return false;
+}
+
+// 檢查側面碰撞並調整位置
+glm::vec2 Character::CheckAndAdjustSideCollisions(const glm::vec2 &position,
+                                                  const GridSystem &grid) {
+  float tolerance = 0.3f;
+  float left = position.x - (m_Size.x / 2) + tolerance;
+  float right = position.x + (m_Size.x / 2) - tolerance;
+  float middle = position.y + (m_Size.y / 2);
+
+  glm::vec2 adjustedPos = position;
+  int checkPoints = 20;
+
+  // 檢查左側碰撞
+  int leftCollisionCount = 0;
+  glm::ivec2 leftCollisionCell(0, 0);
+
+  for (int i = 0; i <= checkPoints; i++) {
+    float checkY =
+        middle +
+        ((m_Size.y / 2) * (static_cast<float>(i) / checkPoints) - m_Size.y / 4);
+    glm::ivec2 gridPosLeft = grid.GameToCellPosition(glm::vec2(left, checkY));
+    CellType leftCell = grid.GetCell(gridPosLeft.x, gridPosLeft.y);
+
+    if (leftCell != CellType::EMPTY) {
+      leftCollisionCount++;
+      leftCollisionCell = gridPosLeft;
+    }
+  }
+
+  // 檢查右側碰撞
+  int rightCollisionCount = 0;
+  glm::ivec2 rightCollisionCell(0, 0);
+
+  for (int i = 0; i <= checkPoints; i++) {
+    float checkY =
+        middle +
+        ((m_Size.y / 2) * (static_cast<float>(i) / checkPoints) - m_Size.y / 4);
+    glm::ivec2 gridPosRight = grid.GameToCellPosition(glm::vec2(right, checkY));
+    CellType rightCell = grid.GetCell(gridPosRight.x, gridPosRight.y);
+
+    if (rightCell != CellType::EMPTY) {
+      rightCollisionCount++;
+      rightCollisionCell = gridPosRight;
+    }
+  }
+
+  // 調整位置以避免碰撞
+  int collisionThreshold = 2;
+  if (leftCollisionCount >= collisionThreshold) {
+    float cellRightEdge =
+        grid.CellToGamePosition(leftCollisionCell.x, leftCollisionCell.y).x +
+        (grid.GetCellSize() / 2.0f);
+    adjustedPos.x = cellRightEdge + (m_Size.x / 2) - tolerance / 2;
+  } else if (rightCollisionCount >= collisionThreshold) {
+    float cellLeftEdge =
+        grid.CellToGamePosition(rightCollisionCell.x, rightCollisionCell.y).x -
+        (grid.GetCellSize() / 2.0f);
+    adjustedPos.x = cellLeftEdge - (m_Size.x / 2) + tolerance / 2;
+  }
+
+  return adjustedPos;
+}
+
+// 處理在平台上著陸
+void Character::HandleLandingOnPlatform(std::shared_ptr<Platform> platform) {
+  glm::vec2 pos = GetPosition();
+  glm::vec2 platPos = platform->GetPosition();
+
+  // 調整位置以正確站在平台上
+  pos.y = platPos.y + 11.5f - CHARACTER_OFFSET; // platTop - charBottomOffset
+  m_IsJumping = false;
+  m_IsOnGround = true;
+  m_JumpHeight = 0;
+  m_IsStandingOnPlatform = true;
+  m_CurrentPlatform = platform;
+  SetPosition(pos);
+}
+
 void Character::UpdateJump(const GridSystem &grid) {
-  // Only reset jump state when character is jumping, standing on platform,
-  // and jump height > 0
+  // 如果角色已經站在平台上且已經跳躍，則重置跳躍狀態
   if (m_IsJumping && m_IsStandingOnPlatform && m_JumpHeight > 0) {
     m_IsJumping = false;
     m_Velocity.y = 0;
-    return; // Already landed on platform, reset jump state
+    return;
   }
 
   if (m_IsJumping) {
-    glm::vec2 pos = GetPosition();
-    float fallSpeed = 5.0f; // Fall speed
-    float jumpSpeed = 7.0f; // Jump speed
-
-    glm::vec2 nextPos = pos;
-
-    // Rising phase
+    // 跳躍分為上升和下降兩個階段
     if (m_JumpHeight < m_JumpMaxHeight) {
-      nextPos.y += jumpSpeed; // Try to jump up
-
-      // Define the four corners of the character box (after rising)
-      float tolerance = 0.3f; // Small tolerance to avoid false collisions
-      float left = nextPos.x - (m_Size.x / 2) + tolerance;
-      float right = nextPos.x + (m_Size.x / 2) - tolerance;
-      float top = nextPos.y + m_Size.y;
-      float middle =
-          nextPos.y + (m_Size.y / 2); // Middle height for side collision
-
-      // Check collision along the top edge
-      bool topCollision = false;
-      int checkPoints = 10; // Number of check points for top
-      for (int i = 0; i <= checkPoints; i++) {
-        float checkX =
-            left + (right - left) * (static_cast<float>(i) / checkPoints);
-        glm::ivec2 gridPosTop = grid.GameToCellPosition(glm::vec2(checkX, top));
-        CellType aboveCell = grid.GetCell(gridPosTop.x, gridPosTop.y);
-
-        if (aboveCell != CellType::EMPTY) {
-          topCollision = true;
-          break;
-        }
-      }
-
-      // Using collision threshold for sides
-      int leftCollisionCount = 0;
-      int rightCollisionCount = 0;
-      int collisionThreshold =
-          2; // Need at least this many collision points to count as a collision
-
-      // Check collision along the left side
-      checkPoints = 20; // Reduced number of check points for sides
-      glm::ivec2 leftCollisionCell(0, 0);
-
-      for (int i = 0; i <= checkPoints; i++) {
-        float checkY =
-            middle + ((m_Size.y / 2) * (static_cast<float>(i) / checkPoints) -
-                      m_Size.y / 4);
-        glm::ivec2 gridPosLeft =
-            grid.GameToCellPosition(glm::vec2(left, checkY));
-        CellType leftCell = grid.GetCell(gridPosLeft.x, gridPosLeft.y);
-
-        if (!topCollision && leftCell != CellType::EMPTY) {
-          leftCollisionCount++;
-          leftCollisionCell = gridPosLeft; // Save for position correction
-        }
-      }
-
-      // Check collision along the right side
-      glm::ivec2 rightCollisionCell(0, 0);
-
-      for (int i = 0; i <= checkPoints; i++) {
-        float checkY =
-            middle + ((m_Size.y / 2) * (static_cast<float>(i) / checkPoints) -
-                      m_Size.y / 4);
-        glm::ivec2 gridPosRight =
-            grid.GameToCellPosition(glm::vec2(right, checkY));
-        CellType rightCell = grid.GetCell(gridPosRight.x, gridPosRight.y);
-
-        if (!topCollision && rightCell != CellType::EMPTY) {
-          rightCollisionCount++;
-          rightCollisionCell = gridPosRight; // Save for position correction
-        }
-      }
-
-      // Apply side collision corrections if threshold is met
-      if (leftCollisionCount >= collisionThreshold) {
-        // Adjust position to avoid penetrating the wall
-        float cellRightEdge =
-            grid.CellToGamePosition(leftCollisionCell.x, leftCollisionCell.y)
-                .x +
-            (grid.GetCellSize() / 2.0f);
-        nextPos.x = cellRightEdge + (m_Size.x / 2) - tolerance / 2;
-      } else if (rightCollisionCount >= collisionThreshold) {
-        // Adjust position to avoid penetrating the wall
-        float cellLeftEdge =
-            grid.CellToGamePosition(rightCollisionCell.x, rightCollisionCell.y)
-                .x -
-            (grid.GetCellSize() / 2.0f);
-        nextPos.x = cellLeftEdge - (m_Size.x / 2) + tolerance / 2;
-      }
-
-      // 檢查與平台的碰撞 (新增)
-      int moveDirection = 0;
-      if (nextPos.x > pos.x)
-        moveDirection = 1;
-      else if (nextPos.x < pos.x)
-        moveDirection = -1;
-
-      for (const auto &platform : m_Platforms) {
-        // 儲存當前位置
-        glm::vec2 currentPos = GetPosition();
-
-        // 暫時將角色移動到下一個位置進行碰撞檢測
-        SetPosition(nextPos);
-
-        if (platform->CheckCollision(this, moveDirection)) {
-
-          // 還原原始位置
-          SetPosition(currentPos);
-
-          // 根據碰撞調整位置
-          glm::vec2 platPos = platform->GetPosition();
-          glm::vec2 platSize = platform->GetScaledSize();
-
-          if (moveDirection > 0) {
-            // 從左側碰撞
-            float platLeft = platPos.x - (platSize.x / 2);
-            nextPos.x = platLeft - (m_Size.x / 2) - 0.1f;
-          } else if (moveDirection < 0) {
-            // 從右側碰撞
-            float platRight = platPos.x + (platSize.x / 2);
-            nextPos.x = platRight + (m_Size.x / 2) + 0.1f;
-          }
-          break;
-        }
-
-        // 還原原始位置
-        SetPosition(currentPos);
-      }
-
-      if (topCollision) {
-        // Hit ceiling - start falling
-        m_JumpHeight += isMoving ? (jumpSpeed / 1.5f) : m_JumpMaxHeight;
-        return;
-      }
-
-      pos = nextPos;
-      m_JumpHeight += jumpSpeed;
+      // 上升階段
+      HandleJumpAscending(grid);
+    } else {
+      // 下降階段
+      HandleJumpDescending(grid);
     }
-    // Falling phase
-    else {
-      nextPos.y -= fallSpeed; // Try to descend
-
-      // Define the character box corners (after descending)
-      float tolerance = 0.3f; // Small tolerance to avoid false collisions
-      float left = nextPos.x - (m_Size.x / 2) + tolerance;
-      float right = nextPos.x + (m_Size.x / 2) - tolerance;
-      float bottom = nextPos.y + 13.5f;
-      float middle =
-          nextPos.y + (m_Size.y / 2); // Middle height for side collision
-
-      // Check collision along the bottom edge
-      bool bottomCollision = false;
-      int checkPoints = 10; // Number of check points for bottom
-      for (int i = 0; i <= checkPoints; i++) {
-        float checkX =
-            left + (right - left) * (static_cast<float>(i) / checkPoints);
-        glm::ivec2 gridPosBottom =
-            grid.GameToCellPosition(glm::vec2(checkX, bottom));
-        CellType belowCell = grid.GetCell(gridPosBottom.x, gridPosBottom.y);
-
-        if (belowCell != CellType::EMPTY) {
-          bottomCollision = true;
-
-          // Adjust Y position to snap to the floor
-          float cellBottomY =
-              grid.CellToGamePosition(gridPosBottom.x, gridPosBottom.y).y;
-          pos.y = cellBottomY + (grid.GetCellSize() / 2.0f) - 13.5f;
-          m_IsJumping = false;
-          m_IsOnGround = true;
-          m_JumpHeight = 0;
-          SetPosition(pos);
-          return;
-        }
-      }
-
-      // Using collision threshold for sides during falling
-      int leftCollisionCount = 0;
-      int rightCollisionCount = 0;
-      int collisionThreshold =
-          2; // Need at least this many collision points to count as a collision
-
-      // Check collision along the left side while falling
-      checkPoints = 10; // Reduced number of check points for sides
-      glm::ivec2 leftCollisionCell(0, 0);
-
-      for (int i = 0; i <= checkPoints; i++) {
-        float checkY =
-            middle + ((m_Size.y / 2) * (static_cast<float>(i) / checkPoints) -
-                      m_Size.y / 4);
-        glm::ivec2 gridPosLeft =
-            grid.GameToCellPosition(glm::vec2(left, checkY));
-        CellType leftCell = grid.GetCell(gridPosLeft.x, gridPosLeft.y);
-
-        if (!bottomCollision && leftCell != CellType::EMPTY) {
-          leftCollisionCount++;
-          leftCollisionCell = gridPosLeft; // Save for position correction
-        }
-      }
-
-      // Check collision along the right side while falling
-      checkPoints = 20;
-      glm::ivec2 rightCollisionCell(0, 0);
-
-      for (int i = 0; i <= checkPoints; i++) {
-        float checkY =
-            middle + ((m_Size.y / 2) * (static_cast<float>(i) / checkPoints) -
-                      m_Size.y / 4);
-        glm::ivec2 gridPosRight =
-            grid.GameToCellPosition(glm::vec2(right, checkY));
-        CellType rightCell = grid.GetCell(gridPosRight.x, gridPosRight.y);
-
-        if (!bottomCollision && rightCell != CellType::EMPTY) {
-          rightCollisionCount++;
-          rightCollisionCell = gridPosRight; // Save for position correction
-        }
-      }
-
-      // Apply side collision corrections if threshold is met
-      if (leftCollisionCount >= collisionThreshold) {
-        // Adjust position to avoid penetrating the wall
-        float cellRightEdge =
-            grid.CellToGamePosition(leftCollisionCell.x, leftCollisionCell.y)
-                .x +
-            (grid.GetCellSize() / 2.0f);
-        nextPos.x = cellRightEdge + (m_Size.x / 2) - tolerance / 2;
-      } else if (rightCollisionCount >= collisionThreshold) {
-        // Adjust position to avoid penetrating the wall
-        float cellLeftEdge =
-            grid.CellToGamePosition(rightCollisionCell.x, rightCollisionCell.y)
-                .x -
-            (grid.GetCellSize() / 2.0f);
-        nextPos.x = cellLeftEdge - (m_Size.x / 2) + tolerance / 2;
-      }
-
-      // 檢查與平台的碰撞 (下落時) (新增)
-      int moveDirection = 0;
-      if (nextPos.x > pos.x)
-        moveDirection = 1;
-      else if (nextPos.x < pos.x)
-        moveDirection = -1;
-
-      for (const auto &platform : m_Platforms) {
-        // 儲存當前位置
-        glm::vec2 currentPos = GetPosition();
-
-        // 暫時將角色移動到下一個位置進行碰撞檢測
-        SetPosition(nextPos);
-
-        if (platform->CheckCollision(this, moveDirection)) {
-
-          // 還原原始位置
-          SetPosition(currentPos);
-
-          // 根據碰撞調整位置
-          glm::vec2 platPos = platform->GetPosition();
-          glm::vec2 platSize = platform->GetScaledSize();
-
-          if (moveDirection > 0) {
-            // 從左側碰撞
-            float platLeft = platPos.x - (platSize.x / 2);
-            nextPos.x = platLeft - (m_Size.x / 2) - 0.1f;
-          } else if (moveDirection < 0) {
-            // 從右側碰撞
-            float platRight = platPos.x + (platSize.x / 2);
-            nextPos.x = platRight + (m_Size.x / 2) + 0.1f;
-          }
-          break;
-        }
-
-        // 還原原始位置
-        SetPosition(currentPos);
-      }
-
-      // 檢查角色是否著陸在平台上
-      for (const auto &platform : m_Platforms) {
-        // 儲存當前位置
-        glm::vec2 currentPos = GetPosition();
-
-        // 暫時將角色移動到下一個位置進行碰撞檢測
-        SetPosition(nextPos);
-
-        if (platform->IsCharacterOn(this)) {
-          // 著陸在平台上
-          glm::vec2 platPos = platform->GetPosition();
-
-          // 還原原始位置
-          SetPosition(currentPos);
-
-          // 調整位置以正確站在平台上
-          pos.y = platPos.y + 11.5f - 13.5f; // platTop - charBottomOffset
-          m_IsJumping = false;
-          m_IsOnGround = true;
-          m_JumpHeight = 0;
-          m_IsStandingOnPlatform = true;
-          m_CurrentPlatform = platform;
-          SetPosition(pos);
-          return;
-        }
-
-        // 還原原始位置
-        SetPosition(currentPos);
-      }
-
-      if (!bottomCollision) {
-        pos = nextPos;
-      }
-    }
-
-    SetPosition(pos);
   }
 }
+
+// ============================================================
+// 重力系統相關方法
+// ============================================================
 
 struct CellComparator {
   bool operator()(const glm::ivec2 &a, const glm::ivec2 &b) const {
@@ -618,8 +584,7 @@ void Character::ApplyGravity(const GridSystem &grid) {
     float footLeft = nextPos.x - (footWidth / 2);
     float footRight = nextPos.x + (footWidth / 2);
 
-    // 使用精確的底部接觸點，添加小的向下偏移確保檢測正確
-    float bottom = nextPos.y + 13.5f; // 添加1像素的偏移
+    float bottom = nextPos.y + CHARACTER_OFFSET;
     int checkPoints = 7;
 
     // 統計每個網格有多少檢查點可以站立
@@ -653,95 +618,66 @@ void Character::ApplyGravity(const GridSystem &grid) {
     if (maxCount >= minRequiredPoints) {
       m_IsOnGround = true;
       float cellBottomY = grid.CellToGamePosition(bestGrid.x, bestGrid.y).y;
-      pos.y = cellBottomY + (grid.GetCellSize() / 2.0f) - 13.5f;
+      pos.y = cellBottomY + (grid.GetCellSize() / 2.0f) - CHARACTER_OFFSET;
     } else {
-      // 站立點少於3個，設定為不在地面上並下落
-      m_IsOnGround = false;
       pos = nextPos;
-
-      // 檢查角色左右兩邊的身體位置，防止卡在牆中
-      float bodyLeft = pos.x - (m_Size.x / 2.0f);
-      float bodyRight = pos.x + (m_Size.x / 2.0f);
-      float bodyMiddleY = pos.y; // 角色中間高度
-
-      // 檢查左側身體
-      glm::ivec2 leftBodyCell =
-          grid.GameToCellPosition(glm::vec2(bodyLeft, bodyMiddleY));
-      CellType leftCellType = grid.GetCell(leftBodyCell.x, leftBodyCell.y);
-
-      // 檢查右側身體
-      glm::ivec2 rightBodyCell =
-          grid.GameToCellPosition(glm::vec2(bodyRight, bodyMiddleY));
-      CellType rightCellType = grid.GetCell(rightBodyCell.x, rightBodyCell.y);
-
-      // 如果左側或右側會碰到牆，調整X位置
-      if (!grid.CanMoveOn(leftCellType, this->IsFireboy())) {
-        // 如果左側碰牆，向右調整
-        float cellRightEdge =
-            grid.CellToGamePosition(leftBodyCell.x, leftBodyCell.y).x +
-            (grid.GetCellSize() / 2.0f);
-        pos.x = cellRightEdge + (m_Size.x / 2.0f);
-      } else if (!grid.CanMoveOn(rightCellType, this->IsFireboy())) {
-        // 如果右側碰牆，向左調整
-        float cellLeftEdge =
-            grid.CellToGamePosition(rightBodyCell.x, rightBodyCell.y).x -
-            (grid.GetCellSize() / 2.0f);
-        pos.x = cellLeftEdge - (m_Size.x / 2.0f);
-      }
+      AdjustPositionToAvoidWalls(pos, grid);
     }
 
     SetPosition(pos);
   }
 }
 
-void Character::ApplyFlip() {
-  if (m_FacingRight) {
-    m_Transform.scale.x = std::abs(m_Transform.scale.x); // 確保正向
-  } else {
-    m_Transform.scale.x = -std::abs(m_Transform.scale.x); // 確保負向
+// 調整位置避免卡牆
+void Character::AdjustPositionToAvoidWalls(glm::vec2 &position,
+                                           const GridSystem &grid) {
+  float bodyLeft = position.x - (m_Size.x / 2.0f);
+  float bodyRight = position.x + (m_Size.x / 2.0f);
+  float bodyMiddleY = position.y; // 角色中間高度
+
+  // 檢查左側身體
+  glm::ivec2 leftBodyCell =
+      grid.GameToCellPosition(glm::vec2(bodyLeft, bodyMiddleY));
+  CellType leftCellType = grid.GetCell(leftBodyCell.x, leftBodyCell.y);
+
+  // 檢查右側身體
+  glm::ivec2 rightBodyCell =
+      grid.GameToCellPosition(glm::vec2(bodyRight, bodyMiddleY));
+  CellType rightCellType = grid.GetCell(rightBodyCell.x, rightBodyCell.y);
+
+  // 如果左側或右側會碰到牆，調整X位置
+  if (!grid.CanMoveOn(leftCellType, this->IsFireboy())) {
+    // 如果左側碰牆，向右調整
+    float cellRightEdge =
+        grid.CellToGamePosition(leftBodyCell.x, leftBodyCell.y).x +
+        (grid.GetCellSize() / 2.0f);
+    position.x = cellRightEdge + (m_Size.x / 2.0f);
+  } else if (!grid.CanMoveOn(rightCellType, this->IsFireboy())) {
+    // 如果右側碰牆，向左調整
+    float cellLeftEdge =
+        grid.CellToGamePosition(rightBodyCell.x, rightBodyCell.y).x -
+        (grid.GetCellSize() / 2.0f);
+    position.x = cellLeftEdge - (m_Size.x / 2.0f);
   }
 }
+
+// ============================================================
+// 狀態相關方法
+// ============================================================
 
 void Character::Die() {
   m_IsDead = true;
   SetPosition(m_SpawnPoint);
 }
 
-bool Character::IsDead() const { return m_IsDead; }
-
 void Character::Respawn() {
   m_IsDead = false;
   SetPosition(m_SpawnPoint);
 }
 
-void Character::SetSpawnPoint(const glm::vec2 &spawn) { m_SpawnPoint = spawn; }
-
-void Character::SetPreviousPosition() {
-  m_LastPosition = m_Transform.translation;
-}
-
-void Character::UndoMovement() { m_Transform.translation = m_LastPosition; }
-
-void Character::Translate(const glm::vec2 &offset) {
-  m_Transform.translation += offset;
-}
-
-void Character::SetStandingOnPlatform(bool value) {
-  m_IsStandingOnPlatform = value;
-}
-
-void Character::SetPlatforms(
-    const std::vector<std::shared_ptr<Platform>> &platforms) {
-  m_Platforms = platforms;
-}
-
-bool Character::IsMoving() const { return isMoving; }
-
-bool Character::IsFacingRight() const { return m_FacingRight; }
-
-void Character::SetBoxes(const std::vector<std::shared_ptr<Box>> &boxes) {
-  m_Boxes = boxes;
-}
+// ============================================================
+// 外力相關方法
+// ============================================================
 
 void Character::ApplyExternalForce(float y) {
   // 添加風力
@@ -792,7 +728,7 @@ void Character::Update() {
       glm::vec2 pos = GetPosition();
       glm::vec2 boxPos = box->GetPosition();
       glm::vec2 boxSize = box->GetSize();
-      pos.y = boxPos.y + boxSize.y - 13.5f;
+      pos.y = boxPos.y + boxSize.y - CHARACTER_OFFSET;
       SetPosition(pos);
       break;
     }
@@ -813,7 +749,8 @@ void Character::Update() {
           glm::vec2 pos = GetPosition();
           glm::vec2 platPos = platform->GetPosition();
           // 使用準確的偏移量，將角色底部對齊平台頂部
-          pos.y = platPos.y + 11.5f - 13.5f; // platTop - charBottomOffset
+          pos.y = platPos.y + 11.5f -
+                  CHARACTER_OFFSET; // platTop - charBottomOffset
           SetPosition(pos);
         }
 

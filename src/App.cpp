@@ -90,25 +90,25 @@ void App::InitializeLevelButtons() {
   // 第二關按鈕
   m_Level2Button =
       CreateLevelButton(RESOURCE_DIR "/material/background/button/unlevel.png",
-                        glm::vec2(0, -102), 2, false);
+                        glm::vec2(0, -102), 2, true);
   m_Root.AddChild(m_Level2Button);
 
   // 第三關按鈕
   m_Level3Button =
       CreateLevelButton(RESOURCE_DIR "/material/background/button/unlevel.png",
-                        glm::vec2(0, 16), 3, false);
+                        glm::vec2(0, 16), 3, true);
   m_Root.AddChild(m_Level3Button);
 
   // 第四關按鈕
   m_Level4Button =
       CreateLevelButton(RESOURCE_DIR "/material/background/button/unlevel.png",
-                        glm::vec2(0, 134), 4, false);
+                        glm::vec2(0, 134), 4, true);
   m_Root.AddChild(m_Level4Button);
 
   // 第五關按鈕
   m_Level5Button =
       CreateLevelButton(RESOURCE_DIR "/material/background/button/unlevel.png",
-                        glm::vec2(0, 252), 5, false);
+                        glm::vec2(0, 252), 5, true);
   m_Root.AddChild(m_Level5Button);
 
   // 返回按鈕

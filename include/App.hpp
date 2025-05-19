@@ -48,6 +48,21 @@ public:
   void Loading(float deltaTime);
   void End(); // NOLINT(readability-convert-member-functions-to-static)
 
+  // 遊戲物件初始化
+  void InitializeBackgrounds();
+  void InitializeLevelBackgrounds();
+  void InitializeLevelButtons();
+  std::shared_ptr<Option> CreateLevelButton(const std::string &imagePath,
+                                            const glm::vec2 &position,
+                                            int levelNumber, bool interactable);
+  void ShowLevelBackground(int levelNumber);
+  void SetLevelSelectVisible(bool visible);
+  void InitializeDoors();
+  void InitializeGameUI();
+  void HideAllLevelBackgrounds();
+  void InitializePauseMenu();
+  void SetPauseMenuVisible(bool visible);
+
   //------------------- 關卡與遊戲管理函數 -------------------
   // 重設遊戲狀態
   void ResetGame();

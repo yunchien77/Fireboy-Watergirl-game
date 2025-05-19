@@ -62,8 +62,6 @@ public:
 
   virtual bool Initialize() = 0;
 
-  virtual void Cleanup();
-
   virtual bool LoadGrid(int levelNumber);
 
 protected:

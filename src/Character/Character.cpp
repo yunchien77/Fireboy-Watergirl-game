@@ -209,7 +209,7 @@ void Character::Move(int deltaX, bool upKeyPressed, const GridSystem &grid,
   }
 
   // 處理跳躍邏輯
-  if (upKeyPressed && !m_UpKeyWasPressed && m_IsOnGround) {
+  if (upKeyPressed && !m_UpKeyWasPressed && m_IsOnGround && !m_AffectedByWind) {
     m_IsJumping = true;
     m_IsOnGround = false;
     m_JumpHeight = 0;
@@ -296,8 +296,8 @@ void Character::MoveWithCollision(const glm::vec2 &offset,
       // 如果是地板類型，需特殊處理
       if (grid.CanStandOn(cell, IsFireboy())) {
         // 判斷是從上方行走還是從側面碰撞
-        std::cout << "charBottom: " << charBottom
-                  << ", cellTop: " << (cellTop - 20.0f) << std::endl;
+        // std::cout << "charBottom: " << charBottom
+        //           << ", cellTop: " << (cellTop - 20.0f) << std::endl;
         // 1. 角色底部高於地板頂部，視為行走狀態，允許移動
         if (charBottom >= cellTop - 20.0f) { // 添加一點容差
           std::cout << "Allow move on floor" << std::endl;
@@ -306,13 +306,13 @@ void Character::MoveWithCollision(const glm::vec2 &offset,
 
         // 2. 側面碰撞檢測
         if (moveDirection < 0 && checkPos.x <= cellRight) {
-          std::cout << "Blocked on left side" << std::endl;
+          std::cout << "(left move) Blocked on floor right side" << std::endl;
           // 向左移動且撞到地板右側
           blocked = true;
           break;
         } else if (moveDirection > 0 && checkPos.x >= cellLeft) {
           // 向右移動且撞到地板左側
-          std::cout << "Blocked on right side" << std::endl;
+          std::cout << "(right move) Blocked on floor left side" << std::endl;
           blocked = true;
           break;
         }

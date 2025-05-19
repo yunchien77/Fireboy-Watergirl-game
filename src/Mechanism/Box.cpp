@@ -4,23 +4,25 @@
 #include <cmath>
 #include <iostream>
 
-Box::Box() : MechanismBase({0.0f, 0.0f}, Color::WHITE, 20.0f) {
+Box::Box() {
   SetDrawable(std::make_shared<Util::Image>(RESOURCE_DIR
                                             "/material/props/misc/misc1.png"));
 
-  m_VelocityY = 0.0f;
-  m_Gravity = 0.4f;
-  m_MoveSpeed = 1.5f;
-  m_Grounded = false;
-  m_BoxSize = GetScaledSize();
-  SetPivot({0.0f, -m_BoxSize.y / 2});
+  SetZIndex(20);
+
+  velocityY = 0.0f;
+  gravity = 0.4f;
+  moveSpeed = 1.5f;
+  grounded = false;
+  boxSize = GetScaledSize();
+  SetPivot({0.0f, -boxSize.y / 2});
 }
 
 void Box::SetPosition(const glm::vec2 &position) {
-  MechanismBase::SetPosition(position);
+  m_Transform.translation = position;
 }
 
-glm::vec2 Box::GetPosition() const { return MechanismBase::GetPosition(); }
+glm::vec2 Box::GetPosition() const { return m_Transform.translation; }
 
 void Box::Update() { ApplyGravity(); }
 
@@ -28,12 +30,12 @@ void Box::ApplyGravity() {
   if (!m_GridSystem)
     return;
 
-  if (!IsGrounded()) { // Not on ground
-    m_VelocityY += m_Gravity;
-    m_VelocityY = std::min(m_VelocityY, 12.0f);
-    m_Transform.translation.y -= m_VelocityY; // Apply velocity
-  } else {                                    // On ground
-    m_VelocityY = 0.0f;
+  if (!IsGrounded()) { // 不在地上
+    velocityY += gravity;
+    velocityY = std::min(velocityY, 12.0f);
+    m_Transform.translation.y -= velocityY; // Apply velocity
+  } else {                                  // 在地上
+    velocityY = 0.0f;
   }
 }
 
@@ -43,8 +45,8 @@ bool Box::IsGrounded() {
 
   glm::vec2 pos = m_Transform.translation;
 
-  glm::vec2 bottomLeft = {pos.x - (m_BoxSize.x / 2.0f), pos.y};
-  glm::vec2 bottomRight = {pos.x + (m_BoxSize.x / 2.0f), pos.y};
+  glm::vec2 bottomLeft = {pos.x - (boxSize.x / 2.0f), pos.y};
+  glm::vec2 bottomRight = {pos.x + (boxSize.x / 2.0f), pos.y};
 
   glm::ivec2 cellL = m_GridSystem->GameToCellPosition(bottomLeft);
   glm::ivec2 cellR = m_GridSystem->GameToCellPosition(bottomRight);
@@ -60,117 +62,114 @@ void Box::OnCollisionWithCharacter(std::shared_ptr<Character> character) {
   if (!character || !m_GridSystem)
     return;
 
-  // First check if character is standing on the box
+  // 首先判斷角色是否站在箱子上方
   if (IsCharacterOn(character.get())) {
-    // Character is on the box, don't allow pushing
+    // 角色站在箱子上，不進行推動
     return;
   }
 
-  // Get character and box positions and sizes
+  // 獲取角色和箱子的位置與尺寸
   glm::vec2 charPos = character->GetPosition();
   glm::vec2 boxPos = m_Transform.translation;
   glm::vec2 charSize = character->GetSize();
 
-  // Calculate box collision bounds
-  float boxLeft = boxPos.x - (m_BoxSize.x / 2.0f);
-  float boxRight = boxPos.x + (m_BoxSize.x / 2.0f);
-  float boxTop = boxPos.y + m_BoxSize.y;
+  // 計算箱子的碰撞範圍
+  float boxLeft = boxPos.x - (boxSize.x / 2.0f);
+  float boxRight = boxPos.x + (boxSize.x / 2.0f);
+  float boxTop = boxPos.y + boxSize.y;
   float boxBottom = boxPos.y;
 
-  // Calculate character collision bounds
+  // 計算角色的碰撞範圍
   float charLeft = charPos.x - (charSize.x / 2.0f);
   float charRight = charPos.x + (charSize.x / 2.0f);
   float charTop = charPos.y + charSize.y;
-  float charBottom = charPos.y + 13.5f; // Character's feet position
+  float charBottom = charPos.y + 13.5f; // 角色腳部位置
 
-  // Determine horizontal overlap
+  // 確定水平方向的重疊區域
   bool horizontalOverlap = (charRight > boxLeft) && (charLeft < boxRight);
 
-  // Determine vertical overlap
+  // 確定垂直方向的重疊區域
   bool verticalOverlap = (charBottom < boxTop) && (charTop > boxBottom);
 
-  // If not enough body overlap, don't allow pushing
+  // 如果沒有足夠的身體重疊，不允許推動
   if (!horizontalOverlap || !verticalOverlap) {
     return;
   }
 
-  // Calculate horizontal distance between character and box center
+  // 計算角色與箱子中心的水平差距
   float dx = charPos.x - boxPos.x;
 
-  // Check push conditions: direction and collision
+  // 檢查推動條件：方向和碰撞
   int pushDirection = 0;
   float pushDistance = 0.0f;
 
-  // Vertical overlap confirmed, now check horizontal push conditions
+  // 垂直重疊已確認，現在檢查水平方向的推動條件
   if (dx > 0 && !character->IsFacingRight()) {
-    // Character is to the right of the box, facing left, trying to push left
+    // 角色在箱子右側，面向左側，嘗試向左推動
     pushDirection = -1;
 
-    // Horizontal movement amount - adjust based on character position
-    float adjustment =
-        5.0f; // Fine-tuning coefficient, can be adjusted as needed
+    // 水平移動量 - 根據角色的位置進行微調
+    float adjustment = 5.0f; // 微調係數，可以根據需要調整
     pushDistance = (charLeft - boxRight) - adjustment;
   } else if (dx < 0 && character->IsFacingRight()) {
-    // Character is to the left of the box, facing right, trying to push right
+    // 角色在箱子左側，面向右側，嘗試向右推動
     pushDirection = 1;
 
-    // Horizontal movement amount - adjust based on character position
-    float adjustment =
-        5.0f; // Fine-tuning coefficient, can be adjusted as needed
+    // 水平移動量 - 根據角色的位置進行微調
+    float adjustment = 5.0f; // 微調係數，可以根據需要調整
     pushDistance = (charRight - boxLeft) + adjustment;
   } else {
-    // Push conditions not met (character position or direction incorrect)
+    // 不滿足推動條件（角色位置或方向不正確）
     return;
   }
 
-  // Check if the box's new position would collide with terrain
+  // 檢查箱子新位置是否會與地形碰撞
   glm::vec2 newPos = m_Transform.translation;
   newPos.x += pushDistance;
 
   if (CheckCollisionWithTerrain(newPos)) {
-    // There's an obstacle in the box's movement direction, reject character
-    // movement Return character to original position (blocked by box)
+    // 箱子移動方向有障礙物，拒絕角色的移動
+    // 讓角色回到原位置（被箱子擋住）
     if (pushDirection > 0) {
-      // Character pushing from left, place character on box's left side
+      // 角色從左側推，將角色放在箱子左側
       character->SetPosition(
           {boxLeft - (charSize.x / 2.0f) - 2.0f, character->GetPosition().y});
     } else {
-      // Character pushing from right, place character on box's right side
+      // 角色從右側推，將角色放在箱子右側
       character->SetPosition(
           {boxRight + (charSize.x / 2.0f) + 2.0f, character->GetPosition().y});
     }
     return;
   }
 
-  // No collision, allow pushing, set new position
+  // 沒有碰撞，允許推動，設置新位置
   m_Transform.translation = newPos;
 }
 
-// Check box collision with terrain
+// 檢查箱子與地形的碰撞
 bool Box::CheckCollisionWithTerrain(const glm::vec2 &position) {
   if (!m_GridSystem)
     return false;
 
-  float halfWidth = m_BoxSize.x / 2.0f;
+  float halfWidth = boxSize.x / 2.0f;
 
-  // Check box's left and right edges
+  // 檢查箱子的左邊緣和右邊緣
   glm::vec2 leftEdge = {position.x - halfWidth, position.y};
   glm::vec2 rightEdge = {position.x + halfWidth, position.y};
 
-  // Convert to grid coordinates
+  // 轉換為網格座標
   glm::ivec2 leftCell = m_GridSystem->GameToCellPosition(leftEdge);
   glm::ivec2 rightCell = m_GridSystem->GameToCellPosition(rightEdge);
 
-  // Get cell types at these positions
+  // 取得這些位置的單元格類型
   CellType leftType = m_GridSystem->GetCell(leftCell.x, leftCell.y);
   CellType rightType = m_GridSystem->GetCell(rightCell.x, rightCell.y);
 
-  // Determine if these positions are movable (not walls)
+  // 判斷這些位置是否可以移動 (不是牆壁)
   bool canMoveLeft = m_GridSystem->CanMoveOn(leftType, true);
   bool canMoveRight = m_GridSystem->CanMoveOn(rightType, true);
 
-  // If either edge would hit immovable terrain, return true indicating
-  // collision
+  // 如果任一邊緣會碰到不可移動的地形，返回 true 表示有碰撞
   return !canMoveLeft || !canMoveRight;
 }
 
@@ -181,76 +180,72 @@ bool Box::IsCharacterOn(Character *character) const {
   glm::vec2 charPos = character->GetPosition();
   glm::vec2 boxPos = m_Transform.translation;
 
-  // Character bottom position
+  // 角色底部位置
   float charBottom = charPos.y + 13.5f;
 
-  // Foot position
+  // 腳部位置
   float charLeft = charPos.x - 5.0f;
   float charRight = charPos.x + 5.0f;
 
-  // Box top position
-  float boxTop = boxPos.y + m_BoxSize.y;
-  float boxLeft = boxPos.x - (m_BoxSize.x / 2);
-  float boxRight = boxPos.x + (m_BoxSize.x / 2);
+  // 箱子頂部位置
+  float boxTop = boxPos.y + boxSize.y;
+  float boxLeft = boxPos.x - (boxSize.x / 2);
+  float boxRight = boxPos.x + (boxSize.x / 2);
 
-  // Vertical check: feet near box top
+  // 垂直方向檢查：腳部是否在箱子頂部附近
   bool verticalMatch =
       (charBottom >= boxTop - 5.0f) && (charBottom <= boxTop + 5.0f);
 
-  // Horizontal check: character has sufficient overlap with box
+  // 水平方向檢查：角色是否與箱子有足夠的重疊
   bool horizontalOverlap =
       (charRight > boxLeft + 5.0f) && (charLeft < boxRight - 5.0f);
 
-  // Only when both vertical and horizontal match, is character considered on
-  // box
+  // 只有當垂直和水平都符合時，才算站在箱子上
   return verticalMatch && horizontalOverlap;
 }
 
 void Box::Respawn() {
-  MechanismBase::Respawn();
-  m_VelocityY = 0.0f;
-  m_Grounded = false;
+  SetPosition(m_InitialPosition);
+  SetVisible(true);
 }
 
-void Box::SetInitialPosition(const glm::vec2 &pos) {
-  MechanismBase::SetInitialPosition(pos);
-}
+void Box::SetInitialPosition(const glm::vec2 &pos) { m_InitialPosition = pos; }
 
-// Check if character collides with box
+// 檢查角色是否與箱子碰撞
 bool Box::CheckCharacterCollision(std::shared_ptr<Character> character) {
   if (!character)
     return false;
 
-  // Get character and box positions and sizes
+  // 獲取角色和箱子的位置與尺寸
   glm::vec2 charPos = character->GetPosition();
   glm::vec2 boxPos = m_Transform.translation;
 
-  // Calculate character bounds
+  // 計算角色的邊界
   float charLeft = charPos.x - character->GetSize().x / 2.0f;
   float charRight = charPos.x + character->GetSize().x / 2.0f;
   float charBottom = charPos.y + 13.5f;
   float charTop = charPos.y + character->GetSize().y;
 
-  // Calculate box bounds
-  float boxLeft = boxPos.x - m_BoxSize.x / 2.0f;
-  float boxRight = boxPos.x + m_BoxSize.x / 2.0f;
+  // 計算箱子的邊界
+  float boxLeft = boxPos.x - boxSize.x / 2.0f;
+  float boxRight = boxPos.x + boxSize.x / 2.0f;
   float boxBottom = boxPos.y;
-  float boxTop = boxPos.y + m_BoxSize.y;
+  float boxTop = boxPos.y + boxSize.y;
 
-  // Check if character is on top of box
+  // 檢查角色是否在箱子上方
   if (IsCharacterOn(character.get())) {
-    return false; // Standing on box doesn't trigger collision
+    return false; // 站在箱子上不觸發碰撞
   }
 
-  // Check for horizontal and vertical overlap
+  // 檢查是否存在水平和垂直重疊
   bool horizontalOverlap = (charRight > boxLeft) && (charLeft < boxRight);
   bool verticalOverlap = (charTop > boxBottom) && (charBottom < boxTop);
 
-  // If both axes overlap, collision has occurred
+  // 如果兩個軸都有重疊，表示發生碰撞
   bool collision = horizontalOverlap && verticalOverlap;
 
   if (collision) {
-    // If collision, handle box pushing logic
+    // 如果碰撞，處理推箱子邏輯
     OnCollisionWithCharacter(character);
   }
 

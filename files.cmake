@@ -48,8 +48,6 @@ set(INCLUDE_FILES
         Mechanism/Door.hpp
         Object/GridSystem.hpp
         Mechanism/LiquidTrap.hpp
-        Interface/ITrap.hpp
-        Interface/IGem.hpp
         Interface/ITriggerable.hpp
         Mechanism/Gem.hpp
         Mechanism/Gate.hpp

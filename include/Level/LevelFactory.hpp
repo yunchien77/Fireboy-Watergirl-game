@@ -6,10 +6,10 @@ class LevelFactory {
 public:
   static std::unique_ptr<Level>
   CreateLevel(int levelNumber, GridSystem &gridSystem, Util::Renderer &root,
-              std::vector<std::shared_ptr<IGem>> &gems,
+              std::vector<std::shared_ptr<Gem>> &gems,
               std::vector<std::shared_ptr<Gate>> &triggers,
               std::vector<std::shared_ptr<Button>> &buttons,
-              std::vector<std::shared_ptr<ITrap>> &traps,
+              std::vector<std::shared_ptr<LiquidTrap>> &traps,
               std::vector<std::shared_ptr<Lever>> &levers,
               std::vector<std::shared_ptr<Platform>> &platforms,
               std::vector<std::shared_ptr<Box>> &boxes,

@@ -1,6 +1,5 @@
 // Level.cpp
 #include "Level/Level.hpp"
-#include "Interface/IGem.hpp"
 #include "Mechanism/Box.hpp"
 #include "Mechanism/Button.hpp"
 #include "Mechanism/Door.hpp"
@@ -14,10 +13,10 @@
 #include <iostream>
 
 Level::Level(GridSystem &gridSystem, Util::Renderer &root,
-             std::vector<std::shared_ptr<IGem>> &gems,
+             std::vector<std::shared_ptr<Gem>> &gems,
              std::vector<std::shared_ptr<Gate>> &gates,
              std::vector<std::shared_ptr<Button>> &buttons,
-             std::vector<std::shared_ptr<ITrap>> &traps,
+             std::vector<std::shared_ptr<LiquidTrap>> &traps,
              std::vector<std::shared_ptr<Lever>> &levers,
              std::vector<std::shared_ptr<Platform>> &platforms,
              std::vector<std::shared_ptr<Box>> &boxes,
@@ -85,8 +84,8 @@ void Level::InitDoor(std::shared_ptr<Door> &door, const glm::ivec2 &gridPos) {
 
 void Level::InitGems(GemType type, const std::vector<glm::ivec2> &coords) {
   for (const auto &coord : coords) {
-    auto gem = std::make_shared<Gem>(type);
     glm::vec2 pos = m_GridSystem.CellToGamePosition(coord.x, coord.y);
+    auto gem = std::make_shared<Gem>(type, pos);
     gem->SetPosition(pos);
     gem->SetInitialPosition(pos);
     m_Gems.push_back(gem);

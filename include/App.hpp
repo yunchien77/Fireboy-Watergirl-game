@@ -2,26 +2,23 @@
 #define APP_HPP
 
 #include "Character/Character.hpp"
-#include "Interface/IGem.hpp"
-#include "Interface/ITrap.hpp"
 #include "Mechanism/Box.hpp"
 #include "Mechanism/Button.hpp"
 #include "Mechanism/Door.hpp"
 #include "Mechanism/Fan.hpp"
 #include "Mechanism/Gate.hpp"
+#include "Mechanism/Gem.hpp"
 #include "Mechanism/Lever.hpp"
+#include "Mechanism/LiquidTrap.hpp"
 #include "Mechanism/Platform.hpp"
 #include "Object/BackgroundImage.hpp"
 #include "Object/GridSystem.hpp"
 #include "Object/Option.hpp"
-#include "Util/GameObject.hpp"
-#include "Util/Image.hpp"
 #include "Util/Renderer.hpp"
-#include "pch.hpp" // IWYU pragma: export
+#include "pch.hpp"
 
-#include <memory>
-#include <string>
 #include <vector>
+
 
 class App {
 public:
@@ -176,8 +173,8 @@ private:
   std::shared_ptr<Door> m_Watergirl_Door;
 
   // 遊戲機關與物件集合
-  std::vector<std::shared_ptr<ITrap>> m_Traps;
-  std::vector<std::shared_ptr<IGem>> m_Gems;
+  std::vector<std::shared_ptr<LiquidTrap>> m_Traps;
+  std::vector<std::shared_ptr<Gem>> m_Gems;
   std::vector<std::shared_ptr<Button>> m_Buttons;
   std::vector<std::shared_ptr<Gate>> m_Gates;
   std::vector<std::shared_ptr<Platform>> m_Platforms;

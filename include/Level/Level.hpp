@@ -31,10 +31,10 @@ class Level {
 protected:
   GridSystem &m_GridSystem;
   Util::Renderer &m_Root;
-  std::vector<std::shared_ptr<IGem>> &m_Gems;
+  std::vector<std::shared_ptr<Gem>> &m_Gems;
   std::vector<std::shared_ptr<Gate>> &m_Triggers;
   std::vector<std::shared_ptr<Button>> &m_Buttons;
-  std::vector<std::shared_ptr<ITrap>> &m_Traps;
+  std::vector<std::shared_ptr<LiquidTrap>> &m_Traps;
   std::vector<std::shared_ptr<Lever>> &m_Levers;
   std::vector<std::shared_ptr<Platform>> &m_Platforms;
   std::vector<std::shared_ptr<Box>> &m_Boxes;
@@ -46,10 +46,10 @@ protected:
 
 public:
   Level(GridSystem &gridSystem, Util::Renderer &root,
-        std::vector<std::shared_ptr<IGem>> &gems,
+        std::vector<std::shared_ptr<Gem>> &gems,
         std::vector<std::shared_ptr<Gate>> &gates,
         std::vector<std::shared_ptr<Button>> &buttons,
-        std::vector<std::shared_ptr<ITrap>> &traps,
+        std::vector<std::shared_ptr<LiquidTrap>> &traps,
         std::vector<std::shared_ptr<Lever>> &levers,
         std::vector<std::shared_ptr<Platform>> &platforms,
         std::vector<std::shared_ptr<Box>> &boxes,

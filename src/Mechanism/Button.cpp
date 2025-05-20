@@ -67,3 +67,13 @@ void Button::Update(Character *fb, Character *wg) {
 void Button::LinkTrigger(ITriggerable *target) { m_Triggers.push_back(target); }
 
 ButtonColor Button::GetColor() const { return m_Color; }
+
+const SDL_Rect &Button::getRect() const {
+  glm::vec2 pos = m_Transform.translation;
+  glm::vec2 size = GetScaledSize() * 0.5f; // 可依實際按鈕大小微調縮放
+  m_Rect.x = static_cast<int>(pos.x - size.x / 2);
+  m_Rect.y = static_cast<int>(pos.y - size.y / 2);
+  m_Rect.w = static_cast<int>(size.x);
+  m_Rect.h = static_cast<int>(size.y);
+  return m_Rect;
+}

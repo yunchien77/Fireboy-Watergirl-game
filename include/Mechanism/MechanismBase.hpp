@@ -19,8 +19,7 @@ class Character;
 
 class MechanismBase : public Util::GameObject {
 public:
-  MechanismBase(const glm::vec2 &position,
-                Color color = Color::NONE,
+  MechanismBase(const glm::vec2 &position, Color color = Color::NONE,
                 float zIndex = 20.0f);
 
   virtual ~MechanismBase() = default;
@@ -33,7 +32,7 @@ public:
 
   virtual void Update();
 
-  const SDL_Rect &getRect() const;
+  virtual const SDL_Rect &getRect() const;
 
   Color GetColor() const;
 

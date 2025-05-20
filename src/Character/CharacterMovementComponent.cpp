@@ -1,8 +1,11 @@
 #include "Character/Character.hpp"
+#include "Character/CharacterComponent.hpp"
+#include "Character/CharacterState.hpp"
 #include "Mechanism/Fan.hpp"
 #include <cmath>
 #include <iostream>
 #include <map>
+
 
 #define CHARACTER_OFFSET 13.5f
 

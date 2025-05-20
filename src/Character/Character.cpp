@@ -1,8 +1,11 @@
 #include "Character/Character.hpp"
+#include "Character/CharacterComponent.hpp"
+#include "Character/CharacterState.hpp"
 #include "Mechanism/Fan.hpp"
 #include <cmath>
 #include <iostream>
 #include <map>
+
 
 // Character constructor and basic initialization
 Character::Character(const std::string &imagePath, const float zindex)

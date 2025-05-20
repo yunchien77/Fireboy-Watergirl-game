@@ -11,12 +11,26 @@ Lever::Lever(LeverColor color, const glm::vec2 &pos)
 std::string Lever::GetImagePath(LeverColor color, bool isOn) const {
   std::string base = RESOURCE_DIR "/material/props/lever/lever-";
   switch (color) {
-    case Color::BLUE:   base += "blue";   break;
-    case Color::GREEN:  base += "green";  break;
-    case Color::ORANGE: base += "orange"; break;
-    case Color::PINK:   base += "pink";   break;
-    case Color::WHITE:  base += "white";  break;
-    case Color::YELLOW: base += "yellow"; break;
+  case Color::BLUE:
+    base += "blue";
+    break;
+  case Color::GREEN:
+    base += "green";
+    break;
+  case Color::ORANGE:
+    base += "orange";
+    break;
+  case Color::PINK:
+    base += "pink";
+    break;
+  case Color::WHITE:
+    base += "white";
+    break;
+  case Color::YELLOW:
+    base += "yellow";
+    break;
+  default:
+    return base + "white.png";
   }
   base += isOn ? "-on.png" : "-off.png";
   return base;
@@ -48,12 +62,14 @@ void Lever::Toggle() {
   m_IsOn = !m_IsOn;
   SetDrawable(std::make_shared<Util::Image>(GetImagePath(m_Color, m_IsOn)));
   for (auto *t : m_Triggers) {
-    if (m_IsOn) t->OnTriggered();
-    else t->OnReleased();
+    if (m_IsOn)
+      t->OnTriggered();
+    else
+      t->OnReleased();
   }
 }
 
-void Lever::linkTrigger(ITriggerable *target) { m_Triggers.push_back(target); }
+void Lever::LinkTrigger(ITriggerable *target) { m_Triggers.push_back(target); }
 
 LeverColor Lever::GetColor() const { return m_Color; }
 
@@ -67,11 +83,7 @@ const SDL_Rect &Lever::getRect() const {
   return m_Rect;
 }
 
-void Lever::SetInitialPosition(const glm::vec2 &pos) {
-  m_InitialPosition = pos;
-}
-
-void Lever::SetInitialState(const glm::vec2& pos, bool isOn) {
+void Lever::SetInitialState(const glm::vec2 &pos, bool isOn) {
   m_InitialPosition = pos;
   m_InitialIsOn = isOn;
 }
@@ -81,7 +93,9 @@ void Lever::Respawn() {
   m_IsOn = m_InitialIsOn;
   SetDrawable(std::make_shared<Util::Image>(GetImagePath(m_Color, m_IsOn)));
   for (auto *t : m_Triggers) {
-    if (m_IsOn) t->OnTriggered();
-    else t->OnReleased();
+    if (m_IsOn)
+      t->OnTriggered();
+    else
+      t->OnReleased();
   }
 }

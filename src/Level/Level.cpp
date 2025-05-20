@@ -161,7 +161,7 @@ std::shared_ptr<Lever> Level::InitLever(LeverColor color,
   glm::vec2 pos = m_GridSystem.CellToGamePosition(cellPos.x, cellPos.y);
   auto lever = std::make_shared<Lever>(color, pos);
   lever->SetInitialState(pos, false);
-  lever->linkTrigger(target);
+  lever->LinkTrigger(target);
   m_Levers.push_back(lever);
   m_Root.AddChild(lever);
   return lever;

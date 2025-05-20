@@ -18,6 +18,7 @@ public:
   void Update(Character *fb, Character *wg);
   void LinkTrigger(ITriggerable *target);
   ButtonColor GetColor() const;
+  const SDL_Rect &getRect() const override;
 
 private:
   std::string GetImagePath(ButtonColor color);

@@ -43,6 +43,8 @@ set(INCLUDE_FILES
         Character/Character.hpp
         Character/Fireboy.hpp
         Character/Watergirl.hpp
+        Character/CharacterState.hpp
+        Character/CharacterComponent.hpp
         Mechanism/Door.hpp
         Object/GridSystem.hpp
         Mechanism/LiquidTrap.hpp

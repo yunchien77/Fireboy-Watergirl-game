@@ -19,6 +19,9 @@ set(SRC_FILES
         Character/Character.cpp
         Character/Fireboy.cpp
         Character/Watergirl.cpp
+        Character/CharacterMovementComponent.cpp
+        Character/CharacterCollisionComponent.cpp
+        Character/CharacterPhysicsComponent.cpp
         Object/GridSystem.cpp
         Mechanism/LiquidTrap.cpp
         Mechanism/Gem.cpp

@@ -2,18 +2,15 @@
 #define BOX_HPP
 
 #include "Object/GridSystem.hpp"
-#include "Util/GameObject.hpp"
+#include "Mechanism/MechanismBase.hpp"
 #include <glm/glm.hpp>
-#include <memory>
 
 class Character;
 
-class Box : public Util::GameObject {
+class Box : public MechanismBase {
 public:
-  Box();
+  Box(const glm::vec2 &pos);
 
-  void SetPosition(const glm::vec2 &position);
-  glm::vec2 GetPosition() const;
   glm::vec2 GetSize() const { return boxSize; }
 
   void Update();
@@ -24,11 +21,7 @@ public:
   bool CheckCollisionWithTerrain(const glm::vec2 &position);
   bool IsCharacterOn(Character *character) const;
 
-  // 新增檢查角色碰撞的方法
   bool CheckCharacterCollision(std::shared_ptr<Character> character);
-
-  void Respawn();
-  void SetInitialPosition(const glm::vec2 &pos);
 
   void SetGridSystem(GridSystem *grid) { m_GridSystem = grid; }
 
@@ -38,7 +31,6 @@ private:
   float moveSpeed;
   bool grounded;
   glm::vec2 boxSize;
-  glm::vec2 m_InitialPosition;
 
   GridSystem *m_GridSystem = nullptr;
 };

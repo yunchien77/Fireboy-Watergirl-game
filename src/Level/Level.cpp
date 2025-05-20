@@ -111,10 +111,9 @@ void Level::InitBoxes(const std::vector<glm::ivec2> &coords) {
   for (const auto &coord : coords) {
     int row = coord.x;
     int col = coord.y;
-    auto box = std::make_shared<Box>();
     glm::vec2 pos = m_GridSystem.CellToGamePosition(row, col);
-    box->SetPosition(pos);
-    box->SetInitialPosition(pos);
+
+    auto box = std::make_shared<Box>(pos);
     box->SetGridSystem(&m_GridSystem);
     m_Boxes.push_back(box);
     m_Root.AddChild(box);

@@ -1,55 +1,34 @@
 #include "Mechanism/Lever.hpp"
 #include "Util/Image.hpp"
 
-Lever::Lever(LeverColor color, const glm::vec2 &pos) : m_Color(color) {
+Lever::Lever(LeverColor color, const glm::vec2 &pos)
+    : MechanismBase(pos, color, 25.0f), m_Color(color) {
   SetDrawable(std::make_shared<Util::Image>(GetImagePath(color, false)));
   SetPosition(pos);
   SetPivot({0.0f, 0.0f});
-  SetZIndex(25);
 }
 
 std::string Lever::GetImagePath(LeverColor color, bool isOn) const {
   std::string base = RESOURCE_DIR "/material/props/lever/lever-";
   switch (color) {
-  case LeverColor::BLUE:
-    base += "blue";
-    break;
-  case LeverColor::GREEN:
-    base += "green";
-    break;
-  case LeverColor::ORANGE:
-    base += "orange";
-    break;
-  case LeverColor::PINK:
-    base += "pink";
-    break;
-  case LeverColor::WHITE:
-    base += "white";
-    break;
-  case LeverColor::YELLOW:
-    base += "yellow";
-    break;
+    case Color::BLUE:   base += "blue";   break;
+    case Color::GREEN:  base += "green";  break;
+    case Color::ORANGE: base += "orange"; break;
+    case Color::PINK:   base += "pink";   break;
+    case Color::WHITE:  base += "white";  break;
+    case Color::YELLOW: base += "yellow"; break;
   }
   base += isOn ? "-on.png" : "-off.png";
   return base;
 }
 
-void Lever::update(Character *fb, Character *wg) {
+void Lever::Update(Character *fb, Character *wg) {
   auto rect = getRect();
 
   // 檢查 Fireboy
   if (SDL_HasIntersection(&fb->getRect(), &rect)) {
-    // 檢查角色的面向方向
-    bool characterFacingRight = fb->IsFacingRight();
-
-    // !m_IsOn: 桿子向右(off), m_IsOn: 桿子向左(on)
-    // 只有當角色面向與桿子方向相反時才觸發
-    if (!characterFacingRight && !m_IsOn) {
-      // 角色面向左，桿子向右(off)，方向相反，觸發
-      Toggle();
-      return;
-    } else if (characterFacingRight && m_IsOn) {
-      // 角色面向右，桿子向左(on)，方向相反，觸發
+    bool facing = fb->IsFacingRight();
+    if ((!facing && !m_IsOn) || (facing && m_IsOn)) {
       Toggle();
       return;
     }
@@ -57,32 +36,20 @@ void Lever::update(Character *fb, Character *wg) {
 
   // 檢查 Watergirl
   if (SDL_HasIntersection(&wg->getRect(), &rect)) {
-    // 檢查角色的面向方向
-    bool characterFacingRight = wg->IsFacingRight();
-
-    // 只有當角色面向與桿子方向相反時才觸發
-    if (!characterFacingRight && !m_IsOn) {
-      // 角色面向左，桿子向右(off)，方向相反，觸發
-      Toggle();
-      return;
-    } else if (characterFacingRight && m_IsOn) {
-      // 角色面向右，桿子向左(on)，方向相反，觸發
+    bool facing = wg->IsFacingRight();
+    if ((!facing && !m_IsOn) || (facing && m_IsOn)) {
       Toggle();
       return;
     }
   }
 }
 
-
 void Lever::Toggle() {
   m_IsOn = !m_IsOn;
   SetDrawable(std::make_shared<Util::Image>(GetImagePath(m_Color, m_IsOn)));
   for (auto *t : m_Triggers) {
-    if (m_IsOn) {
-      t->OnTriggered();
-    } else {
-      t->OnReleased();
-    }
+    if (m_IsOn) t->OnTriggered();
+    else t->OnReleased();
   }
 }
 
@@ -92,7 +59,7 @@ LeverColor Lever::GetColor() const { return m_Color; }
 
 const SDL_Rect &Lever::getRect() const {
   glm::vec2 pos = m_Transform.translation;
-  glm::vec2 size = GetScaledSize() * 0.4f; // 可依實際按鈕大小微調縮放
+  glm::vec2 size = GetScaledSize() * 0.4f;
   m_Rect.x = static_cast<int>(pos.x - size.x / 2);
   m_Rect.y = static_cast<int>(pos.y - size.y / 2);
   m_Rect.w = static_cast<int>(size.x);
@@ -100,21 +67,21 @@ const SDL_Rect &Lever::getRect() const {
   return m_Rect;
 }
 
-void Lever::SetPosition(const glm::vec2 &position) {
-  m_Transform.translation = position;
+void Lever::SetInitialPosition(const glm::vec2 &pos) {
+  m_InitialPosition = pos;
 }
 
 void Lever::SetInitialState(const glm::vec2& pos, bool isOn) {
-    m_InitialPosition = pos;
-    m_InitialIsOn = isOn;
+  m_InitialPosition = pos;
+  m_InitialIsOn = isOn;
 }
 
 void Lever::Respawn() {
-    SetPosition(m_InitialPosition);
-    m_IsOn = m_InitialIsOn;
-    SetDrawable(std::make_shared<Util::Image>(GetImagePath(m_Color, m_IsOn)));
-    for (auto* t : m_Triggers) {
-        if (m_IsOn) t->OnTriggered();
-        else t->OnReleased();
-    }
+  SetPosition(m_InitialPosition);
+  m_IsOn = m_InitialIsOn;
+  SetDrawable(std::make_shared<Util::Image>(GetImagePath(m_Color, m_IsOn)));
+  for (auto *t : m_Triggers) {
+    if (m_IsOn) t->OnTriggered();
+    else t->OnReleased();
+  }
 }

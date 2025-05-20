@@ -388,7 +388,7 @@ void App::GamePlay() {
   }
 
   for (auto &lever : m_Levers) {
-    lever->update(m_Fireboy.get(), m_Watergirl.get());
+    lever->Update(m_Fireboy.get(), m_Watergirl.get());
   }
 
   m_Root.Update();

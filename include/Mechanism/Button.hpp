@@ -14,6 +14,7 @@ class Button : public MechanismBase {
 public:
   Button(ButtonColor color, const glm::vec2 &pos);
 
+  using MechanismBase::Update;
   void Update(Character *fb, Character *wg);
   void LinkTrigger(ITriggerable *target);
   ButtonColor GetColor() const;

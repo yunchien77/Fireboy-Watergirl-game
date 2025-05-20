@@ -5,37 +5,29 @@
 
 Platform::Platform(PlatformColor color, const glm::vec2 &pos,
                    const glm::vec2 &moveOffset)
-    : m_InitialPosition(pos), m_MoveOffset(moveOffset), m_Color(color) {
+    : MechanismBase(pos, color, 25.0f), m_MoveOffset(moveOffset) {
   SetDrawable(std::make_shared<Util::Image>(GetImagePath(color)));
-  SetPosition(pos);
   SetPivot({0.0f, 0.0f});
-  SetZIndex(25);
 }
 
-std::string Platform::GetImagePath(PlatformColor color) const {
+std::string Platform::GetImagePath(PlatformColor color) {
   std::string base = RESOURCE_DIR "/material/props/platform/platform-";
   switch (color) {
-  case PlatformColor::BLUE:
-    base += "blue";
-    break;
-  case PlatformColor::GREEN:
-    base += "green";
-    break;
-  case PlatformColor::ORANGE:
-    base += "orange";
-    break;
-  case PlatformColor::PINK:
-    base += "pink";
-    break;
-  case PlatformColor::WHITE:
-    base += "white";
-    break;
-  case PlatformColor::YELLOW:
-    base += "yellow";
-    break;
+  case Color::BLUE:
+    return base + "blue.png";
+  case Color::GREEN:
+    return base + "green.png";
+  case Color::ORANGE:
+    return base + "orange.png";
+  case Color::PINK:
+    return base + "pink.png";
+  case Color::WHITE:
+    return base + "white.png";
+  case Color::YELLOW:
+    return base + "yellow.png";
+  default:
+    return base + "white.png";
   }
-  base += ".png";
-  return base;
 }
 
 void Platform::OnTriggered() {
@@ -116,18 +108,11 @@ bool Platform::WillCollideWithCharacterBelow(Character *character,
   return horizontalOverlap && verticalOverlap;
 }
 
-void Platform::SetPosition(const glm::vec2 &position) {
-  m_Transform.translation = position;
-}
-
-PlatformColor Platform::GetColor() const { return m_Color; }
-
 glm::vec2 Platform::GetDeltaMovement() const { return m_LastDeltaMovement; }
 
 bool Platform::IsCharacterOn(Character *character) const {
   // 獲取角色和平台的位置與尺寸
   glm::vec2 charPos = character->GetPosition();
-  // glm::vec2 charSize = character->GetSize();
   glm::vec2 platPos = m_Transform.translation;
   glm::vec2 platSize = GetScaledSize();
 
@@ -199,20 +184,3 @@ bool Platform::CheckCollision(Character *character, int moveDirection) const {
   }
   return false;
 }
-
-const SDL_Rect &Platform::getRect() const {
-  glm::vec2 pos = m_Transform.translation;
-  glm::vec2 size = GetScaledSize();
-
-  m_Rect.x = static_cast<int>(pos.x);
-  m_Rect.y = static_cast<int>(pos.y);
-  m_Rect.w = static_cast<int>(size.x);
-  m_Rect.h = static_cast<int>(size.y);
-  return m_Rect;
-}
-
-void Platform::SetInitialPosition(const glm::vec2 &pos) {
-  m_InitialPosition = pos;
-}
-
-void Platform::Respawn() { SetPosition(m_InitialPosition); }

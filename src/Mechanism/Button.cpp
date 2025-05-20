@@ -14,13 +14,20 @@ Button::Button(ButtonColor color, const glm::vec2 &pos)
 std::string Button::GetImagePath(ButtonColor color) {
   std::string base = RESOURCE_DIR "/material/props/button/button-";
   switch (color) {
-    case Color::BLUE:   return base + "blue.png";
-    case Color::GREEN:  return base + "green.png";
-    case Color::ORANGE: return base + "orange.png";
-    case Color::PINK:   return base + "pink.png";
-    case Color::WHITE:  return base + "white.png";
-    case Color::YELLOW: return base + "yellow.png";
-    default:            return base + "white.png";
+  case Color::BLUE:
+    return base + "blue.png";
+  case Color::GREEN:
+    return base + "green.png";
+  case Color::ORANGE:
+    return base + "orange.png";
+  case Color::PINK:
+    return base + "pink.png";
+  case Color::WHITE:
+    return base + "white.png";
+  case Color::YELLOW:
+    return base + "yellow.png";
+  default:
+    return base + "white.png";
   }
 }
 
@@ -57,10 +64,6 @@ void Button::Update(Character *fb, Character *wg) {
   m_IsPressedWatergirl = wgOn;
 }
 
-void Button::LinkTrigger(ITriggerable *target) {
-  m_Triggers.push_back(target);
-}
+void Button::LinkTrigger(ITriggerable *target) { m_Triggers.push_back(target); }
 
-ButtonColor Button::GetColor() const {
-  return m_Color;
-}
+ButtonColor Button::GetColor() const { return m_Color; }

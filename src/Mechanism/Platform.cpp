@@ -7,6 +7,7 @@ Platform::Platform(PlatformColor color, const glm::vec2 &pos,
                    const glm::vec2 &moveOffset)
     : MechanismBase(pos, color, 25.0f), m_MoveOffset(moveOffset) {
   SetDrawable(std::make_shared<Util::Image>(GetImagePath(color)));
+  SetPosition(pos);
   SetPivot({0.0f, 0.0f});
 }
 

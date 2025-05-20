@@ -7,44 +7,33 @@
 #include <map>
 #include <random>
 
-Fan::Fan(const glm::vec2 &position, float strength, FanColor color)
-    : m_InitialPosition(position), m_Strength(strength),
-      m_MaxWindHeight(270.0f), m_AnimationTime(0.0f), m_Color(color) {
-  SetDrawable(std::make_shared<Util::Image>(GetImagePath()));
-  SetPosition(position);
+Fan::Fan(const glm::vec2 &pos, float strength, FanColor color)
+    : MechanismBase(pos, color, 20.0f), m_Strength(strength),
+      m_MaxWindHeight(270.0f), m_AnimationTime(0.0f) {
+  SetDrawable(std::make_shared<Util::Image>(GetImagePath(color)));
+  SetPosition(pos);
   SetPivot({0.0f, 14.0f});
-  SetZIndex(20);
 }
-
-std::string Fan::GetImagePath() const { return GetImagePath(m_Color); }
 
 std::string Fan::GetImagePath(FanColor color) {
   std::string base = RESOURCE_DIR "/material/props/fan/fan-";
   switch (color) {
-  case FanColor::BLUE:
-    base += "blue";
-    break;
-  case FanColor::GREEN:
-    base += "green";
-    break;
-  case FanColor::PINK:
-    base += "pink";
-    break;
-  case FanColor::ORANGE:
-    base += "orange";
-    break;
-  case FanColor::WHITE:
-    base += "white";
-    break;
-  case FanColor::YELLOW:
-    base += "yellow";
-    break;
+  case Color::BLUE:
+    return base + "blue.png";
+  case Color::GREEN:
+    return base + "green.png";
+  case Color::ORANGE:
+    return base + "orange.png";
+  case Color::PINK:
+    return base + "pink.png";
+  case Color::WHITE:
+    return base + "white.png";
+  case Color::YELLOW:
+    return base + "yellow.png";
+  default:
+    return base + "white.png";
   }
-  base += ".png";
-  return base;
 }
-
-FanColor Fan::GetColor() const { return m_Color; }
 
 bool Fan::IsCharacterInWindZone(Character *character) const {
   if (!character)
@@ -159,23 +148,3 @@ float Fan::GetWindFloatEffect() {
   // 產生緩慢的正弦波效果
   return std::sin(s_GlobalWindTime * 0.7f) * 0.08f + 1.0f;
 }
-
-void Fan::SetPosition(const glm::vec2 &position) {
-  m_Transform.translation = position;
-}
-
-const SDL_Rect &Fan::getRect() const {
-  glm::vec2 pos = m_Transform.translation;
-  glm::vec2 size = GetScaledSize();
-
-  m_Rect.x = static_cast<int>(pos.x - size.x / 2);
-  m_Rect.y = static_cast<int>(pos.y - size.y / 2);
-  m_Rect.w = static_cast<int>(size.x);
-  m_Rect.h = static_cast<int>(size.y);
-
-  return m_Rect;
-}
-
-void Fan::SetInitialPosition(const glm::vec2 &pos) { m_InitialPosition = pos; }
-
-void Fan::Respawn() { SetPosition(m_InitialPosition); }

@@ -25,7 +25,7 @@ Level::Level(GridSystem &gridSystem, Util::Renderer &root,
              std::shared_ptr<Character> &watergirl,
              std::shared_ptr<Door> &fireboyDoor,
              std::shared_ptr<Door> &watergirlDoor)
-    : m_GridSystem(gridSystem), m_Root(root), m_Gems(gems), m_Triggers(gates),
+    : m_GridSystem(gridSystem), m_Root(root), m_Gems(gems), m_Gates(gates),
       m_Buttons(buttons), m_Traps(traps), m_Levers(levers),
       m_Platforms(platforms), m_Boxes(boxes), m_Fans(fans), m_Fireboy(fireboy),
       m_Watergirl(watergirl), m_Fireboy_Door(fireboyDoor),
@@ -35,9 +35,9 @@ void Level::Cleanup() {
   for (auto &gem : m_Gems)
     m_Root.RemoveChild(gem);
   m_Gems.clear();
-  for (auto &gate : m_Triggers)
+  for (auto &gate : m_Gates)
     m_Root.RemoveChild(gate);
-  m_Triggers.clear();
+  m_Gates.clear();
   for (auto &button : m_Buttons)
     m_Root.RemoveChild(button);
   m_Buttons.clear();
@@ -136,7 +136,7 @@ std::shared_ptr<Gate> Level::InitGate(GateColor color,
   glm::vec2 pos = m_GridSystem.CellToGamePosition(cellPos.x, cellPos.y);
   pos.y -= 15.0f;
   auto gate = std::make_shared<Gate>(color, pos);
-  m_Triggers.push_back(gate);
+  m_Gates.push_back(gate);
   m_Root.AddChild(gate);
   return gate;
 }

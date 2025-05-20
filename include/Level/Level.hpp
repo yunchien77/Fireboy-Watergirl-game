@@ -32,7 +32,7 @@ protected:
   GridSystem &m_GridSystem;
   Util::Renderer &m_Root;
   std::vector<std::shared_ptr<Gem>> &m_Gems;
-  std::vector<std::shared_ptr<Gate>> &m_Triggers;
+  std::vector<std::shared_ptr<Gate>> &m_Gates;
   std::vector<std::shared_ptr<Button>> &m_Buttons;
   std::vector<std::shared_ptr<LiquidTrap>> &m_Traps;
   std::vector<std::shared_ptr<Lever>> &m_Levers;

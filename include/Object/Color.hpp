@@ -7,7 +7,8 @@ enum class Color {
     ORANGE,
     PINK,
     WHITE,
-    YELLOW
+    YELLOW,
+    NONE
   };
 
 #endif //COLOR_HPP

@@ -1,40 +1,29 @@
 #include "Mechanism/Gate.hpp"
-
-#include <iostream>
-
 #include "Util/Image.hpp"
 
 Gate::Gate(GateColor color, const glm::vec2 &pos)
-    : m_Color(color), m_InitialPosition(pos) {
+    : MechanismBase(pos, color, 15.0f), m_Color(color) {
   SetDrawable(std::make_shared<Util::Image>(GetImagePath(color)));
   SetPosition(pos);
   SetPivot({0.0f, 0.0f});
-  SetZIndex(25);
-  SetVisible(true);
 }
 
 std::string Gate::GetImagePath(GateColor color) {
+  std::string base = RESOURCE_DIR "/material/props/gate/gate-";
   switch (color) {
-  case GateColor::BLUE:
-    return RESOURCE_DIR "/material/props/gate/gate-blue.png";
-  case GateColor::GREEN:
-    return RESOURCE_DIR "/material/props/gate/gate-green.png";
-  case GateColor::ORANGE:
-    return RESOURCE_DIR "/material/props/gate/gate-orange.png";
-  case GateColor::PINK:
-    return RESOURCE_DIR "/material/props/gate/gate-pink.png";
-  case GateColor::WHITE:
-    return RESOURCE_DIR "/material/props/gate/gate-white.png";
-  case GateColor::YELLOW:
-    return RESOURCE_DIR "/material/props/gate/gate-yellow.png";
+    case Color::BLUE:   return base + "blue.png";
+    case Color::GREEN:  return base + "green.png";
+    case Color::ORANGE: return base + "orange.png";
+    case Color::PINK:   return base + "pink.png";
+    case Color::WHITE:  return base + "white.png";
+    case Color::YELLOW: return base + "yellow.png";
+    default:            return "";
   }
-  return "";
 }
 
 void Gate::OnTriggered() {
   m_ActiveTriggerCount++;
   if (m_ActiveTriggerCount == 1) {
-    std::cout << "Gate set to open\n";
     SetOpen(true);
   }
 }
@@ -55,28 +44,24 @@ void Gate::SetOpen(bool open) {
   m_IsAnimating = true;
 }
 
-
-void Gate::SetPosition(const glm::vec2 &position) {
-  m_Transform.translation = position;
+void Gate::SetScale(const glm::vec2 &scale) {
+  m_Transform.scale = scale;
 }
 
-bool Gate::IsOpen() const { return m_IsOpen; }
-
-bool Gate::IsBlocking() const { return !m_IsOpen; }
-
-GateColor Gate::GetColor() const { return m_Color; }
-
-const SDL_Rect &Gate::getRect() const {
-  glm::vec2 pos = m_Transform.translation;
-  glm::vec2 size = GetScaledSize();
-  m_Rect.x = static_cast<int>(pos.x - size.x / 2);
-  m_Rect.y = static_cast<int>(pos.y - size.y / 2);
-  m_Rect.w = static_cast<int>(size.x);
-  m_Rect.h = static_cast<int>(size.y);
-  return m_Rect;
+void Gate::SetInitialState(const glm::vec2 &pos, bool isOpen) {
+  m_InitialPosition = pos;
+  m_InitialIsOpen = isOpen;
 }
 
-void Gate::SetScale(const glm::vec2 &scale) { m_Transform.scale = scale; }
+void Gate::Respawn() {
+  SetPosition(m_InitialPosition);
+  m_IsOpen = m_InitialIsOpen;
+  m_ShouldOpen = m_InitialIsOpen;
+  m_IsAnimating = true;
+
+  SetDrawable(std::make_shared<Util::Image>(GetImagePath(m_Color)));
+  m_ActiveTriggerCount = 0;
+}
 
 void Gate::UpdateAnimation(float deltaTime) {
   if (!m_IsAnimating)
@@ -118,17 +103,14 @@ void Gate::UpdateAnimation(float deltaTime) {
   SetPosition(pos);
 }
 
-void Gate::SetInitialState(const glm::vec2 &pos, bool isOpen) {
-  m_InitialPosition = pos;
-  m_InitialIsOpen = isOpen;
+GateColor Gate::GetColor() const {
+  return m_Color;
 }
 
-void Gate::Respawn() {
-  SetPosition(m_InitialPosition);
-  m_IsOpen = m_InitialIsOpen;
-  m_ShouldOpen = m_InitialIsOpen;
-  m_IsAnimating = true; // 重啟動畫以回復狀態
+bool Gate::IsOpen() const {
+  return m_IsOpen;
+}
 
-  SetDrawable(std::make_shared<Util::Image>(GetImagePath(m_Color)));
-  m_ActiveTriggerCount = 0;
+bool Gate::IsBlocking() const {
+  return !m_IsOpen;
 }

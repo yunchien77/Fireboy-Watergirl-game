@@ -16,39 +16,36 @@ class Character;
  * - Respawn functionality
  * - Character interaction
  */
+
 class MechanismBase : public Util::GameObject {
 public:
-  // Constructor with optional color parameter
-  MechanismBase(const glm::vec2 &position, Color color = Color::WHITE,
+  MechanismBase(const glm::vec2 &position,
+                Color color = Color::NONE,
                 float zIndex = 20.0f);
+
   virtual ~MechanismBase() = default;
 
-  // Posiion handling
   virtual void SetPosition(const glm::vec2 &position);
-  virtual glm::vec2 GetPosition() const;
+  glm::vec2 GetPosition() const;
 
-  // Initial position and respawn
-  virtual void SetInitialPosition(const glm::vec2 &pos);
+  void SetInitialPosition(const glm::vec2 &pos);
   virtual void Respawn();
 
-  // Common update method
   virtual void Update();
 
-  // Color accessor
+  const SDL_Rect &getRect() const;
+
   Color GetColor() const;
 
-  virtual const SDL_Rect &getRect() const {
-    UpdateRect();
-    return m_Rect;
-  }
+  void SetZIndex(float z);
+  void SetPivot(const glm::vec2 &pivot);
 
 protected:
+  void UpdateRect() const;
+
   glm::vec2 m_InitialPosition;
   Color m_Color;
-  mutable SDL_Rect m_Rect{};
-
-  // Update the internal collision rectangle
-  void UpdateRect() const;
+  mutable SDL_Rect m_Rect;
 };
 
-#endif // MECHANISM_BASE_HPP
+#endif // MECHANISMBASE_HPP

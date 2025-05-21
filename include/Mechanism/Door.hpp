@@ -1,7 +1,7 @@
 #ifndef DOOR_HPP
 #define DOOR_HPP
 
-#include "Util/GameObject.hpp"
+#include "Mechanism/MechanismBase.hpp"
 #include <glm/glm.hpp>
 #include <map>
 #include <memory>
@@ -13,7 +13,7 @@ namespace Util {
 
 enum class DoorState { CLOSED, HALF_OPEN, FULLY_OPEN };
 
-class Door : public Util::GameObject {
+class Door : public MechanismBase {
 public:
   Door(const std::string &closedImagePath,
        const std::string &halfOpenImagePath,
@@ -33,12 +33,12 @@ public:
   void SetCharacterAtDoor(bool isAtDoor);
   bool IsCharacterAtDoor() const;
 
-  void SetPosition(const glm::vec2 &position);
-  glm::vec2 GetPosition() const;
-
   void OpenDoor();
   void CloseDoor();
   void UpdateAnimation();
+
+  void Update() override;
+  void Respawn() override;
 
 private:
   void UpdateDoorImage();

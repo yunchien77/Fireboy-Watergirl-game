@@ -6,7 +6,7 @@ Door::Door(const std::string &closedImagePath,
            const std::string &fullyOpenImagePath,
            bool isFireDoor,
            float zIndex)
-    : GameObject(std::make_shared<Util::Image>(closedImagePath), zIndex),
+    : MechanismBase(glm::vec2(0.0f), Color::NONE, zIndex),
       m_IsFireDoor(isFireDoor),
       m_CurrentState(DoorState::CLOSED),
       m_IsCharacterAtDoor(false),
@@ -15,6 +15,8 @@ Door::Door(const std::string &closedImagePath,
   m_DoorImages[DoorState::CLOSED] = closedImagePath;
   m_DoorImages[DoorState::HALF_OPEN] = halfOpenImagePath;
   m_DoorImages[DoorState::FULLY_OPEN] = fullyOpenImagePath;
+
+  SetDrawable(std::make_shared<Util::Image>(closedImagePath));
 
   SetPivot(glm::vec2(-GetScaledSize().x / 2 + 15.0f,
                      -GetScaledSize().y / 2 + 15.0f));
@@ -47,14 +49,6 @@ bool Door::IsCharacterAtDoor() const {
   return m_IsCharacterAtDoor;
 }
 
-void Door::SetPosition(const glm::vec2 &position) {
-  m_Transform.translation = position;
-}
-
-glm::vec2 Door::GetPosition() const {
-  return m_Transform.translation;
-}
-
 void Door::OpenDoor() {
   if (m_CurrentState == DoorState::CLOSED) {
     m_CurrentState = DoorState::HALF_OPEN;
@@ -85,6 +79,16 @@ void Door::UpdateAnimation() {
       CloseDoor();
     }
   }
+}
+
+void Door::Update() {
+  UpdateAnimation();
+}
+
+void Door::Respawn() {
+  m_CurrentState = DoorState::CLOSED;
+  UpdateDoorImage();
+  SetPosition(m_InitialPosition);
 }
 
 void Door::UpdateDoorImage() {

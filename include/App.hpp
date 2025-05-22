@@ -2,6 +2,9 @@
 #define APP_HPP
 
 #include "Character/Character.hpp"
+#include "Game/CollisionManager.hpp"
+#include "Game/GameMechanicsManager.hpp"
+#include "Game/InputHandler.hpp"
 #include "Mechanism/Box.hpp"
 #include "Mechanism/Button.hpp"
 #include "Mechanism/Door.hpp"
@@ -18,7 +21,6 @@
 #include "pch.hpp"
 
 #include <vector>
-
 
 class App {
 public:
@@ -92,6 +94,9 @@ public:
 
   // 更新所有風扇的狀態和效果
   void UpdateFans();
+
+  void InitializeManagers();
+  void HandleAllCollisions();
 
   //------------------- getter -------------------
   // 取得網格系統參考
@@ -193,6 +198,10 @@ private:
   int m_LoadingFrameIndex = 0;
   float m_LoadingAnimationTimer = 0.0f;
   float m_LoadingFrameDuration = 0.5f; // 每幀0.5秒
+
+  std::unique_ptr<CollisionManager> m_CollisionManager;
+  std::unique_ptr<GameMechanicsManager> m_MechanicsManager;
+  std::unique_ptr<InputHandler> m_InputHandler;
 };
 
 #endif // APP_HPP

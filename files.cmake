@@ -8,6 +8,9 @@ set(SRC_FILES
         Game/AppGamePause.cpp
         Game/AppLoading.cpp
         Game/AppReset.cpp
+        Game/GameManager/CollisionManager.cpp
+        Game/GameManager/GameMechanicsManager.cpp
+        Game/GameManager/InputHandler.cpp
         Level/LoadLevel.cpp
         Level/Level.cpp
         Level/Level1.cpp
@@ -64,6 +67,9 @@ set(INCLUDE_FILES
         Level/Level4.hpp
         Level/Level5.hpp
         Level/LevelFactory.hpp
+        Game/CollisionManager.hpp
+        Game/GameMechanicsManager.hpp
+        Game/InputHandler.hpp
 )
 
 set(TEST_FILES

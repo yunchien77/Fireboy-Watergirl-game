@@ -1,6 +1,8 @@
 #ifndef CHARACTER_HPP
 #define CHARACTER_HPP
 
+#include "Character/CharacterComponent.hpp"
+#include "Character/CharacterState.hpp"
 #include "Object/GridSystem.hpp"
 #include "Util/GameObject.hpp"
 #include "Util/Image.hpp"
@@ -8,8 +10,22 @@
 #include <glm/glm.hpp>
 #include <memory>
 #include <string>
+#include <vector>
 
+#include "Mechanism/Box.hpp"
+#include "Mechanism/Platform.hpp"
+
+// Forward declarations
+class GridSystem;
+class Platform;
+class Box;
+
+// Base Character class
 class Character : public Util::GameObject {
+  friend class CharacterCollisionComponent;
+  friend class CharacterMovementComponent;
+  friend class CharacterPhysicsComponent;
+
 public:
   explicit Character(const std::string &imagePath, const float zindex);
 
@@ -18,68 +34,134 @@ public:
   Character &operator=(const Character &) = delete;
   Character &operator=(Character &&) = delete;
 
+  //==================================
+  // Getters
+  //==================================
   [[nodiscard]] const std::string &GetImagePath() const;
   [[nodiscard]] const glm::vec2 &GetPosition() const;
   [[nodiscard]] bool GetVisibility() const;
   [[nodiscard]] bool IsJumping() const;
   [[nodiscard]] bool IsOnGround() const;
+  [[nodiscard]] bool IsMoving() const;
+  [[nodiscard]] bool IsFacingRight() const;
+  [[nodiscard]] bool IsDead() const;
+  [[nodiscard]] glm::vec2 GetSize() const;
+  [[nodiscard]] bool IsStandingOnPlatform() const;
+  [[nodiscard]] std::shared_ptr<Platform> GetCurrentPlatform() const;
+  [[nodiscard]] const glm::vec2 &GetExternalForce() const;
+  [[nodiscard]] bool IsAffectedByWind() const;
+  [[nodiscard]] CharacterState GetState() const;
 
-  // 更改角色的圖像
+  //==================================
+  // Setters
+  //==================================
   void SetImage(const std::string &imagePath);
-
-  // 更改角色的位置
   void SetPosition(const glm::vec2 &position);
+  void SetSpawnPoint(const glm::vec2 &spawn);
+  void SetPreviousPosition();
+  void UndoMovement();
+  void SetStandingOnPlatform(bool value);
+  void SetPlatforms(const std::vector<std::shared_ptr<Platform>> &platforms);
+  void SetBoxes(const std::vector<std::shared_ptr<Box>> &boxes);
+  void SetGridSystem(GridSystem *grid);
+  void SetAffectedByWind(bool affected);
+  void SetState(CharacterState state);
 
-  // 取得角色的尺寸
-  glm::vec2 GetSize() const;
-
-  // 移動角色
+  //==================================
+  // Movement methods
+  //==================================
   void Move(int deltaX, bool upKeyPressed, const GridSystem &grid,
             bool isFireboy);
+  void MoveWithCollision(const glm::vec2 &offset, const GridSystem &grid);
+  void Translate(const glm::vec2 &offset);
 
-  // 更新跳躍
+  //==================================
+  // Physics methods
+  //==================================
   void UpdateJump(const GridSystem &grid);
-
-  // 應用重力
   void ApplyGravity(const GridSystem &grid);
+  void ApplyExternalForce(float y);
+  void ResetExternalForce();
 
-  // 更新角色的動畫(純虛擬函數 -> Fireboy 和 Watergirl 會實現)
+  //==================================
+  // Collision methods
+  //==================================
+  bool CheckStandingOnPlatform(const glm::vec2 &position,
+                               std::shared_ptr<Platform> &outPlatform);
+  bool IsCollidingWithPlatformBottom(Platform *platform,
+                                     const glm::vec2 &charPos) const;
+  glm::vec2 AdjustPositionForPlatform(const glm::vec2 &position,
+                                      int moveDirection);
+
+  //==================================
+  // Lifecycle methods
+  //==================================
+  virtual void Die();
+  void Respawn();
+  void Update();
+
+  //==================================
+  // Animation
+  //==================================
   virtual void UpdateAnimation() = 0;
 
-  virtual void Die();  // 設定角色死亡
-  bool IsDead() const; // 查詢死亡狀態
-  void Respawn();      // 重生
-  void SetSpawnPoint(const glm::vec2 &spawn);
-
+  //==================================
+  // Pure virtual methods for derived classes
+  //==================================
   virtual const SDL_Rect &getRect() const = 0;
-
   virtual bool IsFireboy() const = 0;
-
   virtual float getX() const = 0;
   virtual float getY() const = 0;
   virtual int getWidth() const = 0;
   virtual int getHeight() const = 0;
 
-  void SetPreviousPosition();
-  void UndoMovement();
-
 protected:
-  // 應用水平翻轉
+  // Apply horizontal flip based on facing direction
   void ApplyFlip();
 
+  // Character state
+  CharacterState m_State = CharacterState::STANDING;
+
+  // Basic attributes
   std::string m_ImagePath;
-  bool isMoving;      // 是否正在移動
-  bool currentSprite; // 切換動畫幀
+  bool m_FacingRight; // true = right, false = left
+  glm::vec2 m_Size;   // Character dimensions
+  bool isMoving;      // Is the character moving
+  bool currentSprite; // Animation frame toggle
+
+  // Jump-related attributes
   bool m_IsJumping;
-  int m_JumpHeight;    // 當前跳躍高度
-  int m_JumpMaxHeight; // 最大跳躍高度
-  bool m_IsOnGround;   // 角色是否在地面上
-  bool m_UpKeyWasPressed; // 上鍵是否已被按下（用於防止持續按住時重複跳躍）
-  bool m_FacingRight; // 角色面向方向：true為右，false為左
-  glm::vec2 m_Size;   // 角色的尺寸
+  int m_JumpHeight;       // Current jump height
+  int m_JumpMaxHeight;    // Maximum jump height
+  bool m_IsOnGround;      // Is character on ground
+  bool m_UpKeyWasPressed; // Was up key already pressed (prevents continuous
+                          // jumps)
+  bool m_HitCeiling = false;
+
+  // Lifecycle and position tracking
   bool m_IsDead = false;
   glm::vec2 m_SpawnPoint;
   glm::vec2 m_LastPosition;
+
+  // Platform and box interaction
+  std::vector<std::shared_ptr<Platform>> m_Platforms;
+  std::shared_ptr<Platform> m_CurrentPlatform;
+  std::shared_ptr<Platform> m_PreviousPlatform;
+  std::vector<std::shared_ptr<Box>> m_Boxes;
+  bool m_IsStandingOnPlatform = false;
+
+  // Physics
+  glm::vec2 m_Velocity = glm::vec2(0.0f);
+  GridSystem *m_GridRef = nullptr;
+
+  // Component references
+  std::unique_ptr<CharacterCollisionComponent> m_CollisionComponent;
+  std::unique_ptr<CharacterMovementComponent> m_MovementComponent;
+  std::unique_ptr<CharacterPhysicsComponent> m_PhysicsComponent;
+
+private:
+  // Component initialization
+  void InitializeComponents();
 };
 
 #endif // CHARACTER_HPP

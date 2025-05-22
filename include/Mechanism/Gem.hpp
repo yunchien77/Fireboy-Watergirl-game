@@ -2,30 +2,21 @@
 #define GEM_HPP
 
 #include "Character/Character.hpp"
-#include "Interface/IGem.hpp"
+#include "Mechanism/MechanismBase.hpp"
+#include <SDL.h>
 
 enum class GemType { FIRE, WATER, GREEN };
 
-class Gem : public IGem {
+class Gem : public MechanismBase {
 public:
-  explicit Gem(GemType type);
+  Gem(GemType type, const glm::vec2 &pos);
 
-  void OnCharacterEnter(Character *character) override;
-
-  const SDL_Rect &getRect() const override;
-
-  void SetPosition(const glm::vec2 &position);
   GemType GetType() const;
-
-  bool IsCollected() const override;
-
-  void SetInitialPosition(const glm::vec2 &pos);
-  void Respawn() override;
+  void OnCharacterEnter(Character *character);
+  bool IsCollected() const;
 
 private:
   GemType m_Type;
-  mutable SDL_Rect m_Rect;
-  glm::vec2 m_InitialPosition;
 };
 
 #endif // GEM_HPP

@@ -1,106 +1,53 @@
-// Level2.cpp
+// Level3.cpp
 #include "Level/Level3.hpp"
 #include "Character/Fireboy.hpp"
 #include "Character/Watergirl.hpp"
-#include "Interface/IGem.hpp"
+#include "Mechanism/Box.hpp"
 #include "Mechanism/Button.hpp"
 #include "Mechanism/Door.hpp"
-#include "Mechanism/Gate.hpp"
 #include "Mechanism/Gem.hpp"
+#include "Mechanism/Lever.hpp"
 #include "Mechanism/LiquidTrap.hpp"
+#include "Mechanism/Platform.hpp"
 
 bool Level3::Initialize() {
-  //   初始化角色 Fireboy
-  if (!m_Fireboy) {
+  // 初始化 Character 和 door
+  if (!m_Fireboy)
     m_Fireboy = std::make_shared<Fireboy>();
-    glm::vec2 fireboyInitPos = m_GridSystem.CellToGamePosition(3, 28);
-    m_Fireboy->SetPosition(fireboyInitPos);
-    m_Fireboy->SetSpawnPoint(fireboyInitPos);
-    m_Root.AddChild(m_Fireboy);
-  }
+  InitCharacter(m_Fireboy, {3, 28});
 
-  // 初始化角色 Watergirl
-  if (!m_Watergirl) {
+  if (!m_Watergirl)
     m_Watergirl = std::make_shared<Watergirl>();
-    glm::vec2 watergirlInitPos = m_GridSystem.CellToGamePosition(3, 24);
-    m_Watergirl->SetPosition(watergirlInitPos);
-    m_Watergirl->SetSpawnPoint(watergirlInitPos);
-    m_Root.AddChild(m_Watergirl);
-  }
+  InitCharacter(m_Watergirl, {3, 24});
 
-  // Fireboy 的門
-  glm::vec2 fireboyDoorPos = m_GridSystem.CellToGamePosition(30, 5);
-  m_Fireboy_Door->SetPosition(fireboyDoorPos);
-  m_Fireboy_Door->SetOpen(false);
-  m_Fireboy_Door->SetVisible(true);
+  InitDoor(m_Fireboy_Door, {30, 5});
+  InitDoor(m_Watergirl_Door, {34, 5});
 
-  // Watergirl 的門
-  glm::vec2 watergirlDoorPos = m_GridSystem.CellToGamePosition(34, 5);
-  m_Watergirl_Door->SetPosition(watergirlDoorPos);
-  m_Watergirl_Door->SetOpen(false);
-  m_Watergirl_Door->SetVisible(true);
+  // 初始化Trap
+  InitLiquidTraps(CellType::WATER, SizeType::SMALL, {{28, 28}});
+  InitLiquidTraps(CellType::LAVA, SizeType::SMALL, {{20, 28}});
+  InitLiquidTraps(CellType::POISON, SizeType::SMALL, {{26, 22}});
 
-  std::vector<std::pair<int, int>> waterTrapCoords = {{28, 28}};
+  // 初始化Gem
+  InitGems(GemType::FIRE, {{20, 26}, {7, 14}, {12, 3}});
+  InitGems(GemType::WATER, {{28, 26}, {23, 15}, {2, 5}});
 
-  for (const auto &[row, col] : waterTrapCoords) {
-    auto waterTrap =
-        std::make_shared<LiquidTrap>(CellType::WATER, SizeType::SMALL);
-    glm::vec2 pos = m_GridSystem.CellToGamePosition(row, col);
-    waterTrap->SetPosition(pos);
-    m_Traps.push_back(waterTrap);
-    m_Root.AddChild(waterTrap);
-  }
+  // 機關連動
+  auto greenPlatform = InitPlatform(PlatformColor::GREEN, {2, 15}, {0, -80});
+  InitLever(LeverColor::GREEN, {10, 19}, greenPlatform.get());
 
-  // 岩漿座標列表
-  std::vector<std::pair<int, int>> lavaTrapCoords = {{20, 28}};
+  auto pinkPlatform = InitPlatform(PlatformColor::PINK, {35, 12}, {0, -80});
+  InitButton(ButtonColor::PINK, {15, 15}, pinkPlatform.get());
+  InitButton(ButtonColor::PINK, {31, 11}, pinkPlatform.get());
 
-  for (const auto &[row, col] : lavaTrapCoords) {
-    auto lavaTrap =
-        std::make_shared<LiquidTrap>(CellType::LAVA, SizeType::SMALL);
-    glm::vec2 pos = m_GridSystem.CellToGamePosition(row, col);
-    lavaTrap->SetPosition(pos);
-    m_Traps.push_back(lavaTrap);
-    m_Root.AddChild(lavaTrap);
-  }
+  // Box
+  InitBoxes({{24, 9}});
 
-  // 毒池座標列表
-  std::vector<std::pair<int, int>> poisionTrapCoords = {{26, 22}};
-
-  for (const auto &[row, col] : poisionTrapCoords) {
-    auto poisionTrap =
-        std::make_shared<LiquidTrap>(CellType::POISON, SizeType::SMALL);
-    glm::vec2 pos = m_GridSystem.CellToGamePosition(row, col);
-    poisionTrap->SetPosition(pos);
-    m_Traps.push_back(poisionTrap);
-    m_Root.AddChild(poisionTrap);
-  }
-
-  // 火寶石座標 (row, col)
-  std::vector<std::pair<int, int>> fireGemCoords = {
-    {20, 26}, {7, 14}, {12, 3}};
-
-  for (const auto &[row, col] : fireGemCoords) {
-    auto gem = std::make_shared<Gem>(GemType::FIRE);
-    glm::vec2 pos = m_GridSystem.CellToGamePosition(row, col);
-    gem->SetPosition(pos);
-    gem->SetInitialPosition(pos);
-    m_Gems.push_back(gem);
-    m_Root.AddChild(gem);
-  }
-
-  // 水寶石座標 (row, col)
-  std::vector<std::pair<int, int>> waterGemCoords = {
-    {28, 26}, {23, 15}, {2, 5}};
-
-  for (const auto &[row, col] : waterGemCoords) {
-    auto gem = std::make_shared<Gem>(GemType::WATER);
-    glm::vec2 pos = m_GridSystem.CellToGamePosition(row, col);
-    gem->SetPosition(pos);
-    gem->SetInitialPosition(pos);
-    m_Gems.push_back(gem);
-    m_Root.AddChild(gem);
-  }
-
+  // 設定platform與box給character
+  m_Fireboy->SetPlatforms(m_Platforms);
+  m_Watergirl->SetPlatforms(m_Platforms);
+  m_Fireboy->SetBoxes(m_Boxes);
+  m_Watergirl->SetBoxes(m_Boxes);
 
   return true;
 }

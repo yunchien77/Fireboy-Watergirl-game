@@ -5,45 +5,71 @@ set(SRC_FILES
         Game/AppLevelSelect.cpp
         Game/AppGamePlay.cpp
         Game/AppGameWin.cpp
-        Game/AppGameOver.cpp
+        Game/AppGamePause.cpp
+        Game/AppLoading.cpp
         Game/AppReset.cpp
+        Game/GameManager/CollisionManager.cpp
+        Game/GameManager/GameMechanicsManager.cpp
+        Game/GameManager/InputHandler.cpp
         Level/LoadLevel.cpp
         Level/Level.cpp
         Level/Level1.cpp
         Level/Level2.cpp
         Level/Level3.cpp
+        Level/Level4.cpp
+        Level/Level5.cpp
         Level/LevelFactory.cpp
         Character/Character.cpp
         Character/Fireboy.cpp
         Character/Watergirl.cpp
+        Character/CharacterMovementComponent.cpp
+        Character/CharacterCollisionComponent.cpp
+        Character/CharacterPhysicsComponent.cpp
         Object/GridSystem.cpp
         Mechanism/LiquidTrap.cpp
         Mechanism/Gem.cpp
         Mechanism/Gate.cpp
         Mechanism/Button.cpp
+        Mechanism/Platform.cpp
+        Mechanism/Lever.cpp
+        Mechanism/Box.cpp
+        Mechanism/Fan.cpp
+        Mechanism/Door.cpp
+        Mechanism/MechanismBase.cpp
 )
 
 set(INCLUDE_FILES
         App.hpp
         Object/BackgroundImage.hpp
         Object/Option.hpp
+        Object/Color.hpp
         Character/Character.hpp
         Character/Fireboy.hpp
         Character/Watergirl.hpp
+        Character/CharacterState.hpp
+        Character/CharacterComponent.hpp
         Mechanism/Door.hpp
         Object/GridSystem.hpp
         Mechanism/LiquidTrap.hpp
-        Interface/ITrap.hpp
-        Interface/IGem.hpp
         Interface/ITriggerable.hpp
         Mechanism/Gem.hpp
         Mechanism/Gate.hpp
         Mechanism/Button.hpp
+        Mechanism/Platform.hpp
+        Mechanism/Lever.hpp
+        Mechanism/Box.hpp
+        Mechanism/Fan.hpp
+        Mechanism/MechanismBase.hpp
         Level/Level.hpp
         Level/Level1.hpp
         Level/Level2.hpp
         Level/Level3.hpp
+        Level/Level4.hpp
+        Level/Level5.hpp
         Level/LevelFactory.hpp
+        Game/CollisionManager.hpp
+        Game/GameMechanicsManager.hpp
+        Game/InputHandler.hpp
 )
 
 set(TEST_FILES

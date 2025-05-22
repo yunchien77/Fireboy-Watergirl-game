@@ -24,7 +24,7 @@ void App::GameWin() {
   if (!m_CharacterIndicator) {
     m_CharacterIndicator = std::make_shared<BackgroundImage>(
         RESOURCE_DIR "/material/background/icon/result-pass.png", 40);
-    m_CharacterIndicator->SetPosition(glm::vec2(-100, 110));
+    m_CharacterIndicator->SetPosition(glm::vec2(-100, 85));
     m_Root.AddChild(m_CharacterIndicator);
   }
   m_CharacterIndicator->SetVisible(true);
@@ -35,7 +35,7 @@ void App::GameWin() {
                       : RESOURCE_DIR
             "/material/background/icon/result-fail.png",
         40);
-    m_GemCollectedIndicator->SetPosition(glm::vec2(-100, 50));
+    m_GemCollectedIndicator->SetPosition(glm::vec2(-100, -10));
     m_Root.AddChild(m_GemCollectedIndicator);
   } else {
     // Update existing image
@@ -118,6 +118,24 @@ void App::GameWin() {
           m_Level3Button->SetImage(
               RESOURCE_DIR "/material/background/button/current-level.png");
           m_Level3Button->SetInteractable(true);
+        }
+      }
+      if (m_CurrentLevel == 3) {
+        if (unlockedLevel == 3) {
+          m_Level3Background->SetVisible(false);
+          unlockedLevel = 4;
+          m_Level4Button->SetImage(
+              RESOURCE_DIR "/material/background/button/current-level.png");
+          m_Level4Button->SetInteractable(true);
+        }
+      }
+      if (m_CurrentLevel == 4) {
+        if (unlockedLevel == 4) {
+          m_Level4Background->SetVisible(false);
+          unlockedLevel = 5;
+          m_Level5Button->SetImage(
+              RESOURCE_DIR "/material/background/button/current-level.png");
+          m_Level5Button->SetInteractable(true);
         }
       }
     }

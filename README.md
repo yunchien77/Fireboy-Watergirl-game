@@ -11,15 +11,15 @@ This is a cooperative puzzle-platformer where you control two characters to solv
 
 ### 🔥 Fireboy
 
-* **←**: Move left
-* **→**: Move right
-* **↑**: Jump
+* ```←``` Move left
+* ```→``` Move right
+* ```↑``` Jump
 
 ### 💧 Watergirl
 
-* **A**: Move left
-* **D**: Move right
-* **W**: Jump
+* ```A``` Move left
+* ```D``` Move right
+* ```W``` Jump
 
 
 

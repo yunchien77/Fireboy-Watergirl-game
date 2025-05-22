@@ -2,7 +2,7 @@
 #include "Util/Image.hpp"
 
 Lever::Lever(LeverColor color, const glm::vec2 &pos)
-    : MechanismBase(pos, color, 25.0f), m_Color(color) {
+    : MechanismBase(pos, color, 25.0f) {
   SetDrawable(std::make_shared<Util::Image>(GetImagePath(color, false)));
   SetPosition(pos);
   SetPivot({0.0f, 0.0f});
@@ -70,8 +70,6 @@ void Lever::Toggle() {
 }
 
 void Lever::LinkTrigger(ITriggerable *target) { m_Triggers.push_back(target); }
-
-LeverColor Lever::GetColor() const { return m_Color; }
 
 const SDL_Rect &Lever::getRect() const {
   glm::vec2 pos = m_Transform.translation;

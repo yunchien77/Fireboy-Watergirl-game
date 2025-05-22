@@ -11,13 +11,20 @@ Gate::Gate(GateColor color, const glm::vec2 &pos)
 std::string Gate::GetImagePath(GateColor color) {
   std::string base = RESOURCE_DIR "/material/props/gate/gate-";
   switch (color) {
-    case Color::BLUE:   return base + "blue.png";
-    case Color::GREEN:  return base + "green.png";
-    case Color::ORANGE: return base + "orange.png";
-    case Color::PINK:   return base + "pink.png";
-    case Color::WHITE:  return base + "white.png";
-    case Color::YELLOW: return base + "yellow.png";
-    default:            return "";
+  case Color::BLUE:
+    return base + "blue.png";
+  case Color::GREEN:
+    return base + "green.png";
+  case Color::ORANGE:
+    return base + "orange.png";
+  case Color::PINK:
+    return base + "pink.png";
+  case Color::WHITE:
+    return base + "white.png";
+  case Color::YELLOW:
+    return base + "yellow.png";
+  default:
+    return "";
   }
 }
 
@@ -44,9 +51,7 @@ void Gate::SetOpen(bool open) {
   m_IsAnimating = true;
 }
 
-void Gate::SetScale(const glm::vec2 &scale) {
-  m_Transform.scale = scale;
-}
+void Gate::SetScale(const glm::vec2 &scale) { m_Transform.scale = scale; }
 
 void Gate::SetInitialState(const glm::vec2 &pos, bool isOpen) {
   m_InitialPosition = pos;
@@ -103,14 +108,6 @@ void Gate::UpdateAnimation(float deltaTime) {
   SetPosition(pos);
 }
 
-GateColor Gate::GetColor() const {
-  return m_Color;
-}
+bool Gate::IsOpen() const { return m_IsOpen; }
 
-bool Gate::IsOpen() const {
-  return m_IsOpen;
-}
-
-bool Gate::IsBlocking() const {
-  return !m_IsOpen;
-}
+bool Gate::IsBlocking() const { return !m_IsOpen; }

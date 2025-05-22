@@ -6,9 +6,9 @@
 #include "Object/Color.hpp"
 #include <vector>
 
-using ButtonColor = Color;
-
 class Character;
+
+using ButtonColor = Color;
 
 class Button : public MechanismBase {
 public:
@@ -17,13 +17,11 @@ public:
   using MechanismBase::Update;
   void Update(Character *fb, Character *wg);
   void LinkTrigger(ITriggerable *target);
-  ButtonColor GetColor() const;
   const SDL_Rect &getRect() const override;
 
 private:
   std::string GetImagePath(ButtonColor color);
 
-  ButtonColor m_Color;
   bool m_IsPressedFireboy = false;
   bool m_IsPressedWatergirl = false;
   std::vector<ITriggerable *> m_Triggers;

@@ -23,7 +23,6 @@ public:
 
   void UpdateAnimation(float deltaTime);
 
-  GateColor GetColor() const;
   bool IsOpen() const;
   bool IsBlocking() const;
 

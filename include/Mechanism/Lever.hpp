@@ -17,10 +17,8 @@ public:
   void Update(Character *fb, Character *wg);
 
   void LinkTrigger(ITriggerable *target);
-  LeverColor GetColor() const;
   const SDL_Rect &getRect() const override;
 
-  void SetInitialPosition(const glm::vec2 &pos);
   void SetInitialState(const glm::vec2 &pos, bool isOn);
   void Respawn() override;
 
@@ -30,9 +28,7 @@ private:
 
   bool m_IsOn = false;
   bool m_InitialIsOn = false;
-  LeverColor m_Color;
   mutable SDL_Rect m_Rect{};
-  glm::vec2 m_InitialPosition;
   std::vector<ITriggerable *> m_Triggers;
 };
 

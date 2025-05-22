@@ -5,7 +5,7 @@
 #include "Util/Image.hpp"
 
 Button::Button(ButtonColor color, const glm::vec2 &pos)
-    : MechanismBase(pos, color, 25.0f), m_Color(color) {
+    : MechanismBase(pos, color, 25.0f) {
   SetDrawable(std::make_shared<Util::Image>(GetImagePath(color)));
   SetPosition(pos);
   SetPivot({0.0f, 0.0f});
@@ -65,8 +65,6 @@ void Button::Update(Character *fb, Character *wg) {
 }
 
 void Button::LinkTrigger(ITriggerable *target) { m_Triggers.push_back(target); }
-
-ButtonColor Button::GetColor() const { return m_Color; }
 
 const SDL_Rect &Button::getRect() const {
   glm::vec2 pos = m_Transform.translation;

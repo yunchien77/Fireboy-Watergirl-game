@@ -40,9 +40,9 @@ bool Gem::IsCollected() const { return !m_Visible; }
 
 const SDL_Rect &Gem::getRect() const {
   glm::vec2 pos = m_Transform.translation;
-  glm::vec2 size = GetScaledSize() * 0.6f; // 可依實際按鈕大小微調縮放
+  glm::vec2 size = GetScaledSize() * 0.35f;
   m_Rect.x = static_cast<int>(pos.x - size.x / 2);
-  m_Rect.y = static_cast<int>(pos.y - size.y / 2);
+  m_Rect.y = static_cast<int>(pos.y - size.y / 2 + 13.0f);
   m_Rect.w = static_cast<int>(size.x);
   m_Rect.h = static_cast<int>(size.y);
   return m_Rect;

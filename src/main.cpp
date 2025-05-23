@@ -1,7 +1,8 @@
 #include "App.hpp"
 #include "Core/Context.hpp"
-#include <SDL.h>
 #include "Util/BGM.hpp"
+#include <SDL.h>
+
 
 int main(int, char **) {
   if (SDL_Init(SDL_INIT_VIDEO) != 0) {
@@ -13,7 +14,7 @@ int main(int, char **) {
 
   // 加入背景音樂
   Util::BGM bgm(RESOURCE_DIR "/material/music/LevelMusic.mp3");
-  bgm.SetVolume(96);
+  bgm.SetVolume(50);
   bgm.Play(-1);
 
   while (!context->GetExit()) {

@@ -52,6 +52,8 @@ public:
   [[nodiscard]] bool IsAffectedByWind() const;
   [[nodiscard]] CharacterState GetState() const;
 
+  const SDL_Rect &getRect() const;
+
   //==================================
   // Setters
   //==================================
@@ -108,7 +110,6 @@ public:
   //==================================
   // Pure virtual methods for derived classes
   //==================================
-  virtual const SDL_Rect &getRect() const = 0;
   virtual bool IsFireboy() const = 0;
   virtual float getX() const = 0;
   virtual float getY() const = 0;

@@ -34,6 +34,8 @@ bool App::LoadLevelGrid(int levelNumber) {
     return false;
   }
 
+  m_OriginalTrapMap.clear();
+
   for (int y = 0; y < m_GridSystem.GetGridHeight(); ++y) {
     for (int x = 0; x < m_GridSystem.GetGridWidth(); ++x) {
       std::cout << static_cast<int>(m_GridSystem.GetCell(x, y)) << " ";

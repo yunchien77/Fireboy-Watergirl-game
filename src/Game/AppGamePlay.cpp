@@ -103,9 +103,12 @@ void App::GamePlay() {
     InitializeManagers();
 
     if (m_IsEndlessMode) {
-      ActivateEndlessMode(); // 重新將新關卡陷阱轉換為 FLOOR
+      m_OriginalTrapMap.clear();
+      ActivateEndlessMode();
       m_Fireboy->SetInvincible(true);
       m_Watergirl->SetInvincible(true);
+    } else {
+      RestoreTrapMap();
     }
   }
 
@@ -120,13 +123,17 @@ void App::GamePlay() {
     m_Watergirl->SetInvincible(m_IsEndlessMode);
 
     if (m_IsEndlessMode) {
+      m_OriginalTrapMap.clear();
       ActivateEndlessMode();
+      m_Fireboy->SetInvincible(true);
+      m_Watergirl->SetInvincible(true);
       std::cout << "[Endless Mode] ON\n";
     } else {
       RestoreTrapMap();
       std::cout << "[Endless Mode] OFF\n";
     }
   }
+
 
   if (m_InputHandler->IsExitRequested()) {
     m_CurrentState = State::END;

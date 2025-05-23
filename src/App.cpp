@@ -309,7 +309,6 @@ void App::ActivateEndlessMode() {
 
 }
 
-
 void App::RestoreTrapMap() {
     if (m_OriginalTrapMap.empty()) return;
 
@@ -321,4 +320,19 @@ void App::RestoreTrapMap() {
             m_GridSystem.SetCellType(x, y, m_OriginalTrapMap[y][x]);
         }
     }
+
+    // 檢查 Fireboy 腳下地形（若是 water 或 poison，立刻死亡）
+    glm::ivec2 firePos = m_GridSystem.GameToCellPosition(m_Fireboy->GetPosition());
+    CellType fireTile = m_GridSystem.GetCellType(firePos.x, firePos.y);
+    if (fireTile == CellType::WATER || fireTile == CellType::POISON) {
+        m_Fireboy->Die();
+    }
+
+    // 檢查 Watergirl 腳下地形（若是 lava 或 poison，立刻死亡）
+    glm::ivec2 waterPos = m_GridSystem.GameToCellPosition(m_Watergirl->GetPosition());
+    CellType waterTile = m_GridSystem.GetCellType(waterPos.x, waterPos.y);
+    if (waterTile == CellType::LAVA || waterTile == CellType::POISON) {
+        m_Watergirl->Die();
+    }
 }
+

@@ -67,16 +67,15 @@ This is a cooperative puzzle-platformer where you control two characters to solv
 
 ---
 
-## 🧪 Developer Mode: Invincibility Toggle
+## 🧪 Developer Mode: Endless Mode
 
-Want to explore the level freely or test tricky mechanics?
+Press **`I` key** during gameplay to toggle **Endless Mode**:
 
-Press **`I` key** during gameplay to toggle **Invincibility Mode**:
+- 🔓 Characters will **not die** when touching lava, water, or poison.
+- 🔄 All deadly tiles will behave like **floor**, allowing free exploration.
+- 🔁 **Endless Mode is persistent across levels** — even if you restart or enter a new stage, it stays active **until you press `I` again** to disable it.
 
-- Characters will **not die** when touching fire, water, or poison pools.
-- Use this feature to debug or experiment with level mechanics safely.
-
-> 💡 A handy feature for testers and creators!
+> 💡 Ideal for level testing, debugging, or casual exploration.
 
 ---
 

@@ -307,7 +307,6 @@ void App::ActivateEndlessMode() {
         }
     }
 
-    std::cout << "[Endless Mode] Traps replaced with FLOOR.\n";
 }
 
 
@@ -322,6 +321,4 @@ void App::RestoreTrapMap() {
             m_GridSystem.SetCellType(x, y, m_OriginalTrapMap[y][x]);
         }
     }
-
-    std::cout << "[Endless Mode] Traps restored.\n";
 }

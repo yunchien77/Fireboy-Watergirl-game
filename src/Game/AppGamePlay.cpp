@@ -95,12 +95,18 @@ void App::GamePlay() {
     }
   }
 
-  if (!m_IsGridLoaded) {
+  if (!m_IsGridLoaded) {a
     if (!LoadLevelGrid(m_CurrentLevel)) {
       LOG_ERROR("Failed to load level {}", m_CurrentLevel);
       return;
     }
     InitializeManagers();
+
+    if (m_IsEndlessMode) {
+      ActivateEndlessMode(); // 重新將新關卡陷阱轉換為 FLOOR
+      m_Fireboy->SetInvincible(true);
+      m_Watergirl->SetInvincible(true);
+    }
   }
 
   if (!m_CollisionManager || !m_MechanicsManager || !m_InputHandler) {
@@ -121,7 +127,6 @@ void App::GamePlay() {
       std::cout << "[Endless Mode] OFF\n";
     }
   }
-
 
   if (m_InputHandler->IsExitRequested()) {
     m_CurrentState = State::END;

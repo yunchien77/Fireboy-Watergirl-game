@@ -6,7 +6,6 @@
 #include <iostream>
 #include <map>
 
-
 #define CHARACTER_OFFSET 13.5f
 
 CharacterCollisionComponent::CharacterCollisionComponent(Character *owner)
@@ -129,31 +128,89 @@ void CharacterCollisionComponent::AdjustPositionToAvoidWalls(
     glm::vec2 &position, const GridSystem &grid) {
   float bodyLeft = position.x - (m_Owner->GetSize().x / 2.0f);
   float bodyRight = position.x + (m_Owner->GetSize().x / 2.0f);
-  float bodyMiddleY = position.y; // 角色中間高度
+  float bodyTop = position.y + m_Owner->GetSize().y;
+  float bodyBottom = position.y + CHARACTER_OFFSET;
 
-  // 檢查左側身體
-  glm::ivec2 leftBodyCell =
-      grid.GameToCellPosition(glm::vec2(bodyLeft, bodyMiddleY));
-  CellType leftCellType = grid.GetCell(leftBodyCell.x, leftBodyCell.y);
+  // 增加更多的檢查點來檢測身體兩側
+  int verticalCheckPoints = 8; // 從底部到頂部檢查8個點
 
-  // 檢查右側身體
-  glm::ivec2 rightBodyCell =
-      grid.GameToCellPosition(glm::vec2(bodyRight, bodyMiddleY));
-  CellType rightCellType = grid.GetCell(rightBodyCell.x, rightBodyCell.y);
+  // 檢查左側身體的多個點
+  bool leftSideBlocked = false;
+  glm::ivec2 leftBlockingCell(0, 0);
 
-  // 如果左側或右側會碰到牆，調整X位置
-  if (!grid.CanMoveOn(leftCellType, m_Owner->IsFireboy())) {
-    // 如果左側碰牆，向右調整
+  for (int i = 0; i < verticalCheckPoints; i++) {
+    float checkY =
+        bodyBottom + (bodyTop - bodyBottom) *
+                         (static_cast<float>(i) / (verticalCheckPoints - 1));
+    glm::ivec2 leftBodyCell =
+        grid.GameToCellPosition(glm::vec2(bodyLeft, checkY));
+    CellType leftCellType = grid.GetCell(leftBodyCell.x, leftBodyCell.y);
+
+    if (!grid.CanMoveOn(leftCellType, m_Owner->IsFireboy())) {
+      leftSideBlocked = true;
+      leftBlockingCell = leftBodyCell;
+      break; // 找到第一個阻擋的格子就停止
+    }
+  }
+
+  // 檢查右側身體的多個點
+  bool rightSideBlocked = false;
+  glm::ivec2 rightBlockingCell(0, 0);
+
+  for (int i = 0; i < verticalCheckPoints; i++) {
+    float checkY =
+        bodyBottom + (bodyTop - bodyBottom) *
+                         (static_cast<float>(i) / (verticalCheckPoints - 1));
+    glm::ivec2 rightBodyCell =
+        grid.GameToCellPosition(glm::vec2(bodyRight, checkY));
+    CellType rightCellType = grid.GetCell(rightBodyCell.x, rightBodyCell.y);
+
+    if (!grid.CanMoveOn(rightCellType, m_Owner->IsFireboy())) {
+      rightSideBlocked = true;
+      rightBlockingCell = rightBodyCell;
+      break; // 找到第一個阻擋的格子就停止
+    }
+  }
+
+  // 根據檢測結果調整位置
+  if (leftSideBlocked && !rightSideBlocked) {
+    // 左側被阻擋，向右調整
     float cellRightEdge =
-        grid.CellToGamePosition(leftBodyCell.x, leftBodyCell.y).x +
+        grid.CellToGamePosition(leftBlockingCell.x, leftBlockingCell.y).x +
         (grid.GetCellSize() / 2.0f);
-    position.x = cellRightEdge + (m_Owner->GetSize().x / 2.0f);
-  } else if (!grid.CanMoveOn(rightCellType, m_Owner->IsFireboy())) {
-    // 如果右側碰牆，向左調整
+    position.x = cellRightEdge + (m_Owner->GetSize().x / 2.0f) +
+                 0.1f; // 添加小幅偏移避免貼邊
+  } else if (rightSideBlocked && !leftSideBlocked) {
+    // 右側被阻擋，向左調整
     float cellLeftEdge =
-        grid.CellToGamePosition(rightBodyCell.x, rightBodyCell.y).x -
+        grid.CellToGamePosition(rightBlockingCell.x, rightBlockingCell.y).x -
         (grid.GetCellSize() / 2.0f);
-    position.x = cellLeftEdge - (m_Owner->GetSize().x / 2.0f);
+    position.x = cellLeftEdge - (m_Owner->GetSize().x / 2.0f) -
+                 0.1f; // 添加小幅偏移避免貼邊
+  } else if (leftSideBlocked && rightSideBlocked) {
+    // 兩側都被阻擋，尋找最近的安全位置
+    float leftDistance = std::abs(
+        position.x -
+        (grid.CellToGamePosition(leftBlockingCell.x, leftBlockingCell.y).x +
+         (grid.GetCellSize() / 2.0f) + (m_Owner->GetSize().x / 2.0f)));
+    float rightDistance = std::abs(
+        position.x -
+        (grid.CellToGamePosition(rightBlockingCell.x, rightBlockingCell.y).x -
+         (grid.GetCellSize() / 2.0f) - (m_Owner->GetSize().x / 2.0f)));
+
+    if (leftDistance < rightDistance) {
+      // 向右側調整（離右邊牆較近）
+      float cellRightEdge =
+          grid.CellToGamePosition(leftBlockingCell.x, leftBlockingCell.y).x +
+          (grid.GetCellSize() / 2.0f);
+      position.x = cellRightEdge + (m_Owner->GetSize().x / 2.0f) + 0.1f;
+    } else {
+      // 向左側調整（離左邊牆較近）
+      float cellLeftEdge =
+          grid.CellToGamePosition(rightBlockingCell.x, rightBlockingCell.y).x -
+          (grid.GetCellSize() / 2.0f);
+      position.x = cellLeftEdge - (m_Owner->GetSize().x / 2.0f) - 0.1f;
+    }
   }
 }
 

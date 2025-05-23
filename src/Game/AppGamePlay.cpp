@@ -95,7 +95,7 @@ void App::GamePlay() {
     }
   }
 
-  if (!m_IsGridLoaded) {a
+  if (!m_IsGridLoaded) {
     if (!LoadLevelGrid(m_CurrentLevel)) {
       LOG_ERROR("Failed to load level {}", m_CurrentLevel);
       return;

@@ -115,6 +115,9 @@ public:
   virtual int getWidth() const = 0;
   virtual int getHeight() const = 0;
 
+  void SetInvincible(bool enable);
+  bool IsInvincible() const;
+
 protected:
   // Apply horizontal flip based on facing direction
   void ApplyFlip();
@@ -158,6 +161,8 @@ protected:
   std::unique_ptr<CharacterCollisionComponent> m_CollisionComponent;
   std::unique_ptr<CharacterMovementComponent> m_MovementComponent;
   std::unique_ptr<CharacterPhysicsComponent> m_PhysicsComponent;
+
+  bool isInvincible = false;
 
 private:
   // Component initialization

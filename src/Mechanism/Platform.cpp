@@ -1,5 +1,7 @@
 #include "Mechanism/Platform.hpp"
 
+#include <iostream>
+
 #include "Character/Character.hpp"
 #include "Util/Image.hpp"
 
@@ -135,7 +137,7 @@ bool Platform::IsCharacterOn(Character *character) const {
 
   // 檢查水平方向是否有足夠重疊
   bool horizontalOverlap =
-      (charRight > platLeft + 2.0f) && (charLeft < platRight - 2.0f);
+      (charRight > platLeft - 2.0f) && (charLeft < platRight + 2.0f);
 
   return verticalMatch && horizontalOverlap;
 }

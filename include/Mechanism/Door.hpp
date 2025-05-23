@@ -2,9 +2,7 @@
 #define DOOR_HPP
 
 #include "Mechanism/MechanismBase.hpp"
-#include <glm/glm.hpp>
 #include <map>
-#include <memory>
 #include <string>
 
 namespace Util {

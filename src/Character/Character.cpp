@@ -273,3 +273,11 @@ void Character::Update() {
     }
   }
 }
+
+void Character::SetInvincible(bool enable) {
+  isInvincible = enable;
+}
+
+bool Character::IsInvincible() const {
+  return isInvincible;
+}

@@ -114,6 +114,7 @@ public:
   std::shared_ptr<Character> GetWatergirl() { return m_Watergirl; }
 
 private:
+  bool m_IsInvincibleMode = false;
   //------------------- 輔助函數 -------------------
   // 轉換滑鼠座標從窗口座標到游戲座標
   glm::vec2 ConvertToGameCoordinates(int screenX, int screenY) {

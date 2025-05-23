@@ -216,3 +216,21 @@ bool GridSystem::CheckCollision(const glm::vec2 &worldPos, glm::vec2 size,
 bool GridSystem::IsValidGridPosition(int x, int y) const {
   return (x >= 0 && x < m_GridWidth && y >= 0 && y < m_GridHeight);
 }
+
+int GridSystem::GetWidth() const {
+  return m_GridWidth;
+}
+
+int GridSystem::GetHeight() const {
+  return m_GridHeight;
+}
+
+CellType GridSystem::GetCellType(int x, int y) const {
+  return GetCell(x, y);
+}
+
+void GridSystem::SetCellType(int x, int y, CellType type) {
+  if (IsValidGridPosition(x, y)) {
+    m_Grid[y][x] = type;
+  }
+}

@@ -281,3 +281,47 @@ void App::SetPauseMenuVisible(bool visible) {
 }
 
 void App::End() { LOG_TRACE("Game End"); }
+
+void App::ActivateEndlessMode() {
+    int width = m_GridSystem.GetWidth();
+    int height = m_GridSystem.GetHeight();
+
+    // 建立備份（僅第一次進入時儲存）
+    if (m_OriginalTrapMap.empty()) {
+        m_OriginalTrapMap.resize(height, std::vector<CellType>(width));
+
+        for (int y = 0; y < height; ++y) {
+            for (int x = 0; x < width; ++x) {
+                m_OriginalTrapMap[y][x] = m_GridSystem.GetCellType(x, y);
+            }
+        }
+    }
+
+    // 修改地圖陷阱 → FLOOR
+    for (int y = 0; y < height; ++y) {
+        for (int x = 0; x < width; ++x) {
+            CellType type = m_GridSystem.GetCellType(x, y);
+            if (type == CellType::LAVA || type == CellType::WATER || type == CellType::POISON) {
+                m_GridSystem.SetCellType(x, y, CellType::FLOOR);
+            }
+        }
+    }
+
+    std::cout << "[Endless Mode] Traps replaced with FLOOR.\n";
+}
+
+
+void App::RestoreTrapMap() {
+    if (m_OriginalTrapMap.empty()) return;
+
+    int width = m_GridSystem.GetWidth();
+    int height = m_GridSystem.GetHeight();
+
+    for (int y = 0; y < height; ++y) {
+        for (int x = 0; x < width; ++x) {
+            m_GridSystem.SetCellType(x, y, m_OriginalTrapMap[y][x]);
+        }
+    }
+
+    std::cout << "[Endless Mode] Traps restored.\n";
+}

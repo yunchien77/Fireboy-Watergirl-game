@@ -109,11 +109,19 @@ void App::GamePlay() {
 
   // 快捷鍵：按下 I 切換無敵模式
   if (Util::Input::IsKeyUp(Util::Keycode::I)) {
-    m_IsInvincibleMode = !m_IsInvincibleMode;
-    m_Fireboy->SetInvincible(m_IsInvincibleMode);
-    m_Watergirl->SetInvincible(m_IsInvincibleMode);
-    std::cout << "[Debug] 無敵模式 " << (m_IsInvincibleMode ? "開啟" : "關閉") << std::endl;
+    m_IsEndlessMode = !m_IsEndlessMode;
+    m_Fireboy->SetInvincible(m_IsEndlessMode);
+    m_Watergirl->SetInvincible(m_IsEndlessMode);
+
+    if (m_IsEndlessMode) {
+      ActivateEndlessMode();
+      std::cout << "[Endless Mode] ON\n";
+    } else {
+      RestoreTrapMap();
+      std::cout << "[Endless Mode] OFF\n";
+    }
   }
+
 
   if (m_InputHandler->IsExitRequested()) {
     m_CurrentState = State::END;

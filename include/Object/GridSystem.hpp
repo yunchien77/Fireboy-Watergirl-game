@@ -64,6 +64,12 @@ public:
   int GetGridWidth() const { return m_GridWidth; }
   int GetGridHeight() const { return m_GridHeight; }
 
+  int GetWidth() const;
+  int GetHeight() const;
+  CellType GetCellType(int x, int y) const;
+  void SetCellType(int x, int y, CellType type);
+
+
 private:
   std::vector<std::vector<CellType>> m_Grid;
   int m_GridWidth;

@@ -113,8 +113,14 @@ public:
   std::shared_ptr<Character> GetFireboy() { return m_Fireboy; }
   std::shared_ptr<Character> GetWatergirl() { return m_Watergirl; }
 
+  void ActivateEndlessMode();
+  void RestoreTrapMap();
+  bool m_IsEndlessMode = false;
+
 private:
   bool m_IsInvincibleMode = false;
+  std::vector<std::vector<CellType>> m_OriginalTrapMap;
+
   //------------------- 輔助函數 -------------------
   // 轉換滑鼠座標從窗口座標到游戲座標
   glm::vec2 ConvertToGameCoordinates(int screenX, int screenY) {

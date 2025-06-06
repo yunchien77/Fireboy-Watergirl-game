@@ -28,7 +28,7 @@ bool Level4::Initialize() {
   InitGems(GemType::FIRE,
            {{8, 3}, {23, 6}, {24, 12}, {13, 23}, {15, 16}, {36, 3}});
   InitGems(GemType::WATER,
-           {{34, 14}, {29, 25}, {8, 11}, {26, 18}, {29, 8}, {11, 6}});
+           {{34, 14}, {29, 24}, {8, 11}, {26, 18}, {29, 8}, {11, 6}});
 
   // 初始化Trap
   InitLiquidTraps(CellType::WATER, SizeType::LARGE, {{11, 7}});

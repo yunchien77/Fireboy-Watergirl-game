@@ -67,21 +67,21 @@
 ### C. 遊戲畫面
 
 - 主選單
-![alt text](url)
+![image](https://github.com/user-attachments/assets/cefe2d8e-b0d7-43cd-a0f9-bc4b4904c9fc)
 - 關卡選擇
-![alt text](url)
+![image](https://github.com/user-attachments/assets/eed9f5c5-f39b-4899-92c1-816e2ca0d3ab)
 - Level 1
-![alt text](url)
+![image](https://github.com/user-attachments/assets/b9a15898-e431-48ee-8e08-7cd56d5698e5)
 - Level 2
-![alt text](url)
+![image](https://github.com/user-attachments/assets/c2669733-69ca-40d2-83bb-5a1297efbb41)
 - Level 3
-![alt text](url)
+![image](https://github.com/user-attachments/assets/2a8f3312-751a-4a78-b07b-d148b1b7cb2c)
 - Level 4
-![alt text](url)
+![image](https://github.com/user-attachments/assets/fecf9973-a57a-40e0-a727-234c65694f9b)
 - Level 5
-![alt text](url)
+![image](https://github.com/user-attachments/assets/9692e406-aeea-477c-adba-49afeb940df5)
 - 通關畫面
-![alt text](url)
+![image](https://github.com/user-attachments/assets/cd116dd5-2551-41ce-abd1-1bc7d33cfca1)
 
 ## IV. 程式設計
 

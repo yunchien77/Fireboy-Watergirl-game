@@ -64,7 +64,11 @@
 
 [Fireboy & Watergirl GitHub](https://github.com/yunchien77/Fireboy-Watergirl-game/tree/main)
 
-### C. 遊戲畫面
+### C. 遊戲 DEMO
+
+[Demo](https://youtu.be/CBtPHynjq-k)
+
+### D. 遊戲畫面
 
 - 主選單
 ![image](https://github.com/user-attachments/assets/cefe2d8e-b0d7-43cd-a0f9-bc4b4904c9fc)

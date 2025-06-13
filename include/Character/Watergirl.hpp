@@ -8,7 +8,6 @@ public:
   explicit Watergirl();
   void UpdateAnimation() override;
   bool IsFireboy() const override { return false; }
-  const SDL_Rect& getRect() const override;
 
   float getX() const override;
   float getY() const override;

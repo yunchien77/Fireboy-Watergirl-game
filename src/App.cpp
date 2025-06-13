@@ -90,25 +90,25 @@ void App::InitializeLevelButtons() {
   // 第二關按鈕
   m_Level2Button =
       CreateLevelButton(RESOURCE_DIR "/material/background/button/unlevel.png",
-                        glm::vec2(0, -102), 2, true);
+                        glm::vec2(0, -102), 2, false);
   m_Root.AddChild(m_Level2Button);
 
   // 第三關按鈕
   m_Level3Button =
       CreateLevelButton(RESOURCE_DIR "/material/background/button/unlevel.png",
-                        glm::vec2(0, 16), 3, true);
+                        glm::vec2(0, 16), 3, false);
   m_Root.AddChild(m_Level3Button);
 
   // 第四關按鈕
   m_Level4Button =
       CreateLevelButton(RESOURCE_DIR "/material/background/button/unlevel.png",
-                        glm::vec2(0, 134), 4, true);
+                        glm::vec2(0, 134), 4, false);
   m_Root.AddChild(m_Level4Button);
 
   // 第五關按鈕
   m_Level5Button =
       CreateLevelButton(RESOURCE_DIR "/material/background/button/unlevel.png",
-                        glm::vec2(0, 252), 5, true);
+                        glm::vec2(0, 252), 5, false);
   m_Root.AddChild(m_Level5Button);
 
   // 返回按鈕
@@ -281,3 +281,58 @@ void App::SetPauseMenuVisible(bool visible) {
 }
 
 void App::End() { LOG_TRACE("Game End"); }
+
+void App::ActivateEndlessMode() {
+    int width = m_GridSystem.GetWidth();
+    int height = m_GridSystem.GetHeight();
+
+    // 建立備份（僅第一次進入時儲存）
+    if (m_OriginalTrapMap.empty()) {
+        m_OriginalTrapMap.resize(height, std::vector<CellType>(width));
+
+        for (int y = 0; y < height; ++y) {
+            for (int x = 0; x < width; ++x) {
+                m_OriginalTrapMap[y][x] = m_GridSystem.GetCellType(x, y);
+            }
+        }
+    }
+
+    // 修改地圖陷阱 → FLOOR
+    for (int y = 0; y < height; ++y) {
+        for (int x = 0; x < width; ++x) {
+            CellType type = m_GridSystem.GetCellType(x, y);
+            if (type == CellType::LAVA || type == CellType::WATER || type == CellType::POISON) {
+                m_GridSystem.SetCellType(x, y, CellType::FLOOR);
+            }
+        }
+    }
+
+}
+
+void App::RestoreTrapMap() {
+    if (m_OriginalTrapMap.empty()) return;
+
+    int width = m_GridSystem.GetWidth();
+    int height = m_GridSystem.GetHeight();
+
+    for (int y = 0; y < height; ++y) {
+        for (int x = 0; x < width; ++x) {
+            m_GridSystem.SetCellType(x, y, m_OriginalTrapMap[y][x]);
+        }
+    }
+
+    // 檢查 Fireboy 腳下地形（若是 water 或 poison，立刻死亡）
+    glm::ivec2 firePos = m_GridSystem.GameToCellPosition(m_Fireboy->GetPosition());
+    CellType fireTile = m_GridSystem.GetCellType(firePos.x, firePos.y);
+    if (fireTile == CellType::WATER || fireTile == CellType::POISON) {
+        m_Fireboy->Die();
+    }
+
+    // 檢查 Watergirl 腳下地形（若是 lava 或 poison，立刻死亡）
+    glm::ivec2 waterPos = m_GridSystem.GameToCellPosition(m_Watergirl->GetPosition());
+    CellType waterTile = m_GridSystem.GetCellType(waterPos.x, waterPos.y);
+    if (waterTile == CellType::LAVA || waterTile == CellType::POISON) {
+        m_Watergirl->Die();
+    }
+}
+

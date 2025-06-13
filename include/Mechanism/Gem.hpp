@@ -14,6 +14,7 @@ public:
   GemType GetType() const;
   void OnCharacterEnter(Character *character);
   bool IsCollected() const;
+  const SDL_Rect &getRect() const override;
 
 private:
   GemType m_Type;

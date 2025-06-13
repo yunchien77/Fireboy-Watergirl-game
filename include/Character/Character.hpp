@@ -52,6 +52,8 @@ public:
   [[nodiscard]] bool IsAffectedByWind() const;
   [[nodiscard]] CharacterState GetState() const;
 
+  const SDL_Rect &getRect() const;
+
   //==================================
   // Setters
   //==================================
@@ -108,12 +110,14 @@ public:
   //==================================
   // Pure virtual methods for derived classes
   //==================================
-  virtual const SDL_Rect &getRect() const = 0;
   virtual bool IsFireboy() const = 0;
   virtual float getX() const = 0;
   virtual float getY() const = 0;
   virtual int getWidth() const = 0;
   virtual int getHeight() const = 0;
+
+  void SetInvincible(bool enable);
+  bool IsInvincible() const;
 
 protected:
   // Apply horizontal flip based on facing direction
@@ -158,6 +162,8 @@ protected:
   std::unique_ptr<CharacterCollisionComponent> m_CollisionComponent;
   std::unique_ptr<CharacterMovementComponent> m_MovementComponent;
   std::unique_ptr<CharacterPhysicsComponent> m_PhysicsComponent;
+
+  bool isInvincible = false;
 
 private:
   // Component initialization

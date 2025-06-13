@@ -89,26 +89,38 @@ public:
   // 檢查寶石收集狀態
   bool GetGemCollectionStatus();
 
-  // 檢查角色與門的互動
-  void CheckCharacterDoorInteraction();
-
-  // 更新所有風扇的狀態和效果
-  void UpdateFans();
-
   void InitializeManagers();
   void HandleAllCollisions();
+
+  //------------------- game win -------------------
+  void InitializeWinUI(bool gemsCollected);
+  void ShowWinBackground();
+  void ShowCharacterIndicator();
+  void ShowGemCollectionIndicator(bool gemsCollected);
+  void ShowLevelResult(bool gemsCollected);
+  void UpdateCurrentLevelButton(bool gemsCollected);
+  std::shared_ptr<Option> GetCurrentLevelButton();
+  void HandleWinScreenInput();
+  void HandleContinueButtonClick(const glm::vec2 &gameCoords);
+  void UnlockNextLevel();
+  void HandleExitConditions();
 
   //------------------- getter -------------------
   // 取得網格系統參考
   GridSystem &GetGridSystem() { return m_GridSystem; }
 
-  // 取得火男角色指標
+  // 取得角色指標
   std::shared_ptr<Character> GetFireboy() { return m_Fireboy; }
-
-  // 取得冰女角色指標
   std::shared_ptr<Character> GetWatergirl() { return m_Watergirl; }
 
+  void ActivateEndlessMode();
+  void RestoreTrapMap();
+  bool m_IsEndlessMode = false;
+
 private:
+  bool m_IsInvincibleMode = false;
+  std::vector<std::vector<CellType>> m_OriginalTrapMap;
+
   //------------------- 輔助函數 -------------------
   // 轉換滑鼠座標從窗口座標到游戲座標
   glm::vec2 ConvertToGameCoordinates(int screenX, int screenY) {

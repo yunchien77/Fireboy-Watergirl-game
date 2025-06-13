@@ -101,11 +101,39 @@ void App::GamePlay() {
       return;
     }
     InitializeManagers();
+
+    if (m_IsEndlessMode) {
+      m_OriginalTrapMap.clear();
+      ActivateEndlessMode();
+      m_Fireboy->SetInvincible(true);
+      m_Watergirl->SetInvincible(true);
+    } else {
+      RestoreTrapMap();
+    }
   }
 
   if (!m_CollisionManager || !m_MechanicsManager || !m_InputHandler) {
     InitializeManagers();
   }
+
+  // 快捷鍵：按下 I 切換無敵模式
+  if (Util::Input::IsKeyUp(Util::Keycode::I)) {
+    m_IsEndlessMode = !m_IsEndlessMode;
+    m_Fireboy->SetInvincible(m_IsEndlessMode);
+    m_Watergirl->SetInvincible(m_IsEndlessMode);
+
+    if (m_IsEndlessMode) {
+      m_OriginalTrapMap.clear();
+      ActivateEndlessMode();
+      m_Fireboy->SetInvincible(true);
+      m_Watergirl->SetInvincible(true);
+      std::cout << "[Endless Mode] ON\n";
+    } else {
+      RestoreTrapMap();
+      std::cout << "[Endless Mode] OFF\n";
+    }
+  }
+
 
   if (m_InputHandler->IsExitRequested()) {
     m_CurrentState = State::END;

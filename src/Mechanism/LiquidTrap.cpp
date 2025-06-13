@@ -50,6 +50,10 @@ void LiquidTrap::OnCharacterEnter(Character *character) {
     return;
   }
 
+  if (character->IsInvincible()) {
+    return;
+  }
+
   switch (type) {
   case CellType::LAVA:
     if (dynamic_cast<Watergirl *>(character)) {

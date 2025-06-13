@@ -6,7 +6,6 @@
 #include <iostream>
 #include <map>
 
-
 #define CHARACTER_OFFSET 13.5f
 
 CharacterMovementComponent::CharacterMovementComponent(Character *owner)
@@ -257,6 +256,7 @@ void CharacterMovementComponent::ApplyGravity(const GridSystem &grid) {
       pos.y = cellBottomY + (grid.GetCellSize() / 2.0f) - CHARACTER_OFFSET;
     } else {
       pos = nextPos;
+      // 使用增強版的牆壁碰撞檢測，檢查身體兩側更多部分
       m_Owner->m_CollisionComponent->AdjustPositionToAvoidWalls(pos, grid);
     }
 

@@ -6,7 +6,6 @@
 #include <iostream>
 #include <map>
 
-
 // Character constructor and basic initialization
 Character::Character(const std::string &imagePath, const float zindex)
     : GameObject(std::make_shared<Util::Image>(imagePath), zindex),
@@ -19,6 +18,17 @@ Character::Character(const std::string &imagePath, const float zindex)
 
   // Initialize components
   InitializeComponents();
+}
+
+const SDL_Rect &Character::getRect() const {
+  static SDL_Rect rect;
+  glm::vec2 pos = GetPosition();
+  glm::vec2 size = GetSize();
+  rect.x = static_cast<int>(pos.x - size.x / 2);
+  rect.y = static_cast<int>(pos.y + CharacterPhysics::CHARACTER_OFFSET);
+  rect.w = static_cast<int>(size.x);
+  rect.h = static_cast<int>(size.y);
+  return rect;
 }
 
 //==================================
@@ -273,3 +283,7 @@ void Character::Update() {
     }
   }
 }
+
+void Character::SetInvincible(bool enable) { isInvincible = enable; }
+
+bool Character::IsInvincible() const { return isInvincible; }
